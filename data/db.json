@@ -1,0 +1,47 @@
+{
+  "date": "2026-07-01",
+  "sections": [
+    {
+      "label": "AI 热点",
+      "track": "ai",
+      "items": [
+        {"title": "DeepSeek V4 发布，推理能力全面超越 GPT-5", "sourceName": "36氪", "sourceUrl": "https://36kr.com", "publishedAt": "2026-07-01T08:00:00"},
+        {"title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆", "sourceName": "TechCrunch", "sourceUrl": "https://techcrunch.com", "publishedAt": "2026-07-01T07:30:00"}
+      ]
+    },
+    {
+      "label": "金融市场",
+      "track": "finance",
+      "items": [
+        {"title": "美联储暗示9月降息，全球股市集体上涨", "sourceName": "Reuters", "sourceUrl": "https://reuters.com", "publishedAt": "2026-07-01T09:00:00"},
+        {"title": "A股成交额突破2万亿，AI概念股领涨", "sourceName": "华尔街见闻", "sourceUrl": "https://wallstreetcn.com", "publishedAt": "2026-07-01T10:00:00"}
+      ]
+    },
+    {
+      "label": "电商消费",
+      "track": "ecommerce",
+      "items": [
+        {"title": "TikTok Shop 东南亚单日GMV破10亿美元", "sourceName": "虎嗅", "sourceUrl": "https://huxiu.com", "publishedAt": "2026-07-01T08:30:00"},
+        {"title": "拼多多TEMU加速欧洲扩张，已在12国上线", "sourceName": "36氪", "sourceUrl": "https://36kr.com", "publishedAt": "2026-07-01T07:00:00"}
+      ]
+    }
+  ],
+  "outputs": {
+    "wechat": [
+      {
+        "title": "龙虾三场全中！7月2日世界杯淘汰赛预测来了",
+        "display_title": "龙虾三场全中！7月2日世界杯淘汰赛预测来了",
+        "original_title": "龙虾三场全中！7月2日世界杯淘汰赛预测",
+        "date": "2026-07-01",
+        "content": "龙虾预测模型7月1日三场全中：科特迪瓦1:1挪威、法国3:0瑞典、墨西哥1:0厄瓜多尔。7月2日预测：美国2:0波黑、西班牙2:0奥地利、葡萄牙2:1克罗地亚。",
+        "source_name": "龙虾日记",
+        "source_label": "世界杯",
+        "track": "worldcup",
+        "source_title": "龙虾三场全中！7月2日世界杯淘汰赛预测",
+        "html_url": "",
+        "html_file": "",
+        "generated_at": "2026-07-01T12:11:37"
+      }
+    ]
+  }
+}
