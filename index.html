@@ -5,66 +5,120 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🦞 龙虾日记 · AIHOT 内容工厂</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #faf8f5; --card: #fff; --accent: #e05a2d;
-  --text: #1a1a1a; --text2: #666; --text3: #999;
-  --border: #eee; --shadow: 0 1px 3px rgba(0,0,0,.06);
-  --radius: 12px; --max-w: 1280px;
+  --bg: #faf8f5;
+  --card: #fff;
+  --accent: #e05a2d;
+  --accent2: #c4451a;
+  --text: #1a1a1a;
+  --text2: #555;
+  --text3: #999;
+  --border: #e8e5e0;
+  --shadow: 0 1px 4px rgba(0,0,0,.05);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.10);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --max-w: 1320px;
+  --gold: #d4a853;
+  --ai: #4f6ef6;
+  --finance: #e74c3c;
+  --ecommerce: #27ae60;
+  --worldcup: #e67e22;
+  --seasonal: #8e44ad;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
-a{color:var(--accent);text-decoration:none}a:hover{opacity:.8}
+a{color:var(--accent);text-decoration:none;transition:opacity .2s}a:hover{opacity:.8}
 
-/* Header */
-.site-header{background:linear-gradient(135deg,#e05a2d,#c4451a);color:#fff;padding:48px 20px 32px;text-align:center}
-.site-header h1{font-size:clamp(24px,5vw,36px);font-weight:700;margin-bottom:6px}
-.site-header .sub{font-size:15px;opacity:.85;margin-bottom:16px}
-.site-header .badge-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.site-header .badge{background:rgba(255,255,255,.18);color:#fff;font-size:13px;padding:5px 16px;border-radius:20px;font-weight:500}
+/* ── Hero ── */
+.hero{background:linear-gradient(160deg,#e05a2d 0%,#c4451a 40%,#1a1a2e 100%);color:#fff;padding:56px 20px 44px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 80%,rgba(255,255,255,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(255,200,100,.08) 0%,transparent 50%);pointer-events:none}
+.hero .logo{font-size:56px;margin-bottom:8px;display:inline-block;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.hero h1{font-size:clamp(26px,5vw,40px);font-weight:900;margin-bottom:6px;letter-spacing:1px}
+.hero .sub{font-size:15px;opacity:.8;margin-bottom:20px;font-weight:300}
+.hero .stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-top:8px}
+.hero .stat{text-align:center}
+.hero .stat .num{font-size:28px;font-weight:800;line-height:1}
+.hero .stat .lbl{font-size:12px;opacity:.7;margin-top:4px}
+.hero .date-badge{display:inline-block;background:rgba(255,255,255,.15);padding:6px 20px;border-radius:20px;font-size:14px;margin-top:16px;backdrop-filter:blur(4px)}
 
-/* Tabs */
-.tab-bar{display:flex;gap:0;overflow-x:auto;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;box-shadow:var(--shadow)}
-.tab-bar button{flex-shrink:0;padding:14px 24px;border:none;background:none;font-size:15px;color:var(--text2);cursor:pointer;font-family:inherit;font-weight:500;transition:all .2s;border-bottom:2px solid transparent}
-.tab-bar button:hover{color:var(--text)}
-.tab-bar button.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+/* ── Nav ── */
+.nav-bar{display:flex;gap:0;overflow-x:auto;background:var(--card);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:20;box-shadow:var(--shadow);justify-content:center}
+.nav-bar a{flex-shrink:0;padding:15px 26px;font-size:14px;color:var(--text2);cursor:pointer;font-weight:500;transition:all .2s;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.nav-bar a:hover{color:var(--accent)}
+.nav-bar a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
 
-/* Layout */
-.container{max-width:var(--max-w);margin:0 auto;padding:24px 20px 60px}
+/* ── Container ── */
+.container{max-width:var(--max-w);margin:0 auto;padding:0 20px 80px}
 
-/* Section title */
-.sec-title{font-size:20px;font-weight:700;margin:32px 0 16px;display:flex;align-items:center;gap:10px}
-.sec-title .dot{width:8px;height:8px;background:var(--accent);border-radius:50%}
-.sec-sub{font-size:14px;color:var(--text3);margin:-8px 0 20px}
+/* ── Section ── */
+.section{margin-top:48px;scroll-margin-top:80px}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.section-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.section-icon.hot{background:#fff0eb;color:var(--accent)}
+.section-icon.output{background:#e8f4fd;color:#2b7bd6}
+.section-icon.promo{background:#f0e6f6;color:#7b3fa3}
+.section-title{font-size:22px;font-weight:800;line-height:1}
+.section-sub{font-size:14px;color:var(--text3);margin-bottom:20px;margin-left:54px}
 
-/* Card grid */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+/* ── Divider ── */
+.divider{display:flex;align-items:center;gap:16px;margin:40px 0 24px}
+.divider .line{flex:1;height:1px;background:var(--border)}
+.divider .label{font-size:13px;font-weight:700;color:var(--text3);letter-spacing:2px;white-space:nowrap}
 
-/* Card */
-.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;border:1px solid var(--border);cursor:pointer}
-.card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.08)}
-.card-img{width:100%;height:180px;object-fit:cover;background:#f0ebe4}
-.card-body{padding:18px 20px 20px;flex:1;display:flex;flex-direction:column}
-.card-tag{display:inline-block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:4px;margin-bottom:10px;align-self:flex-start}
-.tag-ai{background:#e8f0fe;color:#1967d2}
-.tag-finance{background:#fce8e6;color:#c5221f}
-.tag-ecommerce{background:#e6f4ea;color:#137333}
-.tag-worldcup{background:#fef7e0;color:#e37400}
-.tag-seasonal{background:#f3e8fd;color:#7627bb}
-.tag-wechat{background:#e0f2e9;color:#0d7b3e}
-.card-title{font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;line-height:1.45;margin-bottom:8px;color:var(--text)}
-.card-desc{font-size:14px;color:var(--text2);line-height:1.6;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.card-meta{font-size:12px;color:var(--text3);margin-top:12px;display:flex;justify-content:space-between;align-items:center}
-.card-platform{font-size:11px;padding:2px 8px;border-radius:12px;background:#f5f5f5}
+/* ── Main Line Row ── */
+.main-lines{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:900px){.main-lines{grid-template-columns:1fr}}
 
-/* Feature cards (seasonal) */
-.feature-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 24px;border:1px solid var(--border);border-left:4px solid var(--accent)}
-.feature-card h3{font-size:18px;font-weight:700;margin-bottom:8px}
-.feature-card p{font-size:14px;color:var(--text2);line-height:1.7}
-.feature-card .cta{margin-top:14px;display:inline-block;color:var(--accent);font-weight:600;font-size:14px}
+/* ── Line Column ── */
+.line-col{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--border);transition:box-shadow .2s}
+.line-col:hover{box-shadow:var(--shadow-md)}
+.line-col-head{padding:16px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.line-col-head .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot-ai{background:var(--ai)}.dot-finance{background:var(--finance)}.dot-ecommerce{background:var(--ecommerce)}.dot-worldcup{background:var(--worldcup)}.dot-seasonal{background:var(--seasonal)}
+.line-col-head h3{font-size:16px;font-weight:700}
+.line-col-head .count{font-size:12px;color:var(--text3);margin-left:auto;background:#f5f5f5;padding:2px 10px;border-radius:10px}
+.line-col-body{padding:4px 0}
+.line-item{display:flex;align-items:flex-start;gap:12px;padding:13px 20px;transition:background .15s;border-bottom:1px solid #f8f8f8;cursor:pointer;text-decoration:none;color:inherit}
+.line-item:last-child{border-bottom:none}
+.line-item:hover{background:#fafaf7}
+.line-item .idx{width:22px;height:22px;border-radius:6px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text3);flex-shrink:0}
+.line-item:nth-child(-n+3) .idx{background:var(--accent);color:#fff}
+.line-item .info{flex:1;min-width:0}
+.line-item .info .t{font-size:14px;font-weight:600;line-height:1.4;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.line-item .info .src{font-size:12px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:6px}
+.line-item .arrow{color:var(--text3);flex-shrink:0;opacity:0;transform:translateX(-4px);transition:all .2s}
+.line-item:hover .arrow{opacity:1;transform:translateX(0)}
 
-/* WeChat article page */
+/* ── Sub Lines Grid ── */
+.sub-lines{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+@media(max-width:768px){.sub-lines{grid-template-columns:1fr}}
+
+/* ── Output Cards (龙虾出品) ── */
+.output-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px}
+@media(max-width:768px){.output-grid{grid-template-columns:1fr}}
+.output-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:all .25s;border:1px solid var(--border);cursor:pointer;display:flex;flex-direction:column}
+.output-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.output-card .card-img-wrap{position:relative;overflow:hidden;background:linear-gradient(135deg,#fdf2ec,#fef9f5)}
+.output-card .card-img-wrap img{width:100%;height:200px;object-fit:cover;transition:transform .3s}
+.output-card:hover .card-img-wrap img{transform:scale(1.04)}
+.output-card .card-body{padding:20px 22px 22px;flex:1;display:flex;flex-direction:column}
+.output-card .card-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.3px;padding:4px 12px;border-radius:4px;margin-bottom:12px;align-self:flex-start}
+.tag-ai{background:#eef2ff;color:var(--ai)}
+.tag-finance{background:#fdecea;color:var(--finance)}
+.tag-ecommerce{background:#e8f8ef;color:var(--ecommerce)}
+.tag-worldcup{background:#fef5eb;color:var(--worldcup)}
+.tag-seasonal{background:#f5ecfa;color:var(--seasonal)}
+.output-card .card-title{font-family:'Source Serif 4',serif;font-size:18px;font-weight:700;line-height:1.45;margin-bottom:8px;color:var(--text)}
+.output-card .card-desc{font-size:14px;color:var(--text2);line-height:1.65;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.output-card .card-meta{margin-top:14px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text3);padding-top:14px;border-top:1px solid var(--border)}
+.output-card .card-platform{font-size:11px;padding:3px 10px;border-radius:12px;background:#f8f8f8;font-weight:500}
+
+/* ── WeChat article page ── */
 .article-page{max-width:680px;margin:0 auto;padding:40px 20px 80px}
 .article-page h1{font-size:28px;font-weight:900;line-height:1.3;margin-bottom:16px}
 .article-page .meta{font-size:13px;color:var(--text3);margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
@@ -74,58 +128,79 @@ a{color:var(--accent);text-decoration:none}a:hover{opacity:.8}
 .article-page .body h2{font-size:22px;font-weight:700;margin:32px 0 12px}
 .back-link{display:inline-block;margin-bottom:24px;font-size:14px;color:var(--accent)}
 
-/* Empty state */
+/* ── Promo cards ── */
+.promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
+@media(max-width:768px){.promo-grid{grid-template-columns:1fr}}
+.promo-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 24px;border:1px solid var(--border);border-left:4px solid var(--accent);transition:all .2s}
+.promo-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.promo-card h3{font-size:17px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.promo-card p{font-size:14px;color:var(--text2);line-height:1.7}
+.promo-card .cta{margin-top:14px;display:inline-flex;align-items:center;gap:4px;color:var(--accent);font-weight:600;font-size:14px}
+
+/* ── Empty state ── */
 .empty{text-align:center;padding:60px 20px;color:var(--text3)}
 .empty .emoji{font-size:48px;margin-bottom:12px}
 
-/* Footer */
-.footer{text-align:center;padding:32px 20px;color:var(--text3);font-size:13px;border-top:1px solid var(--border);margin-top:40px}
-.footer a{color:var(--accent)}
+/* ── Footer ── */
+.footer{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px;border-top:1px solid var(--border);background:#fff}
+.footer a{color:var(--accent);font-weight:500}
+.footer .brand{font-size:15px;font-weight:700;color:var(--text2);margin-bottom:6px}
 
-/* Responsive */
+/* ── Back to top ── */
+.back-top{position:fixed;bottom:32px;right:32px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(224,90,45,.3);transition:all .2s;opacity:0;pointer-events:none;z-index:30;border:none}
+.back-top.visible{opacity:1;pointer-events:auto}
+.back-top:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(224,90,45,.4)}
+
+/* ── Responsive ── */
 @media(max-width:768px){
-  .card-grid{grid-template-columns:1fr}
-  .site-header{padding:32px 16px 24px}
-  .tab-bar button{padding:12px 16px;font-size:14px}
+  .hero{padding:40px 16px 32px}
+  .hero .stats{gap:20px}
+  .hero .stat .num{font-size:22px}
+  .nav-bar{justify-content:flex-start}
+  .nav-bar a{padding:12px 18px;font-size:13px}
+  .section{margin-top:36px}
+  .section-sub{margin-left:0}
+  .output-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<header class="site-header">
-  <div style="font-size:48px;margin-bottom:4px">🦞</div>
+<!-- ═══════════ HERO ═══════════ -->
+<header class="hero">
+  <div class="logo">🦞</div>
   <h1>龙虾日记 · AIHOT</h1>
-  <p class="sub">AI 驱动的内容工厂 · 每天追踪热点，自动生成多平台推文</p>
-  <div class="badge-row">
-    <span class="badge">🤖 AI 前沿</span>
-    <span class="badge">📈 金融市场</span>
-    <span class="badge">🛒 电商消费</span>
-    <span class="badge">⚽ 世界杯</span>
-    <span class="badge">📱 公众号</span>
+  <p class="sub">AI 驱动的内容工厂 · 追踪热点，自动生成多平台推文</p>
+  <div class="stats" id="heroStats">
+    <div class="stat"><div class="num">-</div><div class="lbl">热点线索</div></div>
+    <div class="stat"><div class="num">-</div><div class="lbl">生成推文</div></div>
+    <div class="stat"><div class="num">-</div><div class="lbl">覆盖平台</div></div>
   </div>
+  <div class="date-badge" id="dateBadge">📅 加载中...</div>
 </header>
 
-<nav class="tab-bar" id="tabBar">
-  <button class="active" data-tab="all">全部</button>
-  <button data-tab="ai">🤖 AI</button>
-  <button data-tab="finance">📈 金融</button>
-  <button data-tab="ecommerce">🛒 电商</button>
-  <button data-tab="worldcup">⚽ 世界杯</button>
-  <button data-tab="seasonal">🎯 蹭热点</button>
-  <button data-tab="wechat">📝 公众号</button>
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="nav-bar" id="navBar">
+  <a href="#hot" class="active">🔥 今日热点</a>
+  <a href="#output">📝 龙虾出品</a>
+  <a href="#promo">🦞 龙虾帮你</a>
 </nav>
 
+<!-- ═══════════ MAIN ═══════════ -->
 <main class="container" id="mainContent">
   <div class="empty"><div class="emoji">⏳</div><p>加载中...</p></div>
 </main>
 
+<!-- ═══════════ FOOTER ═══════════ -->
 <footer class="footer">
-  龙虾日记 · EasyClaw 内容工厂 · <a href="https://easyclaw.com" target="_blank">easyclaw.com</a><br>
-  <span style="font-size:12px">AI 生成内容，仅供参考</span>
+  <div class="brand">🦞 龙虾日记 · EasyClaw 内容工厂</div>
+  <a href="https://easyclaw.com" target="_blank">easyclaw.com</a> · AI 生成内容，仅供参考
 </footer>
 
+<button class="back-top" id="backTop" title="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
 <script>
-// ── 数据加载 ──
+// ═══════════ DATA ═══════════
 const DB_URL = 'data/db.json';
 let db = null;
 
@@ -134,178 +209,362 @@ async function loadData() {
     const r = await fetch(DB_URL);
     db = await r.json();
     renderAll();
-    setupTabs();
+    setupNav();
+    setupScroll();
   } catch(e) {
     document.getElementById('mainContent').innerHTML =
       '<div class="empty"><div class="emoji">🔌</div><p>数据加载失败，请稍后再试</p></div>';
   }
 }
 
-// ── 渲染 ──
-function renderAll(tab='all') {
+// ═══════════ RENDER ═══════════
+function renderAll() {
   if (!db) return;
   const main = document.getElementById('mainContent');
-  let html = '';
 
-  // ── 季节性热点 ──
-  if (tab === 'all' || tab === 'seasonal') {
-    html += renderSeasonal();
-  }
+  updateHero();
 
-  // ── 内容卡片 ──
-  const allCards = collectCards(db);
-  const filtered = tab === 'all' ? allCards : allCards.filter(c => c.track === tab);
+  var html = '';
 
-  if (filtered.length > 0 || tab !== 'seasonal') {
-    if (tab !== 'seasonal') {
-      const labels = {ai:'🤖 AI 热点', finance:'📈 金融市场', ecommerce:'🛒 电商消费', worldcup:'⚽ 世界杯', wechat:'📝 公众号推文', all:'🔥 今日热点'};
-      html += `<div class="sec-title"><span class="dot"></span>${labels[tab]||'内容'}</div>`;
-      if (tab === 'all') html += `<p class="sec-sub">最新生成的内容，按时间倒序排列</p>`;
-    }
-    if (filtered.length === 0) {
-      html += '<div class="empty"><div class="emoji">📭</div><p>暂无内容</p></div>';
-    } else {
-      html += '<div class="card-grid">';
-      for (const card of filtered) {
-        html += renderCard(card);
-      }
-      html += '</div>';
-    }
-  }
+  // ━━━ SECTION 1: 今日热点 ━━━
+  html += '<section class="section" id="hot">';
+  html += '<div class="section-header"><div class="section-icon hot">🔥</div><h2 class="section-title">今日热点</h2></div>';
+  html += '<p class="section-sub">多信源实时聚合 · AI / 金融 / 电商 · 三大主线 + 节点专题</p>';
+
+  html += renderMainLines();
+  html += renderSubLines();
+  html += '</section>';
+
+  // ━━━ SECTION 2: 龙虾出品 ━━━
+  html += '<section class="section" id="output">';
+  html += '<div class="section-header"><div class="section-icon output">📝</div><h2 class="section-title">龙虾出品</h2></div>';
+  html += '<p class="section-sub">AI 自动生成的公众号推文与专题内容</p>';
+  html += renderOutputs();
+  html += '</section>';
+
+  // ━━━ SECTION 3: 龙虾能帮你 ━━━
+  html += '<section class="section" id="promo">';
+  html += '<div class="section-header"><div class="section-icon promo">🦞</div><h2 class="section-title">龙虾能帮你做什么</h2></div>';
+  html += '<p class="section-sub">EasyClaw 数字员工 + AI 技能，让你的内容生产效率翻倍</p>';
+  html += renderPromo();
+  html += '</section>';
 
   main.innerHTML = html;
 }
 
-function collectCards(db) {
-  const cards = [];
-  const outputs = db.outputs || {};
-  const sections = db.sections || [];
+function updateHero() {
+  var sections = db.sections || [];
+  var outputs = db.outputs || {};
+  var totalItems = 0;
+  sections.forEach(function(s){ totalItems += (s.items||[]).length; });
+  var totalOutputs = 0;
+  Object.keys(outputs).forEach(function(k){ totalOutputs += outputs[k].length; });
+  var platforms = Object.keys(outputs).length || 3;
 
-  // Build source lookup
-  const srcMap = {};
-  for (const s of sections) {
-    for (const it of (s.items||[])) {
-      srcMap[(it.title||'').toLowerCase()] = {label: s.label, track: s.track};
-    }
-  }
-
-  for (const [plat, items] of Object.entries(outputs)) {
-    for (const item of items) {
-      const t = (item.original_title||item.title||'').toLowerCase();
-      const src = srcMap[t] || {};
-      const track = item.track || src.track || '';
-      const label = item.source_label || src.label || '';
-
-      // World Cup detection
-      const isWC = /世界杯|world.?cup|足球|淘汰赛|小组赛|半决赛|决赛|葡萄牙|西班牙|法国|美国|墨西哥|厄瓜多尔|克罗地亚|波黑|奥地利|瑞典|挪威|科特迪瓦/i.test(item.title||'') || /world.?cup/i.test(item.content||'');
-
-      cards.push({
-        title: item.display_title || item.title || '',
-        desc: (item.content||'').replace(/<[^>]+>/g,'').substring(0,120),
-        image: item.image_url || item.image_path || '',
-        url: item.html_url || item.html_file || '',
-        platform: plat,
-        track: isWC ? 'worldcup' : track,
-        label: label,
-        date: item.date || db.date || '',
-        wechat: plat === 'wechat',
-      });
-    }
-  }
-
-  // Sort: newest first
-  cards.sort((a,b) => (b.date||'').localeCompare(a.date||''));
-  return cards;
+  document.getElementById('heroStats').innerHTML =
+    '<div class="stat"><div class="num">' + totalItems + '</div><div class="lbl">热点线索</div></div>' +
+    '<div class="stat"><div class="num">' + totalOutputs + '</div><div class="lbl">生成推文</div></div>' +
+    '<div class="stat"><div class="num">' + platforms + '</div><div class="lbl">覆盖平台</div></div>';
+  document.getElementById('dateBadge').textContent = '📅 ' + (db.date || '近期');
 }
 
-function renderCard(card) {
-  const tagClass = card.track === 'worldcup' ? 'tag-worldcup' :
-    card.track === 'seasonal' ? 'tag-seasonal' :
-    `tag-${card.track}`;
-  const tagLabel = card.wechat ? '公众号' : card.track === 'worldcup' ? '世界杯' : card.label || card.track;
-  const platLabel = {wechat:'📝公众号', x_tweet:'🐦X', discord:'💬Discord', xiaohongshu:'📕小红书', blog:'📄博客', short_video:'🎬短视频'}[card.platform] || card.platform;
+// ═══════════ MAIN LINES ═══════════
+function renderMainLines() {
+  var sections = db.sections || [];
+  var mainTracks = ['ai','finance','ecommerce'];
+  var config = {
+    ai:       {icon:'🤖', name:'AI 前沿', dot:'dot-ai'},
+    finance:  {icon:'📈', name:'金融理财', dot:'dot-finance'},
+    ecommerce:{icon:'🛒', name:'电商消费', dot:'dot-ecommerce'},
+  };
 
-  const onclick = card.url ? `onclick="location.href='${card.url}'"` : '';
-
-  return `
-    <div class="card" ${onclick}>
-      ${card.image ? `<img class="card-img" src="${card.image}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
-      <div class="card-body">
-        <span class="card-tag ${tagClass}">${tagLabel}</span>
-        <div class="card-title">${escapeHtml(card.title)}</div>
-        <div class="card-desc">${escapeHtml(card.desc)}</div>
-        <div class="card-meta">
-          <span>${card.date}</span>
-          <span class="card-platform">${platLabel}</span>
-        </div>
-      </div>
-    </div>`;
-}
-
-function renderSeasonal() {
-  const now = new Date();
-  const m = now.getMonth() + 1;
-  let season, ideas;
-
-  if (m >= 6 && m <= 8) {
-    season = '暑假';
-    ideas = [
-      {title:'教辅/K12 效率提升', desc:'用 EasyClaw 自动批改作业、生成练习题、整理错题本、一键生成教案。老师省下 80% 重复劳动时间。'},
-      {title:'暑期招生自动化', desc:'用数字员工自动回复家长咨询、批量生成朋友圈招生海报、自动跟进试听预约。'},
-      {title:'在线教育内容生产', desc:'AI 自动生成课程大纲、逐字讲稿、PPT 课件，一套输入输出多平台适配版本。'},
-    ];
-  } else if (m >= 9 && m <= 11) {
-    season = '秋季/开学季';
-    ideas = [
-      {title:'开学季营销', desc:'批量生成开学季促销文案、朋友圈素材、社群话术，精准触达家长群体。'},
-      {title:'K12 课后辅导', desc:'AI 自动批改 + 个性化学情报告，提升家长续费率的核心武器。'},
-    ];
-  } else if (m === 12 || m <= 2) {
-    season = '寒假/春节';
-    ideas = [
-      {title:'寒假班招生', desc:'寒假时间短、决策快，用 AI 快速产出投放素材，抓住黄金窗口期。'},
-      {title:'年终总结自动化', desc:'一键生成年度学情报告、教师工作总结、校区运营数据看板。'},
-    ];
-  } else {
-    season = '春季/升学季';
-    ideas = [
-      {title:'升学季冲刺', desc:'中考/高考冲刺阶段，AI 自动生成模拟卷、个性化复习计划、高频考点分析。'},
-    ];
-  }
-
-  let html = `<div class="sec-title"><span class="dot"></span>🎯 ${season} · 龙虾能帮你做什么</div>`;
-  html += `<p class="sec-sub">EasyClaw 数字员工 + AI 技能，帮你在${season}高效产出</p>`;
-  html += '<div class="card-grid">';
-  for (const idea of ideas) {
-    html += `
-      <div class="feature-card">
-        <h3>🦞 ${escapeHtml(idea.title)}</h3>
-        <p>${escapeHtml(idea.desc)}</p>
-        <a class="cta" href="https://easyclaw.com" target="_blank">了解 EasyClaw →</a>
-      </div>`;
+  var html = '<div class="main-lines">';
+  for (var t = 0; t < mainTracks.length; t++) {
+    var track = mainTracks[t];
+    var sec = findSection(sections, track) || {label:config[track].name, items:[]};
+    var cfg = config[track];
+    html += '<div class="line-col">';
+    html += '<div class="line-col-head"><span class="dot ' + cfg.dot + '"></span><h3>' + cfg.icon + ' ' + cfg.name + '</h3><span class="count">' + sec.items.length + '条</span></div>';
+    html += '<div class="line-col-body">';
+    if (sec.items.length === 0) {
+      html += '<div style="padding:24px;text-align:center;color:var(--text3);font-size:13px">暂无热点</div>';
+    } else {
+      for (var i = 0; i < sec.items.length; i++) {
+        var it = sec.items[i];
+        var url = it.sourceUrl || '#';
+        html += '<a class="line-item" href="' + url + '" target="_blank" rel="noopener">';
+        html += '<span class="idx">' + (i+1) + '</span>';
+        html += '<div class="info"><div class="t">' + escapeHtml(it.title) + '</div>';
+        html += '<div class="src"><span>' + escapeHtml(it.sourceName||'') + '</span>';
+        if (it.publishedAt) html += '<span>' + formatTime(it.publishedAt) + '</span>';
+        html += '</div></div>';
+        html += '<span class="arrow">→</span></a>';
+      }
+    }
+    html += '</div></div>';
   }
   html += '</div>';
   return html;
 }
 
-// ── Tab 切换 ──
-function setupTabs() {
-  document.getElementById('tabBar').addEventListener('click', e => {
-    if (e.target.tagName !== 'BUTTON') return;
-    document.querySelectorAll('#tabBar button').forEach(b => b.classList.remove('active'));
-    e.target.classList.add('active');
-    renderAll(e.target.dataset.tab);
+function findSection(sections, track) {
+  for (var i = 0; i < sections.length; i++) {
+    if (sections[i].track === track) return sections[i];
+  }
+  return null;
+}
+
+// ═══════════ SUB LINES ═══════════
+function renderSubLines() {
+  var html = '<div class="divider"><div class="line"></div><span class="label">节点专题</span><div class="line"></div></div>';
+  html += '<div class="sub-lines">';
+  html += renderWorldCupCol();
+  html += renderSeasonalCol();
+  html += '</div>';
+  return html;
+}
+
+function renderWorldCupCol() {
+  var outputs = db.outputs || {};
+  var wcItems = [];
+  var platKeys = Object.keys(outputs);
+  for (var p = 0; p < platKeys.length; p++) {
+    var items = outputs[platKeys[p]];
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      if (item.track === 'worldcup' || /世界杯|world.?cup/i.test(item.title||'')) {
+        wcItems.push({title: item.title, display_title: item.display_title, html_url: item.html_url, source_name: item.source_name, source_label: item.source_label, date: item.date, sourceUrl: '#', publishedAt: ''});
+      }
+    }
+  }
+
+  if (wcItems.length === 0) {
+    wcItems = [
+      {title:'2026世界杯火热进行中', source_name:'ESPN', sourceUrl:'https://www.espn.com/soccer/', display_title:'', html_url:'#', date:'', source_label:''},
+      {title:'世界杯淘汰赛：龙虾每日预测', source_name:'龙虾日记', sourceUrl:'#', display_title:'', html_url:'#', date:'', source_label:''},
+    ];
+  }
+
+  var html = '<div class="line-col">';
+  html += '<div class="line-col-head"><span class="dot dot-worldcup"></span><h3>⚽ 2026世界杯</h3><span class="count">' + wcItems.length + '条</span></div>';
+  html += '<div class="line-col-body">';
+  for (var i = 0; i < wcItems.length; i++) {
+    var it = wcItems[i];
+    var url = it.html_url || it.sourceUrl || '#';
+    var isOutput = !!it.html_url && it.html_url !== '#';
+    html += '<a class="line-item" href="' + url + '"' + (isOutput ? '' : ' target="_blank" rel="noopener"') + '>';
+    html += '<span class="idx"' + (isOutput ? ' style="background:var(--accent);color:#fff"' : '') + '>' + (isOutput ? '★' : (i+1)) + '</span>';
+    html += '<div class="info"><div class="t">' + escapeHtml(it.display_title || it.title) + '</div>';
+    html += '<div class="src"><span>' + escapeHtml(it.source_name||it.source_label||'龙虾出品') + '</span><span>' + (it.date||'') + '</span></div></div>';
+    html += '<span class="arrow">→</span></a>';
+  }
+  html += '</div></div>';
+  return html;
+}
+
+function renderSeasonalCol() {
+  var now = new Date();
+  var m = now.getMonth() + 1;
+  var season, items;
+
+  if (m >= 6 && m <= 8) {
+    season = '暑假黄金期';
+    items = [
+      {title:'暑假教辅/K12招生旺季来了',desc:'AI自动化批改+个性化教案，机构效率翻倍',source:'龙虾日记'},
+      {title:'暑假在线教育内容生产攻略',desc:'一键生成课程大纲、讲稿、PPT课件',source:'龙虾日记'},
+      {title:'暑期营销自动化指南',desc:'朋友圈海报+社群话术+咨询回复，全自动',source:'龙虾日记'},
+    ];
+  } else if (m >= 9 && m <= 11) {
+    season = '秋季开学季';
+    items = [
+      {title:'开学季营销冲刺',desc:'批量生成促销文案、朋友圈素材、社群话术',source:'龙虾日记'},
+      {title:'K12课后辅导提效',desc:'AI批改+个性化学情报告，提升续费率',source:'龙虾日记'},
+    ];
+  } else if (m === 12 || m <= 2) {
+    season = '寒假/春节';
+    items = [
+      {title:'寒假班招生黄金期',desc:'用AI快速产出投放素材，抓住决策窗口',source:'龙虾日记'},
+      {title:'年终总结自动化',desc:'一键生成学情报告、教师总结、运营看板',source:'龙虾日记'},
+    ];
+  } else {
+    season = '春季升学季';
+    items = [
+      {title:'升学季冲刺备战',desc:'AI自动生成模拟卷、复习计划、考点分析',source:'龙虾日记'},
+    ];
+  }
+
+  var html = '<div class="line-col">';
+  html += '<div class="line-col-head"><span class="dot dot-seasonal"></span><h3>🌞 ' + season + '</h3><span class="count">' + items.length + '条</span></div>';
+  html += '<div class="line-col-body">';
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i];
+    html += '<div class="line-item" style="cursor:default">';
+    html += '<span class="idx">' + (i+1) + '</span>';
+    html += '<div class="info"><div class="t">' + escapeHtml(it.title) + '</div>';
+    html += '<div class="src"><span>' + escapeHtml(it.source) + '</span><span>' + escapeHtml(it.desc) + '</span></div></div>';
+    html += '</div>';
+  }
+  html += '</div></div>';
+  return html;
+}
+
+// ═══════════ OUTPUTS ═══════════
+function renderOutputs() {
+  var outputs = db.outputs || {};
+  var allCards = [];
+  var platKeys = Object.keys(outputs);
+
+  for (var p = 0; p < platKeys.length; p++) {
+    var items = outputs[platKeys[p]];
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      allCards.push({
+        title: item.display_title || item.title || '',
+        desc: stripHtml(item.content||'').substring(0,140),
+        image: item.image_url || item.image_path || '',
+        url: item.html_url || item.html_file || '',
+        platform: platKeys[p],
+        track: item.track || '',
+        label: item.source_label || item.source_name || '',
+        date: item.date || db.date || '',
+      });
+    }
+  }
+
+  allCards.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+
+  if (allCards.length === 0) {
+    return '<div class="empty"><div class="emoji">📭</div><p>暂无出品内容，等待今日生成...</p></div>';
+  }
+
+  var html = '<div class="output-grid">';
+  for (var i = 0; i < allCards.length; i++) {
+    html += renderOutputCard(allCards[i]);
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderOutputCard(card) {
+  var tagClass = 'tag-' + (card.track || 'ai');
+  var tagLabel = card.track === 'worldcup' ? '⚽ 世界杯' :
+    card.track === 'ecommerce' ? '🛒 电商' :
+    card.track === 'finance' ? '📈 金融' :
+    card.track === 'ai' ? '🤖 AI' :
+    (card.label || '📝 内容');
+  var platLabels = {wechat:'📱公众号',x_tweet:'🐦X',discord:'💬Discord',xiaohongshu:'📕小红书',blog:'📄博客',short_video:'🎬短视频'};
+  var platLabel = platLabels[card.platform] || card.platform;
+  var onclick = card.url ? ' onclick="location.href=\'' + card.url + '\'"' : '';
+
+  return '<div class="output-card"' + onclick + '>' +
+    (card.image ? '<div class="card-img-wrap"><img src="' + card.image + '" alt="" loading="lazy" onerror="this.style.display=\'none\'"></div>' : '') +
+    '<div class="card-body">' +
+    '<span class="card-tag ' + tagClass + '">' + tagLabel + '</span>' +
+    '<div class="card-title">' + escapeHtml(card.title) + '</div>' +
+    '<div class="card-desc">' + escapeHtml(card.desc) + '</div>' +
+    '<div class="card-meta">' +
+    '<span>📅 ' + (card.date||'') + '</span>' +
+    '<span class="card-platform">' + platLabel + '</span>' +
+    '</div></div></div>';
+}
+
+// ═══════════ PROMO ═══════════
+function renderPromo() {
+  var now = new Date();
+  var m = now.getMonth() + 1;
+  var ideas;
+
+  if (m >= 6 && m <= 8) {
+    ideas = [
+      {icon:'📚',title:'教辅/K12 效率提升',desc:'用 EasyClaw 自动批改作业、生成练习题、整理错题本、一键生成教案。老师省下 80% 重复劳动时间。'},
+      {icon:'📢',title:'暑期招生自动化',desc:'用数字员工自动回复家长咨询、批量生成朋友圈招生海报、自动跟进试听预约。'},
+      {icon:'🎓',title:'在线教育内容生产',desc:'AI 自动生成课程大纲、逐字讲稿、PPT 课件，一套输入输出多平台适配版本。'},
+    ];
+  } else if (m >= 9 && m <= 11) {
+    ideas = [
+      {icon:'📣',title:'开学季营销',desc:'批量生成开学季促销文案、朋友圈素材、社群话术，精准触达家长群体。'},
+      {icon:'📖',title:'K12 课后辅导',desc:'AI 自动批改 + 个性化学情报告，提升家长续费率的核心武器。'},
+    ];
+  } else if (m === 12 || m <= 2) {
+    ideas = [
+      {icon:'🏫',title:'寒假班招生',desc:'寒假时间短、决策快，用 AI 快速产出投放素材，抓住黄金窗口期。'},
+      {icon:'📊',title:'年终总结自动化',desc:'一键生成年度学情报告、教师工作总结、校区运营数据看板。'},
+    ];
+  } else {
+    ideas = [
+      {icon:'🏆',title:'升学季冲刺',desc:'中考/高考冲刺阶段，AI 自动生成模拟卷、个性化复习计划、高频考点分析。'},
+    ];
+  }
+
+  var html = '<div class="promo-grid">';
+  for (var i = 0; i < ideas.length; i++) {
+    var idea = ideas[i];
+    html += '<div class="promo-card">' +
+      '<h3>' + idea.icon + ' ' + escapeHtml(idea.title) + '</h3>' +
+      '<p>' + escapeHtml(idea.desc) + '</p>' +
+      '<a class="cta" href="https://easyclaw.com" target="_blank">了解 EasyClaw <span>→</span></a>' +
+      '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ═══════════ NAV ═══════════
+function setupNav() {
+  var nav = document.getElementById('navBar');
+  nav.addEventListener('click', function(e) {
+    var a = e.target.closest('a');
+    if (!a) return;
+    e.preventDefault();
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+
+  window.addEventListener('scroll', function() {
+    var links = nav.querySelectorAll('a');
+    var current = links[0];
+    for (var i = 0; i < links.length; i++) {
+      var id = links[i].getAttribute('href').slice(1);
+      var el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 120) current = links[i];
+    }
+    for (var j = 0; j < links.length; j++) links[j].classList.remove('active');
+    current.classList.add('active');
   });
 }
 
+function setupScroll() {
+  var btn = document.getElementById('backTop');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+  });
+}
+
+// ═══════════ UTILS ═══════════
 function escapeHtml(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── 启动 ──
+function stripHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/<[^>]+>/g,'');
+}
+
+function formatTime(iso) {
+  if (!iso) return '';
+  try {
+    var d = new Date(iso);
+    var h = String(d.getHours()).padStart(2,'0');
+    var min = String(d.getMinutes()).padStart(2,'0');
+    return h + ':' + min;
+  } catch(e) { return ''; }
+}
+
+// ═══════════ INIT ═══════════
 loadData();
 </script>
 </body>
 </html>
- 
