@@ -3,568 +3,466 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🦞 龙虾日记 · AIHOT 内容工厂</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<title>国内社媒 × AI Native</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #faf8f5;
-  --card: #fff;
-  --accent: #e05a2d;
-  --accent2: #c4451a;
-  --text: #1a1a1a;
-  --text2: #555;
-  --text3: #999;
-  --border: #e8e5e0;
-  --shadow: 0 1px 4px rgba(0,0,0,.05);
-  --shadow-md: 0 4px 16px rgba(0,0,0,.08);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,.10);
-  --radius: 14px;
-  --radius-sm: 10px;
-  --max-w: 1320px;
-  --gold: #d4a853;
-  --ai: #4f6ef6;
-  --finance: #e74c3c;
-  --ecommerce: #27ae60;
-  --worldcup: #e67e22;
-  --seasonal: #8e44ad;
+  --bg: #f5f3f0; --card: #fff; --accent: #1a73e8; --accent2: #1557b0;
+  --text: #1a1a1a; --text2: #555; --text3: #999; --border: #e5e2de;
+  --shadow: 0 1px 4px rgba(0,0,0,.05); --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+  --radius: 12px; --radius-sm: 8px;
+  --ai: #4f6ef6; --finance: #e74c3c; --ecommerce: #27ae60;
+  --worldcup: #e67e22; --seasonal: #8e44ad; --industry: #16a085;
+  --official: #1a73e8; --matrix: #ff6d00;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
-a{color:var(--accent);text-decoration:none;transition:opacity .2s}a:hover{opacity:.8}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
 
-/* ── Hero ── */
-.hero{background:linear-gradient(160deg,#e05a2d 0%,#c4451a 40%,#1a1a2e 100%);color:#fff;padding:56px 20px 44px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 80%,rgba(255,255,255,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(255,200,100,.08) 0%,transparent 50%);pointer-events:none}
-.hero .logo{font-size:56px;margin-bottom:8px;display:inline-block;animation:float 3s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.hero h1{font-size:clamp(26px,5vw,40px);font-weight:900;margin-bottom:6px;letter-spacing:1px}
-.hero .sub{font-size:15px;opacity:.8;margin-bottom:20px;font-weight:300}
-.hero .stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-top:8px}
-.hero .stat{text-align:center}
-.hero .stat .num{font-size:28px;font-weight:800;line-height:1}
-.hero .stat .lbl{font-size:12px;opacity:.7;margin-top:4px}
-.hero .date-badge{display:inline-block;background:rgba(255,255,255,.15);padding:6px 20px;border-radius:20px;font-size:14px;margin-top:16px;backdrop-filter:blur(4px)}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.15);position:sticky;top:0;z-index:100}
+.header .logo{display:flex;align-items:center;gap:12px}
+.header .logo .icon{font-size:28px}
+.header .logo h1{font-size:18px;font-weight:800;letter-spacing:.5px}
+.header .logo .sub{font-size:11px;opacity:.6;font-weight:300}
+.header .status{display:flex;align-items:center;gap:16px;font-size:12px}
+.header .status .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.dot-online{background:#27ae60}.dot-offline{background:#e74c3c}
+.header .status .badge{padding:4px 12px;border-radius:12px;font-size:11px;font-weight:500}
+.badge-online{background:rgba(39,174,96,.2);color:#27ae60}
+.badge-offline{background:rgba(231,76,60,.2);color:#e74c3c}
 
-/* ── Nav ── */
-.nav-bar{display:flex;gap:0;overflow-x:auto;background:var(--card);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:20;box-shadow:var(--shadow);justify-content:center}
-.nav-bar a{flex-shrink:0;padding:15px 26px;font-size:14px;color:var(--text2);cursor:pointer;font-weight:500;transition:all .2s;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
-.nav-bar a:hover{color:var(--accent)}
-.nav-bar a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+.main-layout{display:flex;height:calc(100vh - 57px);overflow:hidden}
+.left-panel{width:42%;min-width:380px;border-right:1px solid var(--border);overflow-y:auto;background:var(--bg);display:flex;flex-direction:column}
+.left-panel::-webkit-scrollbar{width:6px}
+.left-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+.section-block{padding:0 16px 16px}
+.section-title-bar{display:flex;align-items:center;gap:10px;padding:16px 0 12px;position:sticky;top:0;background:var(--bg);z-index:10}
+.section-title-bar .icon{font-size:20px}
+.section-title-bar h2{font-size:16px;font-weight:800}
+.section-title-bar .sub{font-size:11px;color:var(--text3);margin-left:auto}
 
-/* ── Container ── */
-.container{max-width:var(--max-w);margin:0 auto;padding:0 20px 80px}
+.hotspot-item{background:var(--card);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;border:1px solid var(--border);transition:all .15s;position:relative}
+.hotspot-item:hover{border-color:#c4d7f2;box-shadow:var(--shadow-md)}
+.hotspot-item .item-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.hotspot-item .type-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.hotspot-item .type-label{font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase}
+.type-ai .type-dot{background:var(--ai)}.type-ai .type-label{background:#eef2ff;color:var(--ai)}
+.type-finance .type-dot{background:var(--finance)}.type-finance .type-label{background:#fdecea;color:var(--finance)}
+.type-ecommerce .type-dot{background:var(--ecommerce)}.type-ecommerce .type-label{background:#e8f8ef;color:var(--ecommerce)}
+.hotspot-item .item-date{font-size:11px;color:var(--text3);margin-left:auto}
+.hotspot-item .item-title{font-size:14px;font-weight:700;line-height:1.45;margin-bottom:6px;color:var(--text)}
+.hotspot-item .item-summary{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hotspot-item .item-source{font-size:11px;color:var(--text3);margin-bottom:12px}
+.hotspot-item .item-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-sm{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-gen{border:1px solid var(--accent);color:var(--accent);background:#fff}
+.btn-gen:hover{background:var(--accent);color:#fff}
+.btn-gen.matrix{border-color:var(--matrix);color:var(--matrix)}
+.btn-gen.matrix:hover{background:var(--matrix);color:#fff}
+.btn-gen:disabled{opacity:.4;cursor:not-allowed;background:#eee;border-color:#ccc;color:#999}
+.btn-gen:disabled:hover{background:#eee;color:#999}
 
-/* ── Section ── */
-.section{margin-top:48px;scroll-margin-top:80px}
-.section-header{display:flex;align-items:center;gap:14px;margin-bottom:8px}
-.section-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.section-icon.hot{background:#fff0eb;color:var(--accent)}
-.section-icon.output{background:#e8f4fd;color:#2b7bd6}
-.section-icon.promo{background:#f0e6f6;color:#7b3fa3}
-.section-title{font-size:22px;font-weight:800;line-height:1}
-.section-sub{font-size:14px;color:var(--text3);margin-bottom:20px;margin-left:54px}
+.event-item{background:var(--card);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;border:1px solid var(--border);transition:all .15s;border-left:3px solid var(--accent)}
+.event-item.warning{border-left-color:#e74c3c;background:#fffbfb}
+.event-item .event-date{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.event-item.warning .event-date{color:#e74c3c}
+.event-item .event-title{font-size:14px;font-weight:700;margin-bottom:6px}
+.event-item .event-summary{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:12px}
+.event-item .item-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-/* ── Divider ── */
-.divider{display:flex;align-items:center;gap:16px;margin:40px 0 24px}
-.divider .line{flex:1;height:1px;background:var(--border)}
-.divider .label{font-size:13px;font-weight:700;color:var(--text3);letter-spacing:2px;white-space:nowrap}
+.right-panel{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--card)}
+.right-tabs{display:flex;border-bottom:2px solid var(--border);padding:12px 20px 0;gap:4px;flex-shrink:0}
+.right-tab{padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.right-tab:hover{color:var(--text)}
+.right-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.right-content{flex:1;overflow-y:auto;padding:20px}
+.right-content::-webkit-scrollbar{width:6px}
+.right-content::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
 
-/* ── Main Line Row ── */
-.main-lines{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-@media(max-width:900px){.main-lines{grid-template-columns:1fr}}
+.gen-card{background:#fafaf7;border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;border:1px solid var(--border);transition:all .15s}
+.gen-card:hover{border-color:#c4d7f2}
+.gen-card .gen-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.gen-card .gen-type{font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px}
+.gen-type-wechat{background:#e8f4fd;color:#1a73e8}
+.gen-type-xiaohongshu{background:#fde4e4;color:#e74c3c}
+.gen-type-copywriting{background:#e8f8ef;color:#27ae60}
+.gen-card .gen-style{font-size:11px;padding:3px 10px;border-radius:4px}
+.gen-style-official{background:#e8edff;color:var(--official)}
+.gen-style-matrix{background:#fff3e6;color:var(--matrix)}
+.gen-card .gen-time{font-size:11px;color:var(--text3)}
+.gen-card .gen-title{font-size:16px;font-weight:700;margin-bottom:10px;line-height:1.4}
+.gen-card .gen-content{font-size:14px;line-height:1.8;color:#333;white-space:pre-wrap;word-break:break-word;max-height:500px;overflow-y:auto;padding-right:8px}
+.gen-card .gen-content::-webkit-scrollbar{width:4px}
+.gen-card .gen-content::-webkit-scrollbar-thumb{background:#ddd;border-radius:2px}
+.gen-card .gen-actions{margin-top:14px;display:flex;gap:8px;padding-top:14px;border-top:1px solid var(--border)}
+.btn-copy{padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text2);transition:all .15s}
+.btn-copy:hover{background:#f0f0f0;border-color:#aaa}
+.btn-copy.copied{background:#e8f8ef;border-color:#27ae60;color:#27ae60}
 
-/* ── Line Column ── */
-.line-col{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--border);transition:box-shadow .2s}
-.line-col:hover{box-shadow:var(--shadow-md)}
-.line-col-head{padding:16px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
-.line-col-head .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.dot-ai{background:var(--ai)}.dot-finance{background:var(--finance)}.dot-ecommerce{background:var(--ecommerce)}.dot-worldcup{background:var(--worldcup)}.dot-seasonal{background:var(--seasonal)}
-.line-col-head h3{font-size:16px;font-weight:700}
-.line-col-head .count{font-size:12px;color:var(--text3);margin-left:auto;background:#f5f5f5;padding:2px 10px;border-radius:10px}
-.line-col-body{padding:4px 0}
-.line-item{display:flex;align-items:flex-start;gap:12px;padding:13px 20px;transition:background .15s;border-bottom:1px solid #f8f8f8;cursor:pointer;text-decoration:none;color:inherit}
-.line-item:last-child{border-bottom:none}
-.line-item:hover{background:#fafaf7}
-.line-item .idx{width:22px;height:22px;border-radius:6px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text3);flex-shrink:0}
-.line-item:nth-child(-n+3) .idx{background:var(--accent);color:#fff}
-.line-item .info{flex:1;min-width:0}
-.line-item .info .t{font-size:14px;font-weight:600;line-height:1.4;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.line-item .info .src{font-size:12px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:6px}
-.line-item .arrow{color:var(--text3);flex-shrink:0;opacity:0;transform:translateX(-4px);transition:all .2s}
-.line-item:hover .arrow{opacity:1;transform:translateX(0)}
+.copywriting-input{padding:24px 20px}
+.copywriting-input label{display:block;font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.copywriting-input .url-row{display:flex;gap:8px;margin-bottom:16px}
+.copywriting-input input[type=url],.copywriting-input textarea{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border .15s}
+.copywriting-input input:focus,.copywriting-input textarea:focus{border-color:var(--accent)}
+.copywriting-input textarea{width:100%;min-height:120px;resize:vertical;margin-bottom:16px}
+.btn-primary{padding:10px 24px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-primary:hover{background:var(--accent2)}
+.btn-secondary{padding:10px 20px;background:#fff;color:var(--accent);border:1px solid var(--accent);border-radius:8px;font-size:14px;cursor:pointer;transition:all .15s}
+.btn-secondary:hover{background:#f0f5ff}
+.extract-status{padding:8px 0;font-size:12px;min-height:24px}
+.extract-status.success{color:#27ae60}.extract-status.error{color:#e74c3c}
 
-/* ── Sub Lines Grid ── */
-.sub-lines{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-@media(max-width:768px){.sub-lines{grid-template-columns:1fr}}
+.loading{text-align:center;padding:60px 20px;color:var(--text3)}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-state .emoji{font-size:48px;margin-bottom:12px}
+.empty-state p{font-size:14px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 24px;border-radius:20px;font-size:13px;z-index:999;animation:toastIn .3s;pointer-events:none}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
-/* ── Output Cards (龙虾出品) ── */
-.output-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px}
-@media(max-width:768px){.output-grid{grid-template-columns:1fr}}
-.output-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:all .25s;border:1px solid var(--border);cursor:pointer;display:flex;flex-direction:column}
-.output-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
-.output-card .card-img-wrap{position:relative;overflow:hidden;background:linear-gradient(135deg,#fdf2ec,#fef9f5)}
-.output-card .card-img-wrap img{width:100%;height:200px;object-fit:cover;transition:transform .3s}
-.output-card:hover .card-img-wrap img{transform:scale(1.04)}
-.output-card .card-body{padding:20px 22px 22px;flex:1;display:flex;flex-direction:column}
-.output-card .card-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.3px;padding:4px 12px;border-radius:4px;margin-bottom:12px;align-self:flex-start}
-.tag-ai{background:#eef2ff;color:var(--ai)}
-.tag-finance{background:#fdecea;color:var(--finance)}
-.tag-ecommerce{background:#e8f8ef;color:var(--ecommerce)}
-.tag-worldcup{background:#fef5eb;color:var(--worldcup)}
-.tag-seasonal{background:#f5ecfa;color:var(--seasonal)}
-.output-card .card-title{font-family:'Source Serif 4',serif;font-size:18px;font-weight:700;line-height:1.45;margin-bottom:8px;color:var(--text)}
-.output-card .card-desc{font-size:14px;color:var(--text2);line-height:1.65;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.output-card .card-meta{margin-top:14px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text3);padding-top:14px;border-top:1px solid var(--border)}
-.output-card .card-platform{font-size:11px;padding:3px 10px;border-radius:12px;background:#f8f8f8;font-weight:500}
-
-/* ── WeChat article page ── */
-.article-page{max-width:680px;margin:0 auto;padding:40px 20px 80px}
-.article-page h1{font-size:28px;font-weight:900;line-height:1.3;margin-bottom:16px}
-.article-page .meta{font-size:13px;color:var(--text3);margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
-.article-page .body{font-size:17px;line-height:1.9;color:#333;word-break:break-word}
-.article-page .body p{margin:16px 0}
-.article-page .body img{max-width:100%;border-radius:var(--radius);margin:20px 0}
-.article-page .body h2{font-size:22px;font-weight:700;margin:32px 0 12px}
-.back-link{display:inline-block;margin-bottom:24px;font-size:14px;color:var(--accent)}
-
-/* ── Promo cards ── */
-.promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
-@media(max-width:768px){.promo-grid{grid-template-columns:1fr}}
-.promo-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 24px;border:1px solid var(--border);border-left:4px solid var(--accent);transition:all .2s}
-.promo-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
-.promo-card h3{font-size:17px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.promo-card p{font-size:14px;color:var(--text2);line-height:1.7}
-.promo-card .cta{margin-top:14px;display:inline-flex;align-items:center;gap:4px;color:var(--accent);font-weight:600;font-size:14px}
-
-/* ── Empty state ── */
-.empty{text-align:center;padding:60px 20px;color:var(--text3)}
-.empty .emoji{font-size:48px;margin-bottom:12px}
-
-/* ── Footer ── */
-.footer{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px;border-top:1px solid var(--border);background:#fff}
-.footer a{color:var(--accent);font-weight:500}
-.footer .brand{font-size:15px;font-weight:700;color:var(--text2);margin-bottom:6px}
-
-/* ── Back to top ── */
-.back-top{position:fixed;bottom:32px;right:32px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(224,90,45,.3);transition:all .2s;opacity:0;pointer-events:none;z-index:30;border:none}
-.back-top.visible{opacity:1;pointer-events:auto}
-.back-top:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(224,90,45,.4)}
-
-/* ── Responsive ── */
-@media(max-width:768px){
-  .hero{padding:40px 16px 32px}
-  .hero .stats{gap:20px}
-  .hero .stat .num{font-size:22px}
-  .nav-bar{justify-content:flex-start}
-  .nav-bar a{padding:12px 18px;font-size:13px}
-  .section{margin-top:36px}
-  .section-sub{margin-left:0}
-  .output-grid{grid-template-columns:1fr}
+@media(max-width:900px){
+  .main-layout{flex-direction:column;height:auto}
+  .left-panel{width:100%;min-width:0;max-height:50vh;border-right:none;border-bottom:2px solid var(--border)}
+  .right-panel{min-height:50vh}
 }
 </style>
 </head>
 <body>
 
-<!-- ═══════════ HERO ═══════════ -->
-<header class="hero">
-  <div class="logo">🦞</div>
-  <h1>龙虾日记 · AIHOT</h1>
-  <p class="sub">AI 驱动的内容工厂 · 追踪热点，自动生成多平台推文</p>
-  <div class="stats" id="heroStats">
-    <div class="stat"><div class="num">-</div><div class="lbl">热点线索</div></div>
-    <div class="stat"><div class="num">-</div><div class="lbl">生成推文</div></div>
-    <div class="stat"><div class="num">-</div><div class="lbl">覆盖平台</div></div>
+<header class="header">
+  <div class="logo">
+    <span class="icon">🦞</span>
+    <div>
+      <h1>国内社媒 × AI Native</h1>
+      <span class="sub">热点追踪 · 多平台生成 · 文案洗稿</span>
+    </div>
   </div>
-  <div class="date-badge" id="dateBadge">📅 加载中...</div>
+  <div class="status">
+    <span id="aiStatus"><span class="dot dot-offline"></span>检测中...</span>
+    <span id="countBadge" class="badge badge-offline"></span>
+  </div>
 </header>
 
-<!-- ═══════════ NAV ═══════════ -->
-<nav class="nav-bar" id="navBar">
-  <a href="#hot" class="active">🔥 今日热点</a>
-  <a href="#output">📝 龙虾出品</a>
-  <a href="#promo">🦞 龙虾帮你</a>
-</nav>
+<div class="main-layout">
+  <div class="left-panel" id="leftPanel">
+    <div class="section-block">
+      <div class="section-title-bar">
+        <span class="icon">🔥</span><h2>今日热点</h2>
+        <span class="sub" id="hotspotRange">近3天</span>
+      </div>
+      <div id="hotspotList"><div class="loading"><div class="spinner"></div>加载热点...</div></div>
+    </div>
+    <div class="section-block">
+      <div class="section-title-bar">
+        <span class="icon">📅</span><h2>专题节点</h2>
+        <span class="sub" id="eventRange">未来1月+</span>
+      </div>
+      <div id="eventList"><div class="loading"><div class="spinner"></div>加载节点...</div></div>
+    </div>
+  </div>
 
-<!-- ═══════════ MAIN ═══════════ -->
-<main class="container" id="mainContent">
-  <div class="empty"><div class="emoji">⏳</div><p>加载中...</p></div>
-</main>
-
-<!-- ═══════════ FOOTER ═══════════ -->
-<footer class="footer">
-  <div class="brand">🦞 龙虾日记 · EasyClaw 内容工厂</div>
-  <a href="https://easyclaw.com" target="_blank">easyclaw.com</a> · AI 生成内容，仅供参考
-</footer>
-
-<button class="back-top" id="backTop" title="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <div class="right-panel">
+    <div class="right-tabs" id="rightTabs">
+      <button class="right-tab active" data-tab="wechat">📱 公众号推文</button>
+      <button class="right-tab" data-tab="xiaohongshu">📕 小红书图文</button>
+      <button class="right-tab" data-tab="copywriting">✏️ 文案生成</button>
+    </div>
+    <div class="right-content" id="rightContent">
+      <div class="empty-state"><div class="emoji">📝</div><p>点击左侧热点的「生成」按钮开始</p></div>
+    </div>
+  </div>
+</div>
 
 <script>
-// ═══════════ DATA ═══════════
-const DB_URL = 'data/db.json';
-let db = null;
+// ═══════════ DEMO DATA ═══════════
+function getDemoHotspots() {
+  var t = new Date().toISOString().split('T')[0];
+  var y = new Date(Date.now()-86400000).toISOString().split('T')[0];
+  return [
+    {id:'h1',type:'ai',date:t,time:'08:30',title:'DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾',source:'36氪',sourceUrl:'https://36kr.com',summary:'DeepSeek 最新模型在多项基准测试中超越 GPT-5，且完全开源。中小企业也能用上顶级 AI 了。'},
+    {id:'h2',type:'ai',date:t,time:'07:00',title:'Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆',source:'TechCrunch',sourceUrl:'https://techcrunch.com',summary:'新一代模型大幅提升推理和代码能力，API 价格同步下调 50%。'},
+    {id:'h3',type:'finance',date:t,time:'09:00',title:'A股成交额突破2万亿，AI概念股领涨',source:'华尔街见闻',sourceUrl:'https://wallstreetcn.com',summary:'市场情绪高涨，北向资金大幅流入，科技板块成为最大赢家。'},
+    {id:'h4',type:'finance',date:t,time:'10:30',title:'比特币突破15万美元，机构投资者加速入场',source:'Bloomberg',sourceUrl:'https://bloomberg.com',summary:'多家华尔街机构获批加密货币托管业务，比特币创历史新高。'},
+    {id:'h5',type:'ecommerce',date:t,time:'08:00',title:'TikTok Shop 东南亚单日GMV破10亿美元',source:'虎嗅',sourceUrl:'https://huxiu.com',summary:'直播电商在东南亚爆发式增长，MCN机构和品牌加速入局。'},
+    {id:'h6',type:'ecommerce',date:y,time:'16:00',title:'SHEIN 秘密提交伦敦IPO申请，估值超800亿美元',source:'Financial Times',sourceUrl:'https://ft.com',summary:'快时尚巨头加速全球化扩张，伦敦上市将成今年最大 IPO。'},
+    {id:'h7',type:'ai',date:y,time:'14:00',title:'英伟达发布下一代 AI 推理芯片 Blackwell Ultra',source:'The Verge',sourceUrl:'https://theverge.com',summary:'算力再翻倍，推理成本大幅下降，AI 应用爆发期到来。'},
+  ];
+}
+function getDemoEvents() {
+  return [
+    {id:'e1',type:'worldcup',date:'2026-07-09',title:'世界杯半决赛',source:'FIFA官方',summary:'四强对决。方向：赛前分析长文 + 小红书比分预测 + 公众号深度复盘。',isWarning:false},
+    {id:'e2',type:'worldcup',date:'2026-07-14',title:'世界杯决赛',source:'FIFA官方',summary:'决赛之夜。整个世界杯期间流量最高的一天。方向：决赛前瞻+赛后复盘+龙虾日记世界杯总结。',isWarning:false},
+    {id:'e3',type:'seasonal',date:'2026-07-15',title:'暑假黄金期 · 教辅机构招生冲刺',source:'行业提醒',summary:'7月中旬是K12暑假班最后一波招生窗口。方向：朋友圈招生海报+社群话术+试听课邀约。',isWarning:false},
+    {id:'e4',type:'seasonal',date:'2026-07-20',title:'暑期在线教育内容营销',source:'行业提醒',summary:'暑期过半，机构可发布暑假学习报告/成长记录带动续费。方向：公众号学员故事+小红书成果展示。',isWarning:false},
+    {id:'e5',type:'industry',date:'2026-07-25',title:'Q2 财报季密集发布',source:'财经日历',summary:'各大科技公司 Q2 财报陆续发布。方向：财报解读文章+财经数据可视化+投资展望。',isWarning:false},
+    {id:'e6',type:'industry',date:'2026-08-01',title:'Apple/Google 秋季发布会预热',source:'行业提醒',isWarning:true,summary:'⚠️ 预警：苹果和谷歌秋季发布会临近，AI 功能成焦点。建议提前储备相关解读素材。'},
+    {id:'e7',type:'seasonal',date:'2026-08-05',title:'七夕营销节点',source:'营销日历',summary:'七夕前需完成方案。方向：社交App/电商/礼品行业的文案和活动策划。',isWarning:false},
+    {id:'e8',type:'industry',date:'2026-08-15',title:'开学季预热 · 学习工具推广',source:'行业提醒',isWarning:true,summary:'⚠️ 预警：距开学2周，学习类App/教辅机构应布局开学季营销。'},
+  ];
+}
 
-async function loadData() {
-  try {
-    const r = await fetch(DB_URL);
-    db = await r.json();
-    renderAll();
-    setupNav();
-    setupScroll();
-  } catch(e) {
-    document.getElementById('mainContent').innerHTML =
-      '<div class="empty"><div class="emoji">🔌</div><p>数据加载失败，请稍后再试</p></div>';
-  }
+// ═══════════ STATE ═══════════
+var currentTab = 'wechat';
+var hotspots = [];
+var events = [];
+var generated = [];
+var aiReady = false;
+var generating = false;
+var useServer = true;
+
+// ═══════════ INIT ═══════════
+function init() {
+  checkStatus().then(function(){
+    return Promise.all([loadHotspots(), loadEvents(), loadGenerated()]);
+  }).then(function(){
+    setupTabs();
+  });
+}
+
+function checkStatus() {
+  return fetch('/api/status').then(function(r){return r.json();}).then(function(status){
+    aiReady = status.ai_ready;
+    document.getElementById('aiStatus').innerHTML =
+      aiReady ? '<span class="dot dot-online"></span>AI 就绪' : '<span class="dot dot-offline"></span>API Key 未配置';
+    document.getElementById('countBadge').textContent =
+      '热点' + status.counts.hotspots + ' · 节点' + status.counts.events + ' · 已生成' + status.counts.generated;
+    document.getElementById('countBadge').className = aiReady ? 'badge badge-online' : 'badge badge-offline';
+  }).catch(function(){
+    useServer = false;
+    aiReady = false;
+    document.getElementById('aiStatus').innerHTML = '<span class="dot dot-offline"></span>演示模式 · 启动 server.py 以启用 AI';
+    document.getElementById('countBadge').textContent = '热点7 · 节点8 · 离线';
+    document.getElementById('countBadge').className = 'badge badge-offline';
+  });
+}
+
+function loadHotspots() {
+  return fetch('/api/hotspots').then(function(r){return r.json();}).then(function(data){
+    hotspots = data;
+  }).catch(function(){
+    hotspots = getDemoHotspots();
+  }).then(function(){
+    renderHotspots();
+  });
+}
+
+function loadEvents() {
+  return fetch('/api/events').then(function(r){return r.json();}).then(function(data){
+    events = data;
+  }).catch(function(){
+    events = getDemoEvents();
+  }).then(function(){
+    renderEvents();
+  });
+}
+
+function loadGenerated() {
+  fetch('/api/generated').then(function(r){return r.json();}).then(function(data){
+    generated = data;
+  }).catch(function(){}).then(function(){
+    renderRightPanel();
+  });
 }
 
 // ═══════════ RENDER ═══════════
-function renderAll() {
-  if (!db) return;
-  const main = document.getElementById('mainContent');
-
-  updateHero();
-
+function renderHotspots() {
+  var el = document.getElementById('hotspotList');
+  if (!hotspots.length) {el.innerHTML='<div class="empty-state"><p>暂无热点</p></div>';return;}
+  var typeLabel = {ai:'AI',finance:'金融',ecommerce:'电商',worldcup:'世界杯',seasonal:'节日',industry:'行业'};
   var html = '';
-
-  // ━━━ SECTION 1: 今日热点 ━━━
-  html += '<section class="section" id="hot">';
-  html += '<div class="section-header"><div class="section-icon hot">🔥</div><h2 class="section-title">今日热点</h2></div>';
-  html += '<p class="section-sub">多信源实时聚合 · AI / 金融 / 电商 · 三大主线 + 节点专题</p>';
-
-  html += renderMainLines();
-  html += renderSubLines();
-  html += '</section>';
-
-  // ━━━ SECTION 2: 龙虾出品 ━━━
-  html += '<section class="section" id="output">';
-  html += '<div class="section-header"><div class="section-icon output">📝</div><h2 class="section-title">龙虾出品</h2></div>';
-  html += '<p class="section-sub">AI 自动生成的公众号推文与专题内容</p>';
-  html += renderOutputs();
-  html += '</section>';
-
-  // ━━━ SECTION 3: 龙虾能帮你 ━━━
-  html += '<section class="section" id="promo">';
-  html += '<div class="section-header"><div class="section-icon promo">🦞</div><h2 class="section-title">龙虾能帮你做什么</h2></div>';
-  html += '<p class="section-sub">EasyClaw 数字员工 + AI 技能，让你的内容生产效率翻倍</p>';
-  html += renderPromo();
-  html += '</section>';
-
-  main.innerHTML = html;
+  for (var i=0;i<hotspots.length;i++) {
+    var h=hotspots[i], tl=typeLabel[h.type]||h.type;
+    html+='<div class="hotspot-item type-'+h.type+'">';
+    html+='<div class="item-head"><span class="type-dot"></span><span class="type-label">'+tl+'</span><span class="item-date">'+h.date+' '+((h.time||''))+'</span></div>';
+    html+='<div class="item-title">'+escapeHtml(h.title)+'</div>';
+    if(h.summary)html+='<div class="item-summary">'+escapeHtml(h.summary)+'</div>';
+    html+='<div class="item-source">📰 '+escapeHtml(h.source)+'</div>';
+    html+='<div class="item-actions">';
+    html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+h.id+'\',\'wechat\',\'official\')" '+(aiReady?'':'disabled')+'>🎯 生成官号推文</button>';
+    html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+h.id+'\',\'wechat\',\'matrix\')" '+(aiReady?'':'disabled')+'>🔥 生成矩阵号推文</button>';
+    html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+h.id+'\',\'xiaohongshu\',\'official\')" '+(aiReady?'':'disabled')+'>📕 官号图文</button>';
+    html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+h.id+'\',\'xiaohongshu\',\'matrix\')" '+(aiReady?'':'disabled')+'>💬 矩阵号图文</button>';
+    html+='</div></div>';
+  }
+  el.innerHTML=html;
 }
 
-function updateHero() {
-  var sections = db.sections || [];
-  var outputs = db.outputs || {};
-  var totalItems = 0;
-  sections.forEach(function(s){ totalItems += (s.items||[]).length; });
-  var totalOutputs = 0;
-  Object.keys(outputs).forEach(function(k){ totalOutputs += outputs[k].length; });
-  var platforms = Object.keys(outputs).length || 3;
-
-  document.getElementById('heroStats').innerHTML =
-    '<div class="stat"><div class="num">' + totalItems + '</div><div class="lbl">热点线索</div></div>' +
-    '<div class="stat"><div class="num">' + totalOutputs + '</div><div class="lbl">生成推文</div></div>' +
-    '<div class="stat"><div class="num">' + platforms + '</div><div class="lbl">覆盖平台</div></div>';
-  document.getElementById('dateBadge').textContent = '📅 ' + (db.date || '近期');
+function renderEvents() {
+  var el = document.getElementById('eventList');
+  if (!events.length) {el.innerHTML='<div class="empty-state"><p>暂无节点</p></div>';return;}
+  var typeLabel = {worldcup:'⚽ 世界杯',seasonal:'🌞 节日/季节',industry:'🏭 行业',holiday:'🎉 假期'};
+  var html = '';
+  for (var i=0;i<events.length;i++) {
+    var e=events[i], tl=typeLabel[e.type]||e.type;
+    html+='<div class="event-item'+(e.isWarning?' warning':'')+'">';
+    html+='<div class="event-date">📅 '+e.date+' · '+tl+'</div>';
+    html+='<div class="event-title">'+(e.isWarning?'⚠️ ':'')+escapeHtml(e.title)+'</div>';
+    if(e.summary)html+='<div class="event-summary">'+escapeHtml(e.summary)+'</div>';
+    if(!e.isWarning){
+      html+='<div class="item-actions">';
+      html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+e.id+'\',\'wechat\',\'official\')" '+(aiReady?'':'disabled')+'>🎯 官号推文</button>';
+      html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+e.id+'\',\'wechat\',\'matrix\')" '+(aiReady?'':'disabled')+'>🔥 矩阵号推文</button>';
+      html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+e.id+'\',\'xiaohongshu\',\'official\')" '+(aiReady?'':'disabled')+'>📕 官号图文</button>';
+      html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+e.id+'\',\'xiaohongshu\',\'matrix\')" '+(aiReady?'':'disabled')+'>💬 矩阵号图文</button>';
+      html+='</div>';
+    }
+    html+='</div>';
+  }
+  el.innerHTML=html;
 }
 
-// ═══════════ MAIN LINES ═══════════
-function renderMainLines() {
-  var sections = db.sections || [];
-  var mainTracks = ['ai','finance','ecommerce'];
-  var config = {
-    ai:       {icon:'🤖', name:'AI 前沿', dot:'dot-ai'},
-    finance:  {icon:'📈', name:'金融理财', dot:'dot-finance'},
-    ecommerce:{icon:'🛒', name:'电商消费', dot:'dot-ecommerce'},
-  };
+// ═══════════ GENERATE ═══════════
+function doGenerate(itemId, genType, style) {
+  if(generating)return;
+  var item = hotspots.find(function(h){return h.id===itemId;}) || events.find(function(e){return e.id===itemId;});
+  if(!item){toast('找不到该条目');return;}
+  if(!aiReady){toast('⚠️ AI 未配置。请在本地运行 server.py 后访问 localhost:5199');return;}
 
-  var html = '<div class="main-lines">';
-  for (var t = 0; t < mainTracks.length; t++) {
-    var track = mainTracks[t];
-    var sec = findSection(sections, track) || {label:config[track].name, items:[]};
-    var cfg = config[track];
-    html += '<div class="line-col">';
-    html += '<div class="line-col-head"><span class="dot ' + cfg.dot + '"></span><h3>' + cfg.icon + ' ' + cfg.name + '</h3><span class="count">' + sec.items.length + '条</span></div>';
-    html += '<div class="line-col-body">';
-    if (sec.items.length === 0) {
-      html += '<div style="padding:24px;text-align:center;color:var(--text3);font-size:13px">暂无热点</div>';
-    } else {
-      for (var i = 0; i < sec.items.length; i++) {
-        var it = sec.items[i];
-        var url = it.sourceUrl || '#';
-        html += '<a class="line-item" href="' + url + '" target="_blank" rel="noopener">';
-        html += '<span class="idx">' + (i+1) + '</span>';
-        html += '<div class="info"><div class="t">' + escapeHtml(it.title) + '</div>';
-        html += '<div class="src"><span>' + escapeHtml(it.sourceName||'') + '</span>';
-        if (it.publishedAt) html += '<span>' + formatTime(it.publishedAt) + '</span>';
-        html += '</div></div>';
-        html += '<span class="arrow">→</span></a>';
+  generating=true;
+  var styleLabel = style==='official'?'官号':'矩阵号';
+  var typeLabel = genType==='wechat'?'公众号推文':genType==='xiaohongshu'?'小红书图文':'文案';
+  toast('🔄 正在生成 '+styleLabel+typeLabel+'...');
+  document.getElementById('rightContent').innerHTML='<div class="loading"><div class="spinner"></div><p>AI 正在生成 '+styleLabel+typeLabel+'...</p><p style="font-size:12px;color:var(--text3)">这可能需要 20-60 秒</p></div>';
+
+  fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:item,type:genType,style:style})})
+    .then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error(e.error||'生成失败')});return r.json();})
+    .then(function(result){generated.unshift(result);renderRightPanel();toast('✅ 生成完成！');})
+    .catch(function(e){toast('❌ '+(e.message||'网络错误'));})
+    .finally(function(){generating=false;});
+}
+
+// ═══════════ RIGHT PANEL ═══════════
+function renderRightPanel() {
+  var el = document.getElementById('rightContent');
+  if (currentTab === 'copywriting') {renderCopywritingTab(el);return;}
+
+  var filtered = generated.filter(function(g){return g.type===currentTab;});
+  if (!filtered.length) {
+    el.innerHTML='<div class="empty-state"><div class="emoji">📝</div><p>暂无'+(currentTab==='wechat'?'公众号推文':'小红书图文')+'，点击左侧「生成」按钮创建</p></div>';
+    return;
+  }
+
+  var typeLabels={wechat:'📱 公众号推文',xiaohongshu:'📕 小红书图文',copywriting:'✏️ 文案改写'};
+  var html='';
+  for(var i=0;i<filtered.length;i++){
+    var g=filtered[i];
+    html+='<div class="gen-card">';
+    html+='<div class="gen-head">';
+    html+='<span class="gen-type gen-type-'+g.type+'">'+typeLabels[g.type]+'</span>';
+    html+='<span class="gen-style gen-style-'+g.style+'">'+(g.style==='official'?'🎯 官号':'🔥 矩阵号')+'</span>';
+    html+='<span class="gen-time">'+formatTime(g.timestamp)+'</span></div>';
+    html+='<div class="gen-title">'+escapeHtml(g.title)+'</div>';
+    html+='<div class="gen-content" id="content-'+g.id+'">'+formatContent(g.content)+'</div>';
+    html+='<div class="gen-actions">';
+    html+='<button class="btn-copy" onclick="copyContent(\''+g.id+'\')">📋 复制全文</button></div></div>';
+  }
+  el.innerHTML=html;
+}
+
+function renderCopywritingTab(el) {
+  el.innerHTML='<div class="copywriting-input">'+
+    '<label>🔗 抖音/社媒链接（需要本地 server.py 支持自动提取）</label>'+
+    '<div class="url-row"><input type="url" id="douyinUrl" placeholder="粘贴抖音链接 https://v.douyin.com/..." />'+
+    '<button class="btn-secondary" onclick="extractDouyin()" '+(aiReady?'':'disabled')+'>提取文案</button></div>'+
+    '<div class="extract-status" id="extractStatus"></div>'+
+    '<label>📝 原始文案（提取后自动填入，也可手动粘贴）</label>'+
+    '<textarea id="sourceText" placeholder="在这里粘贴需要洗稿的原始文案..."></textarea>'+
+    '<div style="display:flex;gap:12px;align-items:center">'+
+    '<button class="btn-primary" onclick="doCopywriting(\'official\')" '+(aiReady?'':'disabled')+'>🎯 洗成官号文案</button>'+
+    '<button class="btn-primary" style="background:var(--matrix)" onclick="doCopywriting(\'matrix\')" '+(aiReady?'':'disabled')+'>🔥 洗成矩阵号文案</button></div></div>'+
+    renderCopywritingResults();
+}
+
+function renderCopywritingResults() {
+  var filtered = generated.filter(function(g){return g.type==='copywriting';});
+  if(!filtered.length)return'';
+  var html='<div style="padding:0 20px 20px"><h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text3)">📋 历史改写记录</h3>';
+  for(var i=0;i<filtered.length;i++){
+    var g=filtered[i];
+    html+='<div class="gen-card"><div class="gen-head">'+
+      '<span class="gen-type gen-type-copywriting">✏️ 文案改写</span>'+
+      '<span class="gen-style gen-style-'+g.style+'">'+(g.style==='official'?'🎯 官号':'🔥 矩阵号')+'</span>'+
+      '<span class="gen-time">'+formatTime(g.timestamp)+'</span></div>'+
+      '<div class="gen-title" style="font-size:13px">'+escapeHtml(g.title||'未命名')+'</div>'+
+      '<div class="gen-content" id="content-'+g.id+'" style="max-height:300px">'+formatContent(g.content)+'</div>'+
+      '<div class="gen-actions"><button class="btn-copy" onclick="copyContent(\''+g.id+'\')">📋 复制全文</button></div></div>';
+  }
+  html+='</div>';return html;
+}
+
+// ═══════════ EXTRACT DOUYIN ═══════════
+function extractDouyin() {
+  var url = document.getElementById('douyinUrl').value.trim();
+  if(!url){toast('请先粘贴抖音链接');return;}
+  var status = document.getElementById('extractStatus');
+  status.textContent='⏳ 正在提取...';status.className='extract-status';
+
+  fetch('/api/extract-douyin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:url})})
+    .then(function(r){return r.json();})
+    .then(function(result){
+      if(result.success){
+        status.textContent='✅ 提取成功！文案已填入下方';status.className='extract-status success';
+        document.getElementById('sourceText').value=result.text;
+      } else {
+        status.textContent='⚠️ '+(result.error||'提取失败')+' · '+(result.hint||'请手动粘贴文案');
+        status.className='extract-status error';
       }
-    }
-    html += '</div></div>';
-  }
-  html += '</div>';
-  return html;
+    }).catch(function(){status.textContent='❌ 网络错误';status.className='extract-status error';});
 }
 
-function findSection(sections, track) {
-  for (var i = 0; i < sections.length; i++) {
-    if (sections[i].track === track) return sections[i];
-  }
-  return null;
+function doCopywriting(style) {
+  var text = document.getElementById('sourceText').value.trim();
+  if(!text){toast('请先输入或提取文案');return;}
+  if(!aiReady){toast('⚠️ AI 未配置。请在本地运行 server.py 后访问 localhost:5199');return;}
+
+  toast('🔄 正在洗稿改写...');
+  fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:{id:'copy_manual',title:text,type:'copywriting',source:'用户输入'},type:'copywriting',style:style,text:text})})
+    .then(function(r){return r.json();})
+    .then(function(result){generated.unshift(result);renderRightPanel();toast('✅ 洗稿完成！');})
+    .catch(function(){toast('❌ 生成失败');});
 }
 
-// ═══════════ SUB LINES ═══════════
-function renderSubLines() {
-  var html = '<div class="divider"><div class="line"></div><span class="label">节点专题</span><div class="line"></div></div>';
-  html += '<div class="sub-lines">';
-  html += renderWorldCupCol();
-  html += renderSeasonalCol();
-  html += '</div>';
-  return html;
-}
-
-function renderWorldCupCol() {
-  var outputs = db.outputs || {};
-  var wcItems = [];
-  var platKeys = Object.keys(outputs);
-  for (var p = 0; p < platKeys.length; p++) {
-    var items = outputs[platKeys[p]];
-    for (var i = 0; i < items.length; i++) {
-      var item = items[i];
-      if (item.track === 'worldcup' || /世界杯|world.?cup/i.test(item.title||'')) {
-        wcItems.push({title: item.title, display_title: item.display_title, html_url: item.html_url, source_name: item.source_name, source_label: item.source_label, date: item.date, sourceUrl: '#', publishedAt: ''});
-      }
-    }
-  }
-
-  if (wcItems.length === 0) {
-    wcItems = [
-      {title:'2026世界杯火热进行中', source_name:'ESPN', sourceUrl:'https://www.espn.com/soccer/', display_title:'', html_url:'#', date:'', source_label:''},
-      {title:'世界杯淘汰赛：龙虾每日预测', source_name:'龙虾日记', sourceUrl:'#', display_title:'', html_url:'#', date:'', source_label:''},
-    ];
-  }
-
-  var html = '<div class="line-col">';
-  html += '<div class="line-col-head"><span class="dot dot-worldcup"></span><h3>⚽ 2026世界杯</h3><span class="count">' + wcItems.length + '条</span></div>';
-  html += '<div class="line-col-body">';
-  for (var i = 0; i < wcItems.length; i++) {
-    var it = wcItems[i];
-    var url = it.html_url || it.sourceUrl || '#';
-    var isOutput = !!it.html_url && it.html_url !== '#';
-    html += '<a class="line-item" href="' + url + '"' + (isOutput ? '' : ' target="_blank" rel="noopener"') + '>';
-    html += '<span class="idx"' + (isOutput ? ' style="background:var(--accent);color:#fff"' : '') + '>' + (isOutput ? '★' : (i+1)) + '</span>';
-    html += '<div class="info"><div class="t">' + escapeHtml(it.display_title || it.title) + '</div>';
-    html += '<div class="src"><span>' + escapeHtml(it.source_name||it.source_label||'龙虾出品') + '</span><span>' + (it.date||'') + '</span></div></div>';
-    html += '<span class="arrow">→</span></a>';
-  }
-  html += '</div></div>';
-  return html;
-}
-
-function renderSeasonalCol() {
-  var now = new Date();
-  var m = now.getMonth() + 1;
-  var season, items;
-
-  if (m >= 6 && m <= 8) {
-    season = '暑假黄金期';
-    items = [
-      {title:'暑假教辅/K12招生旺季来了',desc:'AI自动化批改+个性化教案，机构效率翻倍',source:'龙虾日记'},
-      {title:'暑假在线教育内容生产攻略',desc:'一键生成课程大纲、讲稿、PPT课件',source:'龙虾日记'},
-      {title:'暑期营销自动化指南',desc:'朋友圈海报+社群话术+咨询回复，全自动',source:'龙虾日记'},
-    ];
-  } else if (m >= 9 && m <= 11) {
-    season = '秋季开学季';
-    items = [
-      {title:'开学季营销冲刺',desc:'批量生成促销文案、朋友圈素材、社群话术',source:'龙虾日记'},
-      {title:'K12课后辅导提效',desc:'AI批改+个性化学情报告，提升续费率',source:'龙虾日记'},
-    ];
-  } else if (m === 12 || m <= 2) {
-    season = '寒假/春节';
-    items = [
-      {title:'寒假班招生黄金期',desc:'用AI快速产出投放素材，抓住决策窗口',source:'龙虾日记'},
-      {title:'年终总结自动化',desc:'一键生成学情报告、教师总结、运营看板',source:'龙虾日记'},
-    ];
-  } else {
-    season = '春季升学季';
-    items = [
-      {title:'升学季冲刺备战',desc:'AI自动生成模拟卷、复习计划、考点分析',source:'龙虾日记'},
-    ];
-  }
-
-  var html = '<div class="line-col">';
-  html += '<div class="line-col-head"><span class="dot dot-seasonal"></span><h3>🌞 ' + season + '</h3><span class="count">' + items.length + '条</span></div>';
-  html += '<div class="line-col-body">';
-  for (var i = 0; i < items.length; i++) {
-    var it = items[i];
-    html += '<div class="line-item" style="cursor:default">';
-    html += '<span class="idx">' + (i+1) + '</span>';
-    html += '<div class="info"><div class="t">' + escapeHtml(it.title) + '</div>';
-    html += '<div class="src"><span>' + escapeHtml(it.source) + '</span><span>' + escapeHtml(it.desc) + '</span></div></div>';
-    html += '</div>';
-  }
-  html += '</div></div>';
-  return html;
-}
-
-// ═══════════ OUTPUTS ═══════════
-function renderOutputs() {
-  var outputs = db.outputs || {};
-  var allCards = [];
-  var platKeys = Object.keys(outputs);
-
-  for (var p = 0; p < platKeys.length; p++) {
-    var items = outputs[platKeys[p]];
-    for (var i = 0; i < items.length; i++) {
-      var item = items[i];
-      allCards.push({
-        title: item.display_title || item.title || '',
-        desc: stripHtml(item.content||'').substring(0,140),
-        image: item.image_url || item.image_path || '',
-        url: item.html_url || item.html_file || '',
-        platform: platKeys[p],
-        track: item.track || '',
-        label: item.source_label || item.source_name || '',
-        date: item.date || db.date || '',
-      });
-    }
-  }
-
-  allCards.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
-
-  if (allCards.length === 0) {
-    return '<div class="empty"><div class="emoji">📭</div><p>暂无出品内容，等待今日生成...</p></div>';
-  }
-
-  var html = '<div class="output-grid">';
-  for (var i = 0; i < allCards.length; i++) {
-    html += renderOutputCard(allCards[i]);
-  }
-  html += '</div>';
-  return html;
-}
-
-function renderOutputCard(card) {
-  var tagClass = 'tag-' + (card.track || 'ai');
-  var tagLabel = card.track === 'worldcup' ? '⚽ 世界杯' :
-    card.track === 'ecommerce' ? '🛒 电商' :
-    card.track === 'finance' ? '📈 金融' :
-    card.track === 'ai' ? '🤖 AI' :
-    (card.label || '📝 内容');
-  var platLabels = {wechat:'📱公众号',x_tweet:'🐦X',discord:'💬Discord',xiaohongshu:'📕小红书',blog:'📄博客',short_video:'🎬短视频'};
-  var platLabel = platLabels[card.platform] || card.platform;
-  var onclick = card.url ? ' onclick="location.href=\'' + card.url + '\'"' : '';
-
-  return '<div class="output-card"' + onclick + '>' +
-    (card.image ? '<div class="card-img-wrap"><img src="' + card.image + '" alt="" loading="lazy" onerror="this.style.display=\'none\'"></div>' : '') +
-    '<div class="card-body">' +
-    '<span class="card-tag ' + tagClass + '">' + tagLabel + '</span>' +
-    '<div class="card-title">' + escapeHtml(card.title) + '</div>' +
-    '<div class="card-desc">' + escapeHtml(card.desc) + '</div>' +
-    '<div class="card-meta">' +
-    '<span>📅 ' + (card.date||'') + '</span>' +
-    '<span class="card-platform">' + platLabel + '</span>' +
-    '</div></div></div>';
-}
-
-// ═══════════ PROMO ═══════════
-function renderPromo() {
-  var now = new Date();
-  var m = now.getMonth() + 1;
-  var ideas;
-
-  if (m >= 6 && m <= 8) {
-    ideas = [
-      {icon:'📚',title:'教辅/K12 效率提升',desc:'用 EasyClaw 自动批改作业、生成练习题、整理错题本、一键生成教案。老师省下 80% 重复劳动时间。'},
-      {icon:'📢',title:'暑期招生自动化',desc:'用数字员工自动回复家长咨询、批量生成朋友圈招生海报、自动跟进试听预约。'},
-      {icon:'🎓',title:'在线教育内容生产',desc:'AI 自动生成课程大纲、逐字讲稿、PPT 课件，一套输入输出多平台适配版本。'},
-    ];
-  } else if (m >= 9 && m <= 11) {
-    ideas = [
-      {icon:'📣',title:'开学季营销',desc:'批量生成开学季促销文案、朋友圈素材、社群话术，精准触达家长群体。'},
-      {icon:'📖',title:'K12 课后辅导',desc:'AI 自动批改 + 个性化学情报告，提升家长续费率的核心武器。'},
-    ];
-  } else if (m === 12 || m <= 2) {
-    ideas = [
-      {icon:'🏫',title:'寒假班招生',desc:'寒假时间短、决策快，用 AI 快速产出投放素材，抓住黄金窗口期。'},
-      {icon:'📊',title:'年终总结自动化',desc:'一键生成年度学情报告、教师工作总结、校区运营数据看板。'},
-    ];
-  } else {
-    ideas = [
-      {icon:'🏆',title:'升学季冲刺',desc:'中考/高考冲刺阶段，AI 自动生成模拟卷、个性化复习计划、高频考点分析。'},
-    ];
-  }
-
-  var html = '<div class="promo-grid">';
-  for (var i = 0; i < ideas.length; i++) {
-    var idea = ideas[i];
-    html += '<div class="promo-card">' +
-      '<h3>' + idea.icon + ' ' + escapeHtml(idea.title) + '</h3>' +
-      '<p>' + escapeHtml(idea.desc) + '</p>' +
-      '<a class="cta" href="https://easyclaw.com" target="_blank">了解 EasyClaw <span>→</span></a>' +
-      '</div>';
-  }
-  html += '</div>';
-  return html;
-}
-
-// ═══════════ NAV ═══════════
-function setupNav() {
-  var nav = document.getElementById('navBar');
-  nav.addEventListener('click', function(e) {
-    var a = e.target.closest('a');
-    if (!a) return;
-    e.preventDefault();
-    var id = a.getAttribute('href').slice(1);
-    var el = document.getElementById(id);
-    if (el) el.scrollIntoView({behavior:'smooth',block:'start'});
-  });
-
-  window.addEventListener('scroll', function() {
-    var links = nav.querySelectorAll('a');
-    var current = links[0];
-    for (var i = 0; i < links.length; i++) {
-      var id = links[i].getAttribute('href').slice(1);
-      var el = document.getElementById(id);
-      if (el && el.getBoundingClientRect().top <= 120) current = links[i];
-    }
-    for (var j = 0; j < links.length; j++) links[j].classList.remove('active');
-    current.classList.add('active');
-  });
-}
-
-function setupScroll() {
-  var btn = document.getElementById('backTop');
-  window.addEventListener('scroll', function() {
-    if (window.scrollY > 400) btn.classList.add('visible');
-    else btn.classList.remove('visible');
+// ═══════════ TABS ═══════════
+function setupTabs() {
+  document.getElementById('rightTabs').addEventListener('click',function(e){
+    var tab = e.target.closest('.right-tab');
+    if(!tab)return;
+    var tabs = document.querySelectorAll('.right-tab');
+    for(var i=0;i<tabs.length;i++)tabs[i].classList.remove('active');
+    tab.classList.add('active');
+    currentTab=tab.dataset.tab;
+    renderRightPanel();
   });
 }
 
 // ═══════════ UTILS ═══════════
-function escapeHtml(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function copyContent(genId) {
+  var el=document.getElementById('content-'+genId);
+  if(!el)return;
+  var text=el.textContent||el.innerText;
+  navigator.clipboard.writeText(text).then(function(){toast('📋 已复制到剪贴板');});
 }
 
-function stripHtml(s) {
-  if (!s) return '';
-  return String(s).replace(/<[^>]+>/g,'');
+function escapeHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function formatTime(ts){
+  if(!ts)return'';
+  try{var d=new Date(ts);return d.toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'})+' '+d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});}
+  catch(e){return ts;}
 }
 
-function formatTime(iso) {
-  if (!iso) return '';
-  try {
-    var d = new Date(iso);
-    var h = String(d.getHours()).padStart(2,'0');
-    var min = String(d.getMinutes()).padStart(2,'0');
-    return h + ':' + min;
-  } catch(e) { return ''; }
+function formatContent(text){
+  if(!text)return'';
+  return escapeHtml(text).replace(/^#\s+(.+)$/gm,'<strong style="font-size:18px">$1</strong>').replace(/^##\s+(.+)$/gm,'<strong style="font-size:16px">$1</strong>');
 }
 
-// ═══════════ INIT ═══════════
-loadData();
+function toast(msg){
+  var t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);setTimeout(function(){t.remove();},2500);
+}
+
+init();
 </script>
 </body>
 </html>

@@ -1,290 +1,150 @@
 {
-  "date": "2026-07-07",
-  "sections": [
+  "hotspots": [
     {
-      "label": "AI 热点",
-      "track": "ai",
-      "items": [
-        {
-          "title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-          "sourceName": "36氪",
-          "sourceUrl": "https://36kr.com",
-          "publishedAt": "2026-07-07T08:00:00",
-          "section_label": "AI 热点",
-          "track": "ai"
-        },
-        {
-          "title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-          "sourceName": "TechCrunch",
-          "sourceUrl": "https://techcrunch.com",
-          "publishedAt": "2026-07-07T07:30:00",
-          "section_label": "AI 热点",
-          "track": "ai"
-        },
-        {
-          "title": "AI 编程助手 Cursor 估值突破 100 亿美元",
-          "sourceName": "The Information",
-          "sourceUrl": "https://theinformation.com",
-          "publishedAt": "2026-07-07T09:00:00"
-        }
-      ]
+      "id": "h1",
+      "type": "ai",
+      "date": "2026-07-08",
+      "time": "08:30",
+      "title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
+      "source": "36氪",
+      "sourceUrl": "https://36kr.com",
+      "summary": "DeepSeek 最新模型在多项基准测试中超越 GPT-5，且完全开源。这意味着中小企业也能用上顶级 AI。"
     },
     {
-      "label": "金融理财",
-      "track": "finance",
-      "items": [
-        {
-          "title": "美联储暗示9月降息，全球股市集体上涨，科技股领涨",
-          "sourceName": "Reuters",
-          "sourceUrl": "https://reuters.com",
-          "publishedAt": "2026-07-07T09:00:00",
-          "section_label": "金融理财",
-          "track": "finance"
-        },
-        {
-          "title": "A股成交额突破2万亿，AI概念股领涨，北向资金大幅流入",
-          "sourceName": "华尔街见闻",
-          "sourceUrl": "https://wallstreetcn.com",
-          "publishedAt": "2026-07-07T10:00:00",
-          "section_label": "金融理财",
-          "track": "finance"
-        },
-        {
-          "title": "比特币突破15万美元，机构投资者加速入场",
-          "sourceName": "Bloomberg",
-          "sourceUrl": "https://bloomberg.com",
-          "publishedAt": "2026-07-07T08:30:00"
-        }
-      ]
+      "id": "h2",
+      "type": "ai",
+      "date": "2026-07-08",
+      "time": "07:00",
+      "title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
+      "source": "TechCrunch",
+      "sourceUrl": "https://techcrunch.com",
+      "summary": "Claude 新一代模型大幅提升推理和代码能力，API 价格同步下调 50%。"
     },
     {
-      "label": "电商消费",
-      "track": "ecommerce",
-      "items": [
-        {
-          "title": "TikTok Shop 东南亚单日GMV破10亿美元，直播电商爆发",
-          "sourceName": "虎嗅",
-          "sourceUrl": "https://huxiu.com",
-          "publishedAt": "2026-07-07T08:30:00",
-          "section_label": "电商消费",
-          "track": "ecommerce"
-        },
-        {
-          "title": "拼多多TEMU加速欧洲扩张，已在12国上线，挑战亚马逊",
-          "sourceName": "36氪",
-          "sourceUrl": "https://36kr.com",
-          "publishedAt": "2026-07-07T07:00:00",
-          "section_label": "电商消费",
-          "track": "ecommerce"
-        },
-        {
-          "title": "SHEIN 秘密提交伦敦IPO申请，估值超800亿美元",
-          "sourceName": "Financial Times",
-          "sourceUrl": "https://ft.com",
-          "publishedAt": "2026-07-07T11:00:00"
-        }
-      ]
+      "id": "h3",
+      "type": "finance",
+      "date": "2026-07-08",
+      "time": "09:00",
+      "title": "A股成交额突破2万亿，AI概念股领涨",
+      "source": "华尔街见闻",
+      "sourceUrl": "https://wallstreetcn.com",
+      "summary": "市场情绪高涨，北向资金大幅流入，科技板块成为最大赢家。"
+    },
+    {
+      "id": "h4",
+      "type": "finance",
+      "date": "2026-07-08",
+      "time": "10:30",
+      "title": "比特币突破15万美元，机构投资者加速入场",
+      "source": "Bloomberg",
+      "sourceUrl": "https://bloomberg.com",
+      "summary": "多家华尔街机构获批加密货币托管业务，比特币创历史新高。"
+    },
+    {
+      "id": "h5",
+      "type": "ecommerce",
+      "date": "2026-07-08",
+      "time": "08:00",
+      "title": "TikTok Shop 东南亚单日GMV破10亿美元",
+      "source": "虎嗅",
+      "sourceUrl": "https://huxiu.com",
+      "summary": "直播电商在东南亚爆发式增长，MCN机构和品牌加速入局。"
+    },
+    {
+      "id": "h6",
+      "type": "ecommerce",
+      "date": "2026-07-07",
+      "time": "16:00",
+      "title": "SHEIN 秘密提交伦敦IPO申请，估值超800亿美元",
+      "source": "Financial Times",
+      "sourceUrl": "https://ft.com",
+      "summary": "快时尚巨头 SHEIN 加速全球化扩张，伦敦上市将成今年最大 IPO。"
+    },
+    {
+      "id": "h7",
+      "type": "ai",
+      "date": "2026-07-07",
+      "time": "14:00",
+      "title": "AI 编程助手 Cursor 估值突破 100 亿美元",
+      "source": "The Information",
+      "sourceUrl": "https://theinformation.com",
+      "summary": "Cursor 在最新一轮融资中估值突破 100 亿美元，AI 编程工具赛道持续火热。"
     }
   ],
-  "outputs": {
-    "wechat": [
-      {
-        "title": "龙虾三场全中！7月2日世界杯淘汰赛预测来了",
-        "display_title": "龙虾三场全中！7月2日世界杯淘汰赛预测来了",
-        "original_title": "龙虾三场全中！7月2日世界杯淘汰赛预测",
-        "date": "2026-07-01",
-        "content": "7月2日预测：英格兰2:0刚果(首选)/3:0(次选)、比利时1:1塞内加尔(首选)/0:1(次选)、美国2:0波黑(首选)/2:1(次选)",
-        "source_name": "龙虾日记",
-        "source_label": "世界杯",
-        "track": "worldcup",
-        "source_title": "龙虾三场全中！7月2日世界杯淘汰赛预测",
-        "html_url": "/article/lobster_july2_prediction.html",
-        "html_file": "",
-        "generated_at": "2026-07-01T12:11:37"
-      },
-      {
-        "title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "display_title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "original_title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "date": "2026-07-07",
-        "content": "【AI热点】DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾——来源：36氪。该热点反映了当前AI赛道的核心趋势。",
-        "image_path": "",
-        "image_url": "",
-        "source_name": "36氪",
-        "source_url": "https://36kr.com",
-        "source_label": "AI 热点",
-        "track": "ai",
-        "source_title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "html_file": "c:\\Users\\Cf1\\Desktop\\aihot-site\\article\\DeepSeek_V4_发布_推理能力全面超越_GPT_5_开源社区沸腾.html",
-        "html_url": "/article/DeepSeek_V4_发布_推理能力全面超越_GPT_5_开源社区沸腾.html",
-        "generated_at": "2026-07-07T20:04:22"
-      },
-      {
-        "title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "display_title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "original_title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "date": "2026-07-07",
-        "content": "【AI热点】Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆——来源：TechCrunch。该热点反映了当前AI赛道的核心趋势。",
-        "image_path": "",
-        "image_url": "",
-        "source_name": "TechCrunch",
-        "source_url": "https://techcrunch.com",
-        "source_label": "AI 热点",
-        "track": "ai",
-        "source_title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "html_file": "c:\\Users\\Cf1\\Desktop\\aihot-site\\article\\Anthropic_发布_Claude_Opus_4_5_企业级_AI_助手新标.html",
-        "html_url": "/article/Anthropic_发布_Claude_Opus_4_5_企业级_AI_助手新标.html",
-        "generated_at": "2026-07-07T20:04:22"
-      },
-      {
-        "title": "美联储暗示9月降息，全球股市集体上涨，科技股领涨",
-        "display_title": "美联储暗示9月降息，全球股市集体上涨，科技股领涨",
-        "original_title": "美联储暗示9月降息，全球股市集体上涨，科技股领涨",
-        "date": "2026-07-07",
-        "content": "【金融理财热点】美联储暗示9月降息，全球股市集体上涨，科技股领涨——来源：Reuters。该热点反映了当前金融理财赛道的核心趋势。",
-        "image_path": "",
-        "image_url": "",
-        "source_name": "Reuters",
-        "source_url": "https://reuters.com",
-        "source_label": "金融理财",
-        "track": "finance",
-        "source_title": "美联储暗示9月降息，全球股市集体上涨，科技股领涨",
-        "html_file": "c:\\Users\\Cf1\\Desktop\\aihot-site\\article\\美联储暗示9月降息_全球股市集体上涨_科技股领涨.html",
-        "html_url": "/article/美联储暗示9月降息_全球股市集体上涨_科技股领涨.html",
-        "generated_at": "2026-07-07T20:04:22"
-      },
-      {
-        "title": "A股成交额突破2万亿，AI概念股领涨，北向资金大幅流入",
-        "display_title": "A股成交额突破2万亿，AI概念股领涨，北向资金大幅流入",
-        "original_title": "A股成交额突破2万亿，AI概念股领涨，北向资金大幅流入",
-        "date": "2026-07-07",
-        "content": "【金融理财热点】A股成交额突破2万亿，AI概念股领涨，北向资金大幅流入——来源：华尔街见闻。该热点反映了当前金融理财赛道的核心趋势。",
-        "image_path": "",
-        "image_url": "",
-        "source_name": "华尔街见闻",
-        "source_url": "https://wallstreetcn.com",
-        "source_label": "金融理财",
-        "track": "finance",
-        "source_title": "A股成交额突破2万亿，AI概念股领涨，北向资金大幅流入",
-        "html_file": "c:\\Users\\Cf1\\Desktop\\aihot-site\\article\\A股成交额突破2万亿_AI概念股领涨_北向资金大幅流入.html",
-        "html_url": "/article/A股成交额突破2万亿_AI概念股领涨_北向资金大幅流入.html",
-        "generated_at": "2026-07-07T20:04:22"
-      },
-      {
-        "title": "TikTok Shop 东南亚单日GMV破10亿美元，直播电商爆发",
-        "display_title": "TikTok Shop 东南亚单日GMV破10亿美元，直播电商爆发",
-        "original_title": "TikTok Shop 东南亚单日GMV破10亿美元，直播电商爆发",
-        "date": "2026-07-07",
-        "content": "【电商消费热点】TikTok Shop 东南亚单日GMV破10亿美元，直播电商爆发——来源：虎嗅。该热点反映了当前电商消费赛道的核心趋势。",
-        "image_path": "",
-        "image_url": "",
-        "source_name": "虎嗅",
-        "source_url": "https://huxiu.com",
-        "source_label": "电商消费",
-        "track": "ecommerce",
-        "source_title": "TikTok Shop 东南亚单日GMV破10亿美元，直播电商爆发",
-        "html_file": "c:\\Users\\Cf1\\Desktop\\aihot-site\\article\\TikTok_Shop_东南亚单日GMV破10亿美元_直播电商爆发.html",
-        "html_url": "/article/TikTok_Shop_东南亚单日GMV破10亿美元_直播电商爆发.html",
-        "generated_at": "2026-07-07T20:04:22"
-      },
-      {
-        "title": "拼多多TEMU加速欧洲扩张，已在12国上线，挑战亚马逊",
-        "display_title": "拼多多TEMU加速欧洲扩张，已在12国上线，挑战亚马逊",
-        "original_title": "拼多多TEMU加速欧洲扩张，已在12国上线，挑战亚马逊",
-        "date": "2026-07-07",
-        "content": "【电商消费热点】拼多多TEMU加速欧洲扩张，已在12国上线，挑战亚马逊——来源：36氪。该热点反映了当前电商消费赛道的核心趋势。",
-        "image_path": "",
-        "image_url": "",
-        "source_name": "36氪",
-        "source_url": "https://36kr.com",
-        "source_label": "电商消费",
-        "track": "ecommerce",
-        "source_title": "拼多多TEMU加速欧洲扩张，已在12国上线，挑战亚马逊",
-        "html_file": "c:\\Users\\Cf1\\Desktop\\aihot-site\\article\\拼多多TEMU加速欧洲扩张_已在12国上线_挑战亚马逊.html",
-        "html_url": "/article/拼多多TEMU加速欧洲扩张_已在12国上线_挑战亚马逊.html",
-        "generated_at": "2026-07-07T20:04:22"
-      }
-    ],
-    "x_tweet": [
-      {
-        "title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "display_title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "original_title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "date": "2026-07-07",
-        "content": "🔥 DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾\n\nvia 36氪\n\nAI赛道持续升温，技术迭代速度前所未有。企业必须拥抱变化。\n\n#AI #HotTopic",
-        "content_cn": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "short1": "🚀 DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾... #breaking",
-        "short1_cn": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "source_name": "36氪",
-        "source_label": "AI 热点",
-        "track": "ai",
-        "generated_at": "2026-07-07T20:04:22"
-      },
-      {
-        "title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "display_title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "original_title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "date": "2026-07-07",
-        "content": "🔥 Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆\n\nvia TechCrunch\n\nAI赛道持续升温，技术迭代速度前所未有。企业必须拥抱变化。\n\n#AI #HotTopic",
-        "content_cn": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "short1": "🚀 Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆... #breaking",
-        "short1_cn": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "source_name": "TechCrunch",
-        "source_label": "AI 热点",
-        "track": "ai",
-        "generated_at": "2026-07-07T20:04:22"
-      }
-    ],
-    "xiaohongshu": [
-      {
-        "title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "display_title": "🔥 AI圈炸了！DeepSeek V4 发布，推理能力全面超越 GPT-5，...",
-        "original_title": "DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾",
-        "date": "2026-07-07",
-        "content": "姐妹们！今天的重磅消息来了 💥\n\n📌 DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾\n\nAI圈最近真的太卷了！每天都有新技术出来，不学真的会被淘汰啊姐妹们 😱 赶紧关注起来！\n\n💡 小龙虾已经帮大家整理好了关键信息，这篇值得收藏！\n\n#龙虾日记 #每日热点 #AI #干货分享",
-        "source_name": "36氪",
-        "source_label": "AI 热点",
-        "track": "ai",
-        "generated_at": "2026-07-07T20:04:22"
-      },
-      {
-        "title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "display_title": "🔥 AI圈炸了！Anthropic 发布 Claude Opus 4.5，企...",
-        "original_title": "Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆",
-        "date": "2026-07-07",
-        "content": "姐妹们！今天的重磅消息来了 💥\n\n📌 Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆\n\nAI圈最近真的太卷了！每天都有新技术出来，不学真的会被淘汰啊姐妹们 😱 赶紧关注起来！\n\n💡 小龙虾已经帮大家整理好了关键信息，这篇值得收藏！\n\n#龙虾日记 #每日热点 #AI #干货分享",
-        "source_name": "TechCrunch",
-        "source_label": "AI 热点",
-        "track": "ai",
-        "generated_at": "2026-07-07T20:04:22"
-      },
-      {
-        "title": "美联储暗示9月降息，全球股市集体上涨，科技股领涨",
-        "display_title": "🔥 财经圈炸了！美联储暗示9月降息，全球股市集体上涨，科技股领涨...",
-        "original_title": "美联储暗示9月降息，全球股市集体上涨，科技股领涨",
-        "date": "2026-07-07",
-        "content": "姐妹们！今天的重磅消息来了 💥\n\n📌 美联储暗示9月降息，全球股市集体上涨，科技股领涨\n\n搞钱人必看！今天的市场风向很关键，聪明的钱已经开始布局了 💰\n\n💡 小龙虾已经帮大家整理好了关键信息，这篇值得收藏！\n\n#龙虾日记 #每日热点 #搞钱 #干货分享",
-        "source_name": "Reuters",
-        "source_label": "金融理财",
-        "track": "finance",
-        "generated_at": "2026-07-07T20:04:22"
-      }
-    ],
-    "worldcup": [
-      {
-        "title": "龙虾三场全中！今日世界杯淘汰赛预测",
-        "display_title": "🦞 龙虾预测 2026-07-07 世界杯淘汰赛",
-        "original_title": "龙虾三场全中！今日世界杯淘汰赛预测",
-        "date": "2026-07-07",
-        "content": "🏆 龙虾今日世界杯淘汰赛预测：基于AI模型分析各队实力、伤病、历史交锋数据。更多详情请查看龙虾日记世界杯专题。",
-        "image_path": "",
-        "image_url": "",
-        "source_name": "龙虾日记",
-        "source_label": "世界杯",
-        "track": "worldcup",
-        "html_url": "/article/lobster_july2_prediction.html",
-        "generated_at": "2026-07-07T20:04:22"
-      }
-    ]
-  }
+  "events": [
+    {
+      "id": "e1",
+      "type": "worldcup",
+      "date": "2026-07-09",
+      "title": "世界杯半决赛",
+      "source": "FIFA官方",
+      "summary": "四强对决。可提前准备半决赛球队分析、历史对战数据、龙虾预测。方向：赛前分析长文 + 小红书比分预测图 + 公众号复盘推文。",
+      "isWarning": false
+    },
+    {
+      "id": "e2",
+      "type": "worldcup",
+      "date": "2026-07-14",
+      "title": "世界杯决赛",
+      "source": "FIFA官方",
+      "summary": "决赛之夜。方向：决赛前瞻 + 双方实力深度分析 + 赛后复盘 + 龙虾日记世界杯总结。这是整个世界杯期间流量最高的一天。",
+      "isWarning": false
+    },
+    {
+      "id": "e3",
+      "type": "seasonal",
+      "date": "2026-07-15",
+      "title": "暑假黄金期 · 教辅机构招生冲刺",
+      "source": "行业提醒",
+      "summary": "7月中旬是K12暑假班最后一波招生窗口。方向：生成朋友圈招生海报文案、社群招生话术、试听课邀约文章。",
+      "isWarning": false
+    },
+    {
+      "id": "e4",
+      "type": "seasonal",
+      "date": "2026-07-20",
+      "title": "暑期在线教育内容营销",
+      "source": "行业提醒",
+      "summary": "暑期过半，机构可发布暑假学习报告/成长记录，带动续费。方向：公众号学员故事推文 + 小红书学员成果展示。",
+      "isWarning": false
+    },
+    {
+      "id": "e5",
+      "type": "industry",
+      "date": "2026-07-25",
+      "title": "Q2 财报季密集发布",
+      "source": "财经日历",
+      "summary": "各大科技公司 Q2 财报陆续发布，关注 AI 相关业务增长数据。方向：财报解读文章 + 财经数据可视化 + 投资展望。",
+      "isWarning": false
+    },
+    {
+      "id": "e6",
+      "type": "industry",
+      "date": "2026-08-01",
+      "title": "Apple/Google 秋季发布会预热",
+      "source": "行业提醒",
+      "isWarning": true,
+      "summary": "⚠️ 预警：苹果和谷歌秋季发布会临近，AI 功能成焦点。建议提前储备相关解读素材。"
+    },
+    {
+      "id": "e7",
+      "type": "seasonal",
+      "date": "2026-08-05",
+      "title": "七夕营销节点",
+      "source": "营销日历",
+      "summary": "七夕（8月7日）前需完成方案。方向：社交 App/电商/礼品行业的文案和活动策划。",
+      "isWarning": false
+    },
+    {
+      "id": "e8",
+      "type": "industry",
+      "date": "2026-08-15",
+      "title": "开学季预热 · 学习工具推广",
+      "source": "行业提醒",
+      "isWarning": true,
+      "summary": "⚠️ 预警：距离开学还有2周，学习类App/教辅机构应开始布局开学季营销。"
+    }
+  ],
+  "generated": [],
+  "last_updated": "2026-07-08T14:16:21"
 }
