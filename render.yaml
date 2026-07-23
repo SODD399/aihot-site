@@ -1,0 +1,10 @@
+services:  
+  
+  - type: web  
+    name: aihot-site  
+    env: python  
+    buildCommand: ""  
+    startCommand: python server.py  
+    envVars:  
+      - key: DEEPSEEK_API_KEY  
+        sync: false 
