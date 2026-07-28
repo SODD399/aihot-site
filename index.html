@@ -3,325 +3,426 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>国内社媒 × AI Native</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>AI Hot Site</title>
 <style>
-:root {
-  --bg: #f5f3f0; --card: #fff; --accent: #1a73e8; --accent2: #1557b0;
-  --text: #1a1a1a; --text2: #555; --text3: #999; --border: #e5e2de;
-  --shadow: 0 1px 4px rgba(0,0,0,.05); --shadow-md: 0 4px 16px rgba(0,0,0,.08);
-  --radius: 12px; --radius-sm: 8px;
-  --ai: #4f6ef6; --finance: #e74c3c; --ecommerce: #27ae60;
-  --worldcup: #e67e22; --seasonal: #8e44ad; --industry: #16a085;
-  --official: #1a73e8; --matrix: #ff6d00;
+:root{
+  --bg:#f7f4ec;
+  --surface:#fffdf7;
+  --panel:#fffaf0;
+  --panel-strong:#fff2bd;
+  --text:#2a2318;
+  --muted:#746b5c;
+  --faint:#a69b87;
+  --line:#eadfca;
+  --line-strong:#d8c6a5;
+  --brand:#f4b000;
+  --brand-strong:#d99000;
+  --brand-soft:#fff4c8;
+  --ink:#201a12;
+  --nav:#17140f;
+  --nav-2:#2b251a;
+  --blue:#3167d8;
+  --green:#168a5b;
+  --red:#d64a3a;
+  --teal:#0f8c90;
+  --orange:#ed7a1f;
+  --purple:#7d55c7;
+  --shadow:0 1px 2px rgba(32,26,18,.06),0 10px 30px rgba(32,26,18,.08);
+  --radius:8px;
 }
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
-a{color:var(--accent);text-decoration:none}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif;line-height:1.5}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+a{color:var(--blue);text-decoration:none}
 
-.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.15);position:sticky;top:0;z-index:100}
-.header .logo{display:flex;align-items:center;gap:12px}
-.header .logo .icon{font-size:28px}
-.header .logo h1{font-size:18px;font-weight:800;letter-spacing:.5px}
-.header .logo .sub{font-size:11px;opacity:.6;font-weight:300}
-.header .status{display:flex;align-items:center;gap:16px;font-size:12px}
-.header .status .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
-.dot-online{background:#27ae60}.dot-offline{background:#e74c3c}
-.header .status .badge{padding:4px 12px;border-radius:12px;font-size:11px;font-weight:500}
-.badge-online{background:rgba(39,174,96,.2);color:#27ae60}
-.badge-offline{background:rgba(231,76,60,.2);color:#e74c3c}
+.app{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.sidebar{background:linear-gradient(180deg,var(--nav) 0%,var(--nav-2) 100%);color:#fff;padding:18px 14px;display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;align-items:center;gap:12px;padding:6px 8px 14px;border-bottom:1px solid rgba(255,255,255,.12)}
+.brand-mark{width:40px;height:40px;border-radius:8px;background:var(--brand);color:#1e1607;display:grid;place-items:center;font-weight:900}
+.brand-title{font-size:16px;font-weight:800;letter-spacing:0}
+.brand-sub{font-size:12px;color:rgba(255,255,255,.58);margin-top:2px}
+.nav-group{display:flex;flex-direction:column;gap:6px}
+.nav-label{padding:0 8px 4px;font-size:11px;color:rgba(255,255,255,.45);font-weight:700}
+.nav-item{width:100%;border:0;background:transparent;color:rgba(255,255,255,.76);display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:8px;text-align:left}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-item.active{background:var(--brand);color:#211604;font-weight:800}
+.nav-icon{width:22px;text-align:center}
+.sidebar-foot{margin-top:auto;padding:12px 8px;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:rgba(255,255,255,.58)}
 
-.main-layout{display:flex;height:calc(100vh - 57px);overflow:hidden}
-.left-panel{width:42%;min-width:380px;border-right:1px solid var(--border);overflow-y:auto;background:var(--bg);display:flex;flex-direction:column}
-.left-panel::-webkit-scrollbar{width:6px}
-.left-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
-.section-block{padding:0 16px 16px}
-.section-title-bar{display:flex;align-items:center;gap:10px;padding:16px 0 12px;position:sticky;top:0;background:var(--bg);z-index:10}
-.section-title-bar .icon{font-size:20px}
-.section-title-bar h2{font-size:16px;font-weight:800}
-.section-title-bar .sub{font-size:11px;color:var(--text3);margin-left:auto}
+.shell{min-width:0;display:flex;flex-direction:column}
+.topbar{height:64px;background:rgba(255,253,247,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 26px;position:sticky;top:0;z-index:20}
+.page-title{display:flex;align-items:center;gap:12px;min-width:0}
+.page-title h1{margin:0;font-size:20px;line-height:1.2}
+.page-title span{font-size:12px;color:var(--muted)}
+.top-actions{display:flex;align-items:center;gap:10px}
+.status-pill{height:32px;display:flex;align-items:center;gap:7px;padding:0 11px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot-online{background:var(--green)}.dot-offline{background:var(--red)}
+.count-badge{height:32px;display:flex;align-items:center;padding:0 11px;border-radius:999px;background:var(--brand-soft);border:1px solid #ecd787;color:#66501b;font-size:12px;font-weight:700}
+.btn-logout{height:32px;padding:0 12px;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:8px}
+.btn-logout:hover{border-color:var(--line-strong);color:var(--text)}
 
-.hotspot-item{background:var(--card);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;border:1px solid var(--border);transition:all .15s;position:relative}
-.hotspot-item:hover{border-color:#c4d7f2;box-shadow:var(--shadow-md)}
-.hotspot-item .item-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.hotspot-item .type-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.hotspot-item .type-label{font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase}
-.type-ai .type-dot{background:var(--ai)}.type-ai .type-label{background:#eef2ff;color:var(--ai)}
-.type-finance .type-dot{background:var(--finance)}.type-finance .type-label{background:#fdecea;color:var(--finance)}
-.type-ecommerce .type-dot{background:var(--ecommerce)}.type-ecommerce .type-label{background:#e8f8ef;color:var(--ecommerce)}
-.hotspot-item .item-date{font-size:11px;color:var(--text3);margin-left:auto}
-.hotspot-item .item-title{font-size:14px;font-weight:700;line-height:1.45;margin-bottom:6px;color:var(--text)}
-.hotspot-item .item-summary{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.hotspot-item .item-source{font-size:11px;color:var(--text3);margin-bottom:12px}
-.hotspot-item .item-actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn-sm{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
-.btn-gen{border:1px solid var(--accent);color:var(--accent);background:#fff}
-.btn-gen:hover{background:var(--accent);color:#fff}
-.btn-gen.matrix{border-color:var(--matrix);color:var(--matrix)}
-.btn-gen.matrix:hover{background:var(--matrix);color:#fff}
-.btn-gen:disabled{opacity:.4;cursor:not-allowed;background:#eee;border-color:#ccc;color:#999}
-.btn-gen:disabled:hover{background:#eee;color:#999}
+.content{padding:22px 26px 28px;min-width:0}
+.module{display:none}.module.active{display:block}
+.summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.metric{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:0 1px 0 rgba(255,255,255,.6)}
+.metric-label{font-size:12px;color:var(--muted);margin-bottom:5px}
+.metric-value{font-size:24px;font-weight:850;line-height:1;color:var(--ink)}
+.metric-note{font-size:11px;color:var(--faint);margin-top:6px}
 
-.event-item{background:var(--card);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;border:1px solid var(--border);transition:all .15s;border-left:3px solid var(--accent)}
-.event-item.warning{border-left-color:#e74c3c;background:#fffbfb}
-.event-item .event-date{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px}
-.event-item.warning .event-date{color:#e74c3c}
-.event-item .event-title{font-size:14px;font-weight:700;margin-bottom:6px}
-.event-item .event-summary{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:12px}
-.event-item .item-actions{display:flex;gap:8px;flex-wrap:wrap}
+.workspace{display:grid;grid-template-columns:minmax(420px,46%) minmax(0,1fr);gap:16px;align-items:start}
+.column{min-width:0}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;margin:0 0 10px}
+.section-head h2{font-size:15px;margin:0;color:var(--ink)}
+.section-head span{font-size:12px;color:var(--faint)}
+.stack{display:flex;flex-direction:column;gap:10px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.panel-pad{padding:16px}
 
-.right-panel{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--card)}
-.right-tabs{display:flex;border-bottom:2px solid var(--border);padding:12px 20px 0;gap:4px;flex-shrink:0}
-.right-tab{padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
-.right-tab:hover{color:var(--text)}
-.right-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.right-content{flex:1;overflow-y:auto;padding:20px}
-.right-content::-webkit-scrollbar{width:6px}
-.right-content::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+.tabs{display:flex;gap:6px;padding:8px;border-bottom:1px solid var(--line);background:var(--panel)}
+.tab{border:1px solid transparent;background:transparent;color:var(--muted);border-radius:7px;padding:8px 12px;font-size:13px;font-weight:750}
+.tab:hover{background:#fff;border-color:var(--line)}
+.tab.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.right-content{max-height:calc(100vh - 190px);overflow:auto;padding:14px}
+.right-content::-webkit-scrollbar,.feed::-webkit-scrollbar{width:8px}
+.right-content::-webkit-scrollbar-thumb,.feed::-webkit-scrollbar-thumb{background:#dac9aa;border-radius:999px}
+.feed{max-height:calc(100vh - 228px);overflow:auto;padding-right:4px}
 
-.gen-card{background:#fafaf7;border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;border:1px solid var(--border);transition:all .15s}
-.gen-card:hover{border-color:#c4d7f2}
-.gen-card .gen-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.gen-card .gen-type{font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px}
-.gen-type-wechat{background:#e8f4fd;color:#1a73e8}
-.gen-type-xiaohongshu{background:#fde4e4;color:#e74c3c}
-.gen-type-copywriting{background:#e8f8ef;color:#27ae60}
-.gen-card .gen-style{font-size:11px;padding:3px 10px;border-radius:4px}
-.gen-style-official{background:#e8edff;color:var(--official)}
-.gen-style-matrix{background:#fff3e6;color:var(--matrix)}
-.gen-card .gen-time{font-size:11px;color:var(--text3)}
-.gen-card .gen-title{font-size:16px;font-weight:700;margin-bottom:10px;line-height:1.4}
-.gen-card .gen-content{font-size:14px;line-height:1.8;color:#333;white-space:pre-wrap;word-break:break-word;max-height:500px;overflow-y:auto;padding-right:8px}
-.gen-card .gen-content::-webkit-scrollbar{width:4px}
-.gen-card .gen-content::-webkit-scrollbar-thumb{background:#ddd;border-radius:2px}
-.gen-card .gen-actions{margin-top:14px;display:flex;gap:8px;padding-top:14px;border-top:1px solid var(--border)}
-.btn-copy{padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text2);transition:all .15s}
-.btn-copy:hover{background:#f0f0f0;border-color:#aaa}
-.btn-copy.copied{background:#e8f8ef;border-color:#27ae60;color:#27ae60}
+.hotspot-item,.event-item,.gen-card,.auto-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;transition:border-color .15s,box-shadow .15s,transform .15s}
+.hotspot-item:hover,.event-item:hover,.gen-card:hover,.auto-card:hover{border-color:var(--line-strong);box-shadow:var(--shadow)}
+.item-head,.gen-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.type-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.type-label,.chip,.gen-type,.gen-style{font-size:11px;font-weight:800;border-radius:999px;padding:3px 8px;line-height:1.3}
+.type-ai .type-dot{background:var(--blue)}.type-ai .type-label{background:#e9efff;color:var(--blue)}
+.type-finance .type-dot{background:var(--red)}.type-finance .type-label{background:#ffebe8;color:var(--red)}
+.type-ecommerce .type-dot{background:var(--green)}.type-ecommerce .type-label{background:#e9f7ef;color:var(--green)}
+.type-worldcup .type-dot{background:var(--orange)}.type-worldcup .type-label{background:#fff0df;color:var(--orange)}
+.type-seasonal .type-dot{background:var(--purple)}.type-seasonal .type-label{background:#f1eafd;color:var(--purple)}
+.type-industry .type-dot{background:var(--teal)}.type-industry .type-label{background:#e4f6f7;color:var(--teal)}
+.item-date,.gen-time{margin-left:auto;font-size:11px;color:var(--faint);white-space:nowrap}
+.item-title,.event-title,.gen-title{font-weight:800;color:var(--ink);line-height:1.45}
+.item-title{font-size:14px;margin-bottom:5px}.event-title{font-size:14px;margin-bottom:6px}.gen-title{font-size:15px;margin-bottom:10px}
+.item-summary,.event-summary{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.item-source{font-size:11px;color:var(--faint);margin-bottom:11px}
+.event-item{border-left:4px solid var(--brand)}
+.event-item.warning{border-left-color:var(--red);background:#fff9f7}
+.event-date{font-size:12px;color:var(--brand-strong);font-weight:850;margin-bottom:6px}
+.event-item.warning .event-date{color:var(--red)}
+.item-actions,.gen-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-sm,.btn-primary,.btn-secondary,.btn-copy{border-radius:7px;border:1px solid transparent;font-weight:800;transition:background .15s,border-color .15s,color .15s}
+.btn-sm{height:30px;padding:0 10px;font-size:12px;background:#fff;border-color:var(--line);color:var(--text)}
+.btn-sm:hover{border-color:var(--brand);background:var(--brand-soft)}
+.btn-gen{border-color:#e4c66a;color:#624711;background:#fffdf6}
+.btn-gen.matrix{border-color:#f0b184;color:#8b3f10;background:#fff7ef}
+.btn-gen:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{height:38px;padding:0 16px;background:var(--ink);color:#fff}
+.btn-primary:hover{background:#3a2f21}
+.btn-secondary{height:38px;padding:0 14px;background:#fff;color:var(--ink);border-color:var(--line)}
+.btn-secondary:hover{border-color:var(--line-strong);background:var(--brand-soft)}
+.btn-copy{height:32px;padding:0 12px;background:#fff;color:var(--muted);border-color:var(--line)}
+.btn-copy:hover{color:var(--ink);border-color:var(--line-strong)}
+.gen-type-wechat{background:#e9efff;color:var(--blue)}
+.gen-type-xiaohongshu{background:#ffebe8;color:var(--red)}
+.gen-type-copywriting{background:#e9f7ef;color:var(--green)}
+.gen-style-official{background:#fff2bd;color:#745300}
+.gen-style-matrix{background:#fff0df;color:#9a4a13}
+.gen-content{font-size:14px;line-height:1.85;color:#3f3629;white-space:pre-wrap;word-break:break-word;max-height:430px;overflow:auto;padding-right:6px}
+.gen-actions{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
 
-.copywriting-input{padding:24px 20px}
-.copywriting-input label{display:block;font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text)}
-.copywriting-input .url-row{display:flex;gap:8px;margin-bottom:16px}
-.copywriting-input input[type=url],.copywriting-input textarea{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border .15s}
-.copywriting-input input:focus,.copywriting-input textarea:focus{border-color:var(--accent)}
-.copywriting-input textarea{width:100%;min-height:120px;resize:vertical;margin-bottom:16px}
-.btn-primary{padding:10px 24px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
-.btn-primary:hover{background:var(--accent2)}
-.btn-secondary{padding:10px 20px;background:#fff;color:var(--accent);border:1px solid var(--accent);border-radius:8px;font-size:14px;cursor:pointer;transition:all .15s}
-.btn-secondary:hover{background:#f0f5ff}
-.btn-logout{padding:6px 12px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.22);border-radius:6px;font-size:12px;cursor:pointer}
-.btn-logout:hover{background:rgba(255,255,255,.16)}
-.check-row{display:flex;align-items:center;gap:8px;margin:-4px 0 16px;font-size:13px;color:var(--text2)}
-.check-row input{width:auto;flex:0 0 auto}
-.extract-status{padding:8px 0;font-size:12px;min-height:24px}
-.extract-status.success{color:#27ae60}.extract-status.error{color:#e74c3c}
+.copywriting-input{display:grid;gap:12px;margin-bottom:14px}
+.copywriting-input label{font-size:13px;font-weight:850;color:var(--ink)}
+.url-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.copywriting-input input[type=url],.copywriting-input textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;padding:10px 12px;color:var(--text);outline:none}
+.copywriting-input textarea{min-height:130px;resize:vertical}
+.copywriting-input input:focus,.copywriting-input textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(244,176,0,.16)}
+.check-row{display:flex!important;align-items:center;gap:8px;color:var(--muted);font-weight:700!important}
+.extract-status{font-size:12px;min-height:18px;color:var(--faint)}
+.extract-status.success{color:var(--green)}.extract-status.error{color:var(--red)}
 
-.loading{text-align:center;padding:60px 20px;color:var(--text3)}
-.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+.automation-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;align-items:start}
+.auto-hero{background:linear-gradient(135deg,#201a12 0%,#5a4217 60%,#b77d00 100%);color:#fff;border-radius:var(--radius);padding:20px;display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:16px;min-height:138px}
+.auto-hero h2{margin:0 0 6px;font-size:22px}
+.auto-hero p{margin:0;color:rgba(255,255,255,.72);font-size:13px;max-width:620px}
+.auto-hero .btn-primary{background:var(--brand);color:#211604}
+.auto-hero .btn-primary:hover{background:#ffc83a}
+.workflow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.step-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px}
+.step-num{width:28px;height:28px;border-radius:8px;background:var(--brand-soft);display:grid;place-items:center;font-size:12px;font-weight:900;color:#7a5700;margin-bottom:10px}
+.step-card h3{font-size:13px;margin:0 0 5px;color:var(--ink)}
+.step-card p{font-size:12px;margin:0;color:var(--muted);line-height:1.55}
+.auto-card h3{margin:0 0 10px;font-size:14px;color:var(--ink)}
+.task-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.task-row:first-of-type{border-top:0;padding-top:0}
+.task-icon{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:var(--brand-soft);font-weight:900}
+.task-title{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task-meta{font-size:12px;color:var(--faint);margin-top:2px}
+.chip{background:#f2eadb;color:var(--muted)}
+.chip.green{background:#e9f7ef;color:var(--green)}.chip.orange{background:#fff0df;color:var(--orange)}.chip.red{background:#ffebe8;color:var(--red)}
+.account-list{display:grid;gap:10px}
+.account{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff}
+.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#111;color:#fff;font-size:12px;font-weight:900}
+.account strong{display:block;font-size:13px}.account span{display:block;font-size:12px;color:var(--faint)}
+
+.loading,.empty-state{text-align:center;color:var(--faint);padding:46px 14px}
+.spinner{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
-.empty-state .emoji{font-size:48px;margin-bottom:12px}
-.empty-state p{font-size:14px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 24px;border-radius:20px;font-size:13px;z-index:999;animation:toastIn .3s;pointer-events:none}
-@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:999px;padding:10px 18px;font-size:13px;z-index:1000;box-shadow:var(--shadow)}
 
-@media(max-width:900px){
-  .main-layout{flex-direction:column;height:auto}
-  .left-panel{width:100%;min-width:0;max-height:50vh;border-right:none;border-bottom:2px solid var(--border)}
-  .right-panel{min-height:50vh}
+@media(max-width:1080px){
+  .app{grid-template-columns:86px minmax(0,1fr)}
+  .brand-text,.nav-label,.nav-text,.sidebar-foot{display:none}
+  .brand{justify-content:center}.nav-item{justify-content:center}
+  .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .workspace,.automation-grid{grid-template-columns:1fr}
+  .feed,.right-content{max-height:none}
+}
+@media(max-width:720px){
+  .app{display:block}
+  .sidebar{position:sticky;top:0;z-index:30;flex-direction:row;align-items:center;overflow:auto;padding:10px}
+  .brand{border-bottom:0;padding:0}.nav-group{flex-direction:row}.nav-label,.sidebar-foot{display:none}
+  .nav-text{display:inline}.nav-item{white-space:nowrap}
+  .topbar{height:auto;align-items:flex-start;gap:12px;flex-direction:column;padding:14px}
+  .top-actions{flex-wrap:wrap}.content{padding:14px}
+  .summary-grid,.workflow{grid-template-columns:1fr}
+  .url-row{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
-
-<header class="header">
-  <div class="logo">
-    <span class="icon">🦞</span>
-    <div>
-      <h1>国内社媒 × AI Native</h1>
-      <span class="sub">热点追踪 · 多平台生成 · 文案洗稿</span>
-    </div>
-  </div>
-  <div class="status">
-    <span id="aiStatus"><span class="dot dot-offline"></span>检测中...</span>
-    <span id="countBadge" class="badge badge-offline"></span>
-    <button id="logoutBtn" class="btn-logout" onclick="logout()" style="display:none">退出</button>
-  </div>
-</header>
-
-<div class="main-layout">
-  <div class="left-panel" id="leftPanel">
-    <div class="section-block">
-      <div class="section-title-bar">
-        <span class="icon">🔥</span><h2>今日热点</h2>
-        <span class="sub" id="hotspotRange">近3天</span>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">AI</div>
+      <div class="brand-text">
+        <div class="brand-title">AI Hot Site</div>
+        <div class="brand-sub">内容生产与运营中台</div>
       </div>
-      <div id="hotspotList"><div class="loading"><div class="spinner"></div>加载热点...</div></div>
     </div>
-    <div class="section-block">
-      <div class="section-title-bar">
-        <span class="icon">📅</span><h2>专题节点</h2>
-        <span class="sub" id="eventRange">未来1月+</span>
-      </div>
-      <div id="eventList"><div class="loading"><div class="spinner"></div>加载节点...</div></div>
+    <div class="nav-group">
+      <div class="nav-label">工作区</div>
+      <button class="nav-item active" data-module="hotspot"><span class="nav-icon">H</span><span class="nav-text">热点内容</span></button>
+      <button class="nav-item" data-module="automation"><span class="nav-icon">D</span><span class="nav-text">自动化运营</span></button>
     </div>
-  </div>
+    <div class="sidebar-foot">生产环境 · 团队登录</div>
+  </aside>
 
-  <div class="right-panel">
-    <div class="right-tabs" id="rightTabs">
-      <button class="right-tab active" data-tab="wechat">📱 公众号推文</button>
-      <button class="right-tab" data-tab="xiaohongshu">📕 小红书图文</button>
-      <button class="right-tab" data-tab="copywriting">✏️ 文案生成</button>
+  <main class="shell">
+    <header class="topbar">
+      <div class="page-title">
+        <div>
+          <h1 id="moduleTitle">热点内容</h1>
+          <span id="moduleSubtitle">热点追踪、节点预警、多平台内容生成</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="status-pill" id="aiStatus"><span class="dot dot-offline"></span>检测中...</span>
+        <span id="countBadge" class="count-badge">加载中</span>
+        <button id="logoutBtn" class="btn-logout" onclick="logout()" style="display:none">退出</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="module active" id="module-hotspot">
+        <div class="summary-grid">
+          <div class="metric"><div class="metric-label">近 3 天热点</div><div class="metric-value" id="metricHotspots">-</div><div class="metric-note">可直接生成内容</div></div>
+          <div class="metric"><div class="metric-label">未来节点</div><div class="metric-value" id="metricEvents">-</div><div class="metric-note">提前储备选题</div></div>
+          <div class="metric"><div class="metric-label">生成历史</div><div class="metric-value" id="metricGenerated">-</div><div class="metric-note">团队复用资产</div></div>
+          <div class="metric"><div class="metric-label">AI 状态</div><div class="metric-value" id="metricAi">-</div><div class="metric-note">DeepSeek / easycode</div></div>
+        </div>
+
+        <div class="workspace">
+          <div class="column">
+            <div class="section-head"><h2>热点与节点池</h2><span id="poolHint">按时间排序</span></div>
+            <div class="feed">
+              <div class="section-head"><h2>今日热点</h2><span>近 3 天</span></div>
+              <div class="stack" id="hotspotList"><div class="loading"><div class="spinner"></div>加载热点...</div></div>
+              <div class="section-head" style="margin-top:16px"><h2>专题节点</h2><span>未来 1 月+</span></div>
+              <div class="stack" id="eventList"><div class="loading"><div class="spinner"></div>加载节点...</div></div>
+            </div>
+          </div>
+
+          <div class="column panel">
+            <div class="tabs" id="rightTabs">
+              <button class="tab active" data-tab="wechat">公众号推文</button>
+              <button class="tab" data-tab="xiaohongshu">小红书图文</button>
+              <button class="tab" data-tab="copywriting">文案洗稿</button>
+            </div>
+            <div class="right-content" id="rightContent">
+              <div class="empty-state"><p>点击左侧热点或节点的生成按钮开始。</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="module" id="module-automation">
+        <div class="auto-hero">
+          <div>
+            <h2>抖音自动化运营</h2>
+            <p>发布、评论、粉丝维护和机会池会在这里统一管理。当前先搭建工作台结构，后续接入抖音开放平台授权与审核流。</p>
+          </div>
+          <button class="btn-primary" onclick="toast('抖音授权接入将在下一阶段配置')">连接抖音账号</button>
+        </div>
+
+        <div class="workflow">
+          <div class="step-card"><div class="step-num">01</div><h3>视频发布</h3><p>上传视频，设置文案、标签、封面和发布时间。</p></div>
+          <div class="step-card"><div class="step-num">02</div><h3>评论收件箱</h3><p>聚合作品评论，生成建议回复，人工确认。</p></div>
+          <div class="step-card"><div class="step-num">03</div><h3>粉丝维护</h3><p>沉淀高价值互动对象和常用回复策略。</p></div>
+          <div class="step-card"><div class="step-num">04</div><h3>机会池</h3><p>跟踪热门作品和新作品，产出评论草稿。</p></div>
+        </div>
+
+        <div class="automation-grid">
+          <div class="stack">
+            <div class="auto-card">
+              <h3>发布队列</h3>
+              <div class="task-row"><div class="task-icon">V</div><div><div class="task-title">EasyClaw 热点跟进短视频</div><div class="task-meta">待补充封面 · 建议 20:30 发布</div></div><span class="chip orange">待配置</span></div>
+              <div class="task-row"><div class="task-icon">T</div><div><div class="task-title">AI 内容生产工具种草</div><div class="task-meta">文案已生成 · 需要人工审核</div></div><span class="chip green">草稿</span></div>
+            </div>
+            <div class="auto-card">
+              <h3>评论收件箱</h3>
+              <div class="task-row"><div class="task-icon">C</div><div><div class="task-title">3 条评论等待回复</div><div class="task-meta">来自最近 24 小时发布作品</div></div><span class="chip red">待处理</span></div>
+              <div class="task-row"><div class="task-icon">A</div><div><div class="task-title">AI 已生成 5 条候选回复</div><div class="task-meta">需要账号负责人确认后发布</div></div><span class="chip">审核中</span></div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="auto-card">
+              <h3>运营账号</h3>
+              <div class="account-list">
+                <div class="account"><div class="avatar">主</div><div><strong>品牌官方号</strong><span>未授权 · 等待接入</span></div></div>
+                <div class="account"><div class="avatar">矩</div><div><strong>矩阵号 A</strong><span>未授权 · 评论策略待定</span></div></div>
+              </div>
+            </div>
+            <div class="auto-card">
+              <h3>机会池</h3>
+              <div class="task-row"><div class="task-icon">K</div><div><div class="task-title">AI 工具 / 内容运营关键词</div><div class="task-meta">建议每日抓取热门与新发作品</div></div><span class="chip">待接入</span></div>
+              <div class="task-row"><div class="task-icon">R</div><div><div class="task-title">评论频控与风险提示</div><div class="task-meta">先走人工确认，避免营销骚扰风险</div></div><span class="chip green">建议</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-    <div class="right-content" id="rightContent">
-      <div class="empty-state"><div class="emoji">📝</div><p>点击左侧热点的「生成」按钮开始</p></div>
-    </div>
-  </div>
+  </main>
 </div>
 
 <script>
-// ═══════════ DEMO DATA ═══════════
-function getDemoHotspots() {
-  var t = new Date().toISOString().split('T')[0];
-  var y = new Date(Date.now()-86400000).toISOString().split('T')[0];
+function getDemoHotspots(){
+  var t=new Date().toISOString().split('T')[0];
+  var y=new Date(Date.now()-86400000).toISOString().split('T')[0];
   return [
-    {id:'h1',type:'ai',date:t,time:'08:30',title:'DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾',source:'36氪',sourceUrl:'https://36kr.com',summary:'DeepSeek 最新模型在多项基准测试中超越 GPT-5，且完全开源。中小企业也能用上顶级 AI 了。'},
+    {id:'h1',type:'ai',date:t,time:'08:30',title:'DeepSeek V4 发布，推理能力全面超越 GPT-5，开源社区沸腾',source:'36氪',sourceUrl:'https://36kr.com',summary:'DeepSeek 最新模型在多项基准测试中超越 GPT-5，且完全开源。中小企业也能用上顶级 AI。'},
     {id:'h2',type:'ai',date:t,time:'07:00',title:'Anthropic 发布 Claude Opus 4.5，企业级 AI 助手新标杆',source:'TechCrunch',sourceUrl:'https://techcrunch.com',summary:'新一代模型大幅提升推理和代码能力，API 价格同步下调 50%。'},
     {id:'h3',type:'finance',date:t,time:'09:00',title:'A股成交额突破2万亿，AI概念股领涨',source:'华尔街见闻',sourceUrl:'https://wallstreetcn.com',summary:'市场情绪高涨，北向资金大幅流入，科技板块成为最大赢家。'},
     {id:'h4',type:'finance',date:t,time:'10:30',title:'比特币突破15万美元，机构投资者加速入场',source:'Bloomberg',sourceUrl:'https://bloomberg.com',summary:'多家华尔街机构获批加密货币托管业务，比特币创历史新高。'},
-    {id:'h5',type:'ecommerce',date:t,time:'08:00',title:'TikTok Shop 东南亚单日GMV破10亿美元',source:'虎嗅',sourceUrl:'https://huxiu.com',summary:'直播电商在东南亚爆发式增长，MCN机构和品牌加速入局。'},
-    {id:'h6',type:'ecommerce',date:y,time:'16:00',title:'SHEIN 秘密提交伦敦IPO申请，估值超800亿美元',source:'Financial Times',sourceUrl:'https://ft.com',summary:'快时尚巨头加速全球化扩张，伦敦上市将成今年最大 IPO。'},
-    {id:'h7',type:'ai',date:y,time:'14:00',title:'英伟达发布下一代 AI 推理芯片 Blackwell Ultra',source:'The Verge',sourceUrl:'https://theverge.com',summary:'算力再翻倍，推理成本大幅下降，AI 应用爆发期到来。'},
+    {id:'h5',type:'ecommerce',date:t,time:'08:00',title:'TikTok Shop 东南亚单日GMV破10亿美元',source:'虎嗅',sourceUrl:'https://huxiu.com',summary:'直播电商在东南亚爆发式增长，MCN 机构和品牌加速入局。'},
+    {id:'h6',type:'ecommerce',date:y,time:'16:00',title:'SHEIN 秘密提交伦敦IPO申请，估值超800亿美元',source:'Financial Times',sourceUrl:'https://ft.com',summary:'快时尚巨头加速全球化扩张，伦敦上市将成今年最大 IPO。'}
   ];
 }
-function getDemoEvents() {
+function getDemoEvents(){
   return [
-    {id:'e1',type:'worldcup',date:'2026-07-09',title:'世界杯半决赛',source:'FIFA官方',summary:'四强对决。方向：赛前分析长文 + 小红书比分预测 + 公众号深度复盘。',isWarning:false},
-    {id:'e2',type:'worldcup',date:'2026-07-14',title:'世界杯决赛',source:'FIFA官方',summary:'决赛之夜。整个世界杯期间流量最高的一天。方向：决赛前瞻+赛后复盘+龙虾日记世界杯总结。',isWarning:false},
-    {id:'e3',type:'seasonal',date:'2026-07-15',title:'暑假黄金期 · 教辅机构招生冲刺',source:'行业提醒',summary:'7月中旬是K12暑假班最后一波招生窗口。方向：朋友圈招生海报+社群话术+试听课邀约。',isWarning:false},
-    {id:'e4',type:'seasonal',date:'2026-07-20',title:'暑期在线教育内容营销',source:'行业提醒',summary:'暑期过半，机构可发布暑假学习报告/成长记录带动续费。方向：公众号学员故事+小红书成果展示。',isWarning:false},
-    {id:'e5',type:'industry',date:'2026-07-25',title:'Q2 财报季密集发布',source:'财经日历',summary:'各大科技公司 Q2 财报陆续发布。方向：财报解读文章+财经数据可视化+投资展望。',isWarning:false},
-    {id:'e6',type:'industry',date:'2026-08-01',title:'Apple/Google 秋季发布会预热',source:'行业提醒',isWarning:true,summary:'⚠️ 预警：苹果和谷歌秋季发布会临近，AI 功能成焦点。建议提前储备相关解读素材。'},
-    {id:'e7',type:'seasonal',date:'2026-08-05',title:'七夕营销节点',source:'营销日历',summary:'七夕前需完成方案。方向：社交App/电商/礼品行业的文案和活动策划。',isWarning:false},
-    {id:'e8',type:'industry',date:'2026-08-15',title:'开学季预热 · 学习工具推广',source:'行业提醒',isWarning:true,summary:'⚠️ 预警：距开学2周，学习类App/教辅机构应布局开学季营销。'},
+    {id:'e1',type:'worldcup',date:'2026-07-29',title:'世界杯复盘选题',source:'内容日历',summary:'适合做赛后复盘、热点借势和评论区互动话术。',isWarning:false},
+    {id:'e2',type:'seasonal',date:'2026-08-05',title:'七夕营销节点',source:'营销日历',summary:'七夕前需完成方案。方向：社交、电商、礼品行业文案和活动策划。',isWarning:false},
+    {id:'e3',type:'industry',date:'2026-08-15',title:'开学季预热 · 学习工具推广',source:'行业提醒',summary:'预警：学习类 App 和教辅机构应开始布局开学季内容。',isWarning:true}
   ];
 }
 
-// ═══════════ STATE ═══════════
-var currentTab = 'wechat';
-var hotspots = [];
-var events = [];
-var generated = [];
-var aiReady = false;
-var generating = false;
-var useServer = true;
+var currentTab='wechat';
+var currentModule='hotspot';
+var hotspots=[];
+var events=[];
+var generated=[];
+var aiReady=false;
+var generating=false;
 
-function apiFetch(url, opts) {
-  return fetch(url, opts).then(function(r){
-    if (r.status === 401) {
-      window.location.href = '/login';
+function apiFetch(url,opts){
+  return fetch(url,opts).then(function(r){
+    if(r.status===401){
+      window.location.href='/login';
       throw new Error('unauthorized');
     }
     return r;
   });
 }
 
-// ═══════════ INIT ═══════════
-function init() {
+function init(){
+  setupNavigation();
+  setupTabs();
   checkStatus().then(function(){
-    return Promise.all([loadHotspots(), loadEvents(), loadGenerated()]);
-  }).then(function(){
-    setupTabs();
+    return Promise.all([loadHotspots(),loadEvents(),loadGenerated()]);
   });
 }
 
-function checkStatus() {
+function checkStatus(){
   return apiFetch('/api/status').then(function(r){return r.json();}).then(function(status){
-    aiReady = status.ai_ready;
-    document.getElementById('aiStatus').innerHTML =
-      aiReady ? '<span class="dot dot-online"></span>AI 就绪' : '<span class="dot dot-offline"></span>API Key 未配置';
-    document.getElementById('countBadge').textContent =
-      '热点' + status.counts.hotspots + ' · 节点' + status.counts.events + ' · 已生成' + status.counts.generated;
-    document.getElementById('countBadge').className = aiReady ? 'badge badge-online' : 'badge badge-offline';
-    var logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) logoutBtn.style.display = status.auth_enabled ? 'inline-block' : 'none';
+    aiReady=status.ai_ready;
+    updateStatusUI(status);
   }).catch(function(){
-    useServer = false;
-    aiReady = false;
-    document.getElementById('aiStatus').innerHTML = '<span class="dot dot-offline"></span>演示模式 · 启动 server.py 以启用 AI';
-    document.getElementById('countBadge').textContent = '热点7 · 节点8 · 离线';
-    document.getElementById('countBadge').className = 'badge badge-offline';
+    aiReady=false;
+    updateStatusUI({ai_ready:false,backend:'demo',auth_enabled:false,counts:{hotspots:7,events:3,generated:0}});
   });
 }
 
-function loadHotspots() {
-  return apiFetch('/api/hotspots').then(function(r){return r.json();}).then(function(data){
-    hotspots = data;
-  }).catch(function(){
-    hotspots = getDemoHotspots();
-  }).then(function(){
-    renderHotspots();
-  });
+function updateStatusUI(status){
+  var online=status.ai_ready;
+  document.getElementById('aiStatus').innerHTML='<span class="dot '+(online?'dot-online':'dot-offline')+'"></span>'+(online?'AI 就绪':'演示 / 未配置');
+  var counts=status.counts||{};
+  document.getElementById('countBadge').textContent='热点 '+(counts.hotspots||0)+' · 节点 '+(counts.events||0)+' · 历史 '+(counts.generated||0);
+  document.getElementById('metricHotspots').textContent=counts.hotspots||0;
+  document.getElementById('metricEvents').textContent=counts.events||0;
+  document.getElementById('metricGenerated').textContent=counts.generated||0;
+  document.getElementById('metricAi').textContent=online?'就绪':'未配';
+  var logoutBtn=document.getElementById('logoutBtn');
+  if(logoutBtn)logoutBtn.style.display=status.auth_enabled?'inline-block':'none';
 }
 
-function loadEvents() {
-  return apiFetch('/api/events').then(function(r){return r.json();}).then(function(data){
-    events = data;
-  }).catch(function(){
-    events = getDemoEvents();
-  }).then(function(){
-    renderEvents();
-  });
+function loadHotspots(){
+  return apiFetch('/api/hotspots').then(function(r){return r.json();}).then(function(data){hotspots=data;}).catch(function(){hotspots=getDemoHotspots();}).then(renderHotspots);
+}
+function loadEvents(){
+  return apiFetch('/api/events').then(function(r){return r.json();}).then(function(data){events=data;}).catch(function(){events=getDemoEvents();}).then(renderEvents);
+}
+function loadGenerated(){
+  return apiFetch('/api/generated').then(function(r){return r.json();}).then(function(data){generated=data;}).catch(function(){}).then(renderRightPanel);
 }
 
-function loadGenerated() {
-  apiFetch('/api/generated').then(function(r){return r.json();}).then(function(data){
-    generated = data;
-  }).catch(function(){}).then(function(){
-    renderRightPanel();
-  });
-}
-
-// ═══════════ RENDER ═══════════
-function renderHotspots() {
-  var el = document.getElementById('hotspotList');
-  if (!hotspots.length) {el.innerHTML='<div class="empty-state"><p>暂无热点</p></div>';return;}
-  var typeLabel = {ai:'AI',finance:'金融',ecommerce:'电商',worldcup:'世界杯',seasonal:'节日',industry:'行业'};
-  var html = '';
-  for (var i=0;i<hotspots.length;i++) {
-    var h=hotspots[i], tl=typeLabel[h.type]||h.type;
-    html+='<div class="hotspot-item type-'+h.type+'">';
-    html+='<div class="item-head"><span class="type-dot"></span><span class="type-label">'+tl+'</span><span class="item-date">'+h.date+' '+((h.time||''))+'</span></div>';
+function renderHotspots(){
+  var el=document.getElementById('hotspotList');
+  if(!hotspots.length){el.innerHTML='<div class="empty-state"><p>暂无近 3 天热点。可以先刷新数据或使用节点池。</p></div>';return;}
+  var typeLabel={ai:'AI',finance:'金融',ecommerce:'电商',worldcup:'世界杯',seasonal:'节日',industry:'行业'};
+  var html='';
+  for(var i=0;i<hotspots.length;i++){
+    var h=hotspots[i],tl=typeLabel[h.type]||h.type||'热点';
+    html+='<div class="hotspot-item type-'+escapeAttr(h.type||'industry')+'">';
+    html+='<div class="item-head"><span class="type-dot"></span><span class="type-label">'+escapeHtml(tl)+'</span><span class="item-date">'+escapeHtml(h.date||'')+' '+escapeHtml(h.time||'')+'</span></div>';
     html+='<div class="item-title">'+escapeHtml(h.title)+'</div>';
     if(h.summary)html+='<div class="item-summary">'+escapeHtml(h.summary)+'</div>';
-    html+='<div class="item-source">📰 '+escapeHtml(h.source)+'</div>';
+    html+='<div class="item-source">'+escapeHtml(h.source||'未知来源')+'</div>';
     html+='<div class="item-actions">';
-    html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+h.id+'\',\'wechat\',\'official\')" '+(aiReady?'':'disabled')+'>🎯 生成官号推文</button>';
-    html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+h.id+'\',\'wechat\',\'matrix\')" '+(aiReady?'':'disabled')+'>🔥 生成矩阵号推文</button>';
-    html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+h.id+'\',\'xiaohongshu\',\'official\')" '+(aiReady?'':'disabled')+'>📕 官号图文</button>';
-    html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+h.id+'\',\'xiaohongshu\',\'matrix\')" '+(aiReady?'':'disabled')+'>💬 矩阵号图文</button>';
+    html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+escapeAttr(h.id)+'\',\'wechat\',\'official\')" '+(aiReady?'':'disabled')+'>官号推文</button>';
+    html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+escapeAttr(h.id)+'\',\'wechat\',\'matrix\')" '+(aiReady?'':'disabled')+'>矩阵推文</button>';
+    html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+escapeAttr(h.id)+'\',\'xiaohongshu\',\'official\')" '+(aiReady?'':'disabled')+'>官号图文</button>';
+    html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+escapeAttr(h.id)+'\',\'xiaohongshu\',\'matrix\')" '+(aiReady?'':'disabled')+'>矩阵图文</button>';
     html+='</div></div>';
   }
   el.innerHTML=html;
 }
 
-function renderEvents() {
-  var el = document.getElementById('eventList');
-  if (!events.length) {el.innerHTML='<div class="empty-state"><p>暂无节点</p></div>';return;}
-  var typeLabel = {worldcup:'⚽ 世界杯',seasonal:'🌞 节日/季节',industry:'🏭 行业',holiday:'🎉 假期'};
-  var html = '';
-  for (var i=0;i<events.length;i++) {
-    var e=events[i], tl=typeLabel[e.type]||e.type;
-    html+='<div class="event-item'+(e.isWarning?' warning':'')+'">';
-    html+='<div class="event-date">📅 '+e.date+' · '+tl+'</div>';
-    html+='<div class="event-title">'+(e.isWarning?'⚠️ ':'')+escapeHtml(e.title)+'</div>';
+function renderEvents(){
+  var el=document.getElementById('eventList');
+  if(!events.length){el.innerHTML='<div class="empty-state"><p>暂无未来节点。</p></div>';return;}
+  var typeLabel={worldcup:'世界杯',seasonal:'节日/季节',industry:'行业',holiday:'假期'};
+  var html='';
+  for(var i=0;i<events.length;i++){
+    var e=events[i],tl=typeLabel[e.type]||e.type||'节点';
+    html+='<div class="event-item type-'+escapeAttr(e.type||'industry')+(e.isWarning?' warning':'')+'">';
+    html+='<div class="event-date">'+escapeHtml(e.date||'')+' · '+escapeHtml(tl)+'</div>';
+    html+='<div class="event-title">'+escapeHtml(e.title)+'</div>';
     if(e.summary)html+='<div class="event-summary">'+escapeHtml(e.summary)+'</div>';
     if(!e.isWarning){
       html+='<div class="item-actions">';
-      html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+e.id+'\',\'wechat\',\'official\')" '+(aiReady?'':'disabled')+'>🎯 官号推文</button>';
-      html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+e.id+'\',\'wechat\',\'matrix\')" '+(aiReady?'':'disabled')+'>🔥 矩阵号推文</button>';
-      html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+e.id+'\',\'xiaohongshu\',\'official\')" '+(aiReady?'':'disabled')+'>📕 官号图文</button>';
-      html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+e.id+'\',\'xiaohongshu\',\'matrix\')" '+(aiReady?'':'disabled')+'>💬 矩阵号图文</button>';
+      html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+escapeAttr(e.id)+'\',\'wechat\',\'official\')" '+(aiReady?'':'disabled')+'>官号推文</button>';
+      html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+escapeAttr(e.id)+'\',\'wechat\',\'matrix\')" '+(aiReady?'':'disabled')+'>矩阵推文</button>';
+      html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+escapeAttr(e.id)+'\',\'xiaohongshu\',\'official\')" '+(aiReady?'':'disabled')+'>官号图文</button>';
+      html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+escapeAttr(e.id)+'\',\'xiaohongshu\',\'matrix\')" '+(aiReady?'':'disabled')+'>矩阵图文</button>';
       html+='</div>';
     }
     html+='</div>';
@@ -329,124 +430,100 @@ function renderEvents() {
   el.innerHTML=html;
 }
 
-// ═══════════ GENERATE ═══════════
-function doGenerate(itemId, genType, style) {
+function doGenerate(itemId,genType,style){
   if(generating)return;
-  var item = hotspots.find(function(h){return h.id===itemId;}) || events.find(function(e){return e.id===itemId;});
+  var item=hotspots.find(function(h){return h.id===itemId;})||events.find(function(e){return e.id===itemId;});
   if(!item){toast('找不到该条目');return;}
-  if(!aiReady){toast('⚠️ AI 未配置。请在本地运行 server.py 后访问 localhost:8080');return;}
-
+  if(!aiReady){toast('AI 未配置，请检查环境变量');return;}
   generating=true;
-  var styleLabel = style==='official'?'官号':'矩阵号';
-  var typeLabel = genType==='wechat'?'公众号推文':genType==='xiaohongshu'?'小红书图文':'文案';
-  toast('🔄 正在生成 '+styleLabel+typeLabel+'...');
-  document.getElementById('rightContent').innerHTML='<div class="loading"><div class="spinner"></div><p>AI 正在生成 '+styleLabel+typeLabel+'...</p><p style="font-size:12px;color:var(--text3)">这可能需要 20-60 秒</p></div>';
-
+  var styleLabel=style==='official'?'官号':'矩阵号';
+  var typeLabel=genType==='wechat'?'公众号推文':'小红书图文';
+  toast('正在生成 '+styleLabel+typeLabel+'...');
+  document.getElementById('rightContent').innerHTML='<div class="loading"><div class="spinner"></div><p>AI 正在生成 '+styleLabel+typeLabel+'...</p><p style="font-size:12px;color:var(--faint)">这可能需要 20-60 秒</p></div>';
   apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:item,type:genType,style:style})})
     .then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error(e.error||'生成失败')});return r.json();})
-    .then(function(result){generated.unshift(result);renderRightPanel();toast('✅ 生成完成！');})
-    .catch(function(e){toast('❌ '+(e.message||'网络错误'));})
+    .then(function(result){generated.unshift(result);renderRightPanel();toast('生成完成');})
+    .catch(function(e){toast(e.message||'网络错误');})
     .finally(function(){generating=false;});
 }
 
-// ═══════════ RIGHT PANEL ═══════════
-function renderRightPanel() {
-  var el = document.getElementById('rightContent');
-  if (currentTab === 'copywriting') {renderCopywritingTab(el);return;}
-
-  var filtered = generated.filter(function(g){return g.type===currentTab;});
-  if (!filtered.length) {
-    el.innerHTML='<div class="empty-state"><div class="emoji">📝</div><p>暂无'+(currentTab==='wechat'?'公众号推文':'小红书图文')+'，点击左侧「生成」按钮创建</p></div>';
-    return;
-  }
-
-  var typeLabels={wechat:'📱 公众号推文',xiaohongshu:'📕 小红书图文',copywriting:'✏️ 文案改写'};
+function renderRightPanel(){
+  var el=document.getElementById('rightContent');
+  if(currentTab==='copywriting'){renderCopywritingTab(el);return;}
+  var filtered=generated.filter(function(g){return g.type===currentTab;});
+  if(!filtered.length){el.innerHTML='<div class="empty-state"><p>暂无'+(currentTab==='wechat'?'公众号推文':'小红书图文')+'，从左侧选题生成。</p></div>';return;}
+  var typeLabels={wechat:'公众号推文',xiaohongshu:'小红书图文',copywriting:'文案改写'};
   var html='';
   for(var i=0;i<filtered.length;i++){
     var g=filtered[i];
     html+='<div class="gen-card">';
-    html+='<div class="gen-head">';
-    html+='<span class="gen-type gen-type-'+g.type+'">'+typeLabels[g.type]+'</span>';
-    html+='<span class="gen-style gen-style-'+g.style+'">'+(g.style==='official'?'🎯 官号':'🔥 矩阵号')+'</span>';
-    html+='<span class="gen-time">'+formatTime(g.timestamp)+'</span></div>';
+    html+='<div class="gen-head"><span class="gen-type gen-type-'+escapeAttr(g.type)+'">'+typeLabels[g.type]+'</span><span class="gen-style gen-style-'+escapeAttr(g.style)+'">'+(g.style==='official'?'官号':'矩阵号')+'</span><span class="gen-time">'+formatTime(g.timestamp)+'</span></div>';
     html+='<div class="gen-title">'+escapeHtml(g.title)+'</div>';
-    html+='<div class="gen-content" id="content-'+g.id+'">'+formatContent(g.content)+'</div>';
-    html+='<div class="gen-actions">';
-    html+='<button class="btn-copy" onclick="copyContent(\''+g.id+'\')">📋 复制全文</button></div></div>';
+    html+='<div class="gen-content" id="content-'+escapeAttr(g.id)+'">'+formatContent(g.content)+'</div>';
+    html+='<div class="gen-actions"><button class="btn-copy" onclick="copyContent(\''+escapeAttr(g.id)+'\')">复制全文</button></div></div>';
   }
   el.innerHTML=html;
 }
 
-function renderCopywritingTab(el) {
+function renderCopywritingTab(el){
   el.innerHTML='<div class="copywriting-input">'+
-    '<label>🔗 链接文案提取</label>'+
-    '<div class="url-row"><input type="url" id="douyinUrl" placeholder="粘贴公开视频、文章或社媒链接" />'+
-    '<button class="btn-secondary" onclick="extractDouyin()" '+(aiReady?'':'disabled')+'>提取文案</button></div>'+
+    '<label>链接文案提取</label>'+
+    '<div class="url-row"><input type="url" id="douyinUrl" placeholder="粘贴公开视频、文章或社媒链接">'+
+    '<button class="btn-secondary" onclick="extractDouyin()" '+(aiReady?'':'disabled')+'>提取</button></div>'+
     '<div class="extract-status" id="extractStatus"></div>'+
-    '<label>📝 原始文案（提取后自动填入，也可手动粘贴）</label>'+
-    '<textarea id="sourceText" placeholder="在这里粘贴需要洗稿的原始文案..."></textarea>'+
+    '<label>原始文案</label>'+
+    '<textarea id="sourceText" placeholder="粘贴需要洗稿的原始文案"></textarea>'+
     '<label class="check-row"><input type="checkbox" id="includeEasyClaw" checked>结合 EasyClaw 产品功能</label>'+
-    '<div style="display:flex;gap:12px;align-items:center">'+
-    '<button class="btn-primary" onclick="doCopywriting(\'official\')" '+(aiReady?'':'disabled')+'>🎯 洗成官号文案</button>'+
-    '<button class="btn-primary" style="background:var(--matrix)" onclick="doCopywriting(\'matrix\')" '+(aiReady?'':'disabled')+'>🔥 洗成矩阵号文案</button></div></div>'+
+    '<div class="item-actions"><button class="btn-primary" onclick="doCopywriting(\'official\')" '+(aiReady?'':'disabled')+'>洗成官号文案</button>'+
+    '<button class="btn-primary" onclick="doCopywriting(\'matrix\')" '+(aiReady?'':'disabled')+'>洗成矩阵号文案</button></div></div>'+
     renderCopywritingResults();
 }
 
-function renderCopywritingResults() {
-  var filtered = generated.filter(function(g){return g.type==='copywriting';});
+function renderCopywritingResults(){
+  var filtered=generated.filter(function(g){return g.type==='copywriting';});
   if(!filtered.length)return'';
-  var html='<div style="padding:0 20px 20px"><h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text3)">📋 历史改写记录</h3>';
+  var html='<div class="stack">';
   for(var i=0;i<filtered.length;i++){
     var g=filtered[i];
-    html+='<div class="gen-card"><div class="gen-head">'+
-      '<span class="gen-type gen-type-copywriting">✏️ 文案改写</span>'+
-      '<span class="gen-style gen-style-'+g.style+'">'+(g.style==='official'?'🎯 官号':'🔥 矩阵号')+'</span>'+
-      '<span class="gen-time">'+formatTime(g.timestamp)+'</span></div>'+
-      '<div class="gen-title" style="font-size:13px">'+escapeHtml(g.title||'未命名')+'</div>'+
-      '<div class="gen-content" id="content-'+g.id+'" style="max-height:300px">'+formatContent(g.content)+'</div>'+
-      '<div class="gen-actions"><button class="btn-copy" onclick="copyContent(\''+g.id+'\')">📋 复制全文</button></div></div>';
+    html+='<div class="gen-card"><div class="gen-head"><span class="gen-type gen-type-copywriting">文案改写</span><span class="gen-style gen-style-'+escapeAttr(g.style)+'">'+(g.style==='official'?'官号':'矩阵号')+'</span><span class="gen-time">'+formatTime(g.timestamp)+'</span></div><div class="gen-title">'+escapeHtml(g.title||'未命名')+'</div><div class="gen-content" id="content-'+escapeAttr(g.id)+'">'+formatContent(g.content)+'</div><div class="gen-actions"><button class="btn-copy" onclick="copyContent(\''+escapeAttr(g.id)+'\')">复制全文</button></div></div>';
   }
-  html+='</div>';return html;
+  return html+'</div>';
 }
 
-// ═══════════ EXTRACT DOUYIN ═══════════
-function extractDouyin() {
-  var url = document.getElementById('douyinUrl').value.trim();
+function extractDouyin(){
+  var url=document.getElementById('douyinUrl').value.trim();
   if(!url){toast('请先粘贴链接');return;}
-  var status = document.getElementById('extractStatus');
-  status.textContent='⏳ 正在提取...';status.className='extract-status';
-
+  var status=document.getElementById('extractStatus');
+  status.textContent='正在提取...';status.className='extract-status';
   apiFetch('/api/extract-link',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:url})})
     .then(function(r){return r.json();})
     .then(function(result){
       if(result.success){
-        status.textContent='✅ 提取成功！文案已填入下方';status.className='extract-status success';
+        status.textContent='提取成功，文案已填入下方';status.className='extract-status success';
         document.getElementById('sourceText').value=result.text;
-      } else {
-        status.textContent='⚠️ '+(result.error||'提取失败')+' · '+(result.hint||'请手动粘贴文案');
+      }else{
+        status.textContent=(result.error||'提取失败')+' · '+(result.hint||'请手动粘贴文案');
         status.className='extract-status error';
       }
-    }).catch(function(){status.textContent='❌ 网络错误';status.className='extract-status error';});
+    }).catch(function(){status.textContent='网络错误';status.className='extract-status error';});
 }
 
-function doCopywriting(style) {
-  var text = document.getElementById('sourceText').value.trim();
+function doCopywriting(style){
+  var text=document.getElementById('sourceText').value.trim();
   if(!text){toast('请先输入或提取文案');return;}
-  if(!aiReady){toast('⚠️ AI 未配置。请在本地运行 server.py 后访问 localhost:8080');return;}
-
-  toast('🔄 正在洗稿改写...');
-  apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:{id:'copy_manual',title:text,type:'copywriting',source:'用户输入'},type:'copywriting',style:style,text:text,includeEasyClaw:(document.getElementById('includeEasyClaw') ? document.getElementById('includeEasyClaw').checked : true)})})
+  if(!aiReady){toast('AI 未配置，请检查环境变量');return;}
+  toast('正在洗稿改写...');
+  apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:{id:'copy_manual',title:text,type:'copywriting',source:'用户输入'},type:'copywriting',style:style,text:text,includeEasyClaw:(document.getElementById('includeEasyClaw')?document.getElementById('includeEasyClaw').checked:true)})})
     .then(function(r){return r.json();})
-    .then(function(result){generated.unshift(result);renderRightPanel();toast('✅ 洗稿完成！');})
-    .catch(function(){toast('❌ 生成失败');});
+    .then(function(result){generated.unshift(result);renderRightPanel();toast('洗稿完成');})
+    .catch(function(){toast('生成失败');});
 }
 
-// ═══════════ TABS ═══════════
-function setupTabs() {
+function setupTabs(){
   document.getElementById('rightTabs').addEventListener('click',function(e){
-    var tab = e.target.closest('.right-tab');
+    var tab=e.target.closest('.tab');
     if(!tab)return;
-    var tabs = document.querySelectorAll('.right-tab');
+    var tabs=document.querySelectorAll('.tab');
     for(var i=0;i<tabs.length;i++)tabs[i].classList.remove('active');
     tab.classList.add('active');
     currentTab=tab.dataset.tab;
@@ -454,35 +531,42 @@ function setupTabs() {
   });
 }
 
-// ═══════════ UTILS ═══════════
-function copyContent(genId) {
+function setupNavigation(){
+  document.querySelector('.sidebar').addEventListener('click',function(e){
+    var item=e.target.closest('.nav-item');
+    if(!item)return;
+    var target=item.dataset.module;
+    currentModule=target;
+    document.querySelectorAll('.nav-item').forEach(function(n){n.classList.toggle('active',n===item);});
+    document.querySelectorAll('.module').forEach(function(m){m.classList.remove('active');});
+    document.getElementById('module-'+target).classList.add('active');
+    document.getElementById('moduleTitle').textContent=target==='hotspot'?'热点内容':'自动化运营';
+    document.getElementById('moduleSubtitle').textContent=target==='hotspot'?'热点追踪、节点预警、多平台内容生成':'抖音发布、评论维护、机会池管理';
+  });
+}
+
+function copyContent(genId){
   var el=document.getElementById('content-'+genId);
   if(!el)return;
-  var text=el.textContent||el.innerText;
-  navigator.clipboard.writeText(text).then(function(){toast('📋 已复制到剪贴板');});
+  navigator.clipboard.writeText(el.textContent||el.innerText).then(function(){toast('已复制到剪贴板');});
 }
-
-function logout() {
-  apiFetch('/api/logout',{method:'POST'})
-    .finally(function(){window.location.href='/login';});
-}
-
+function logout(){apiFetch('/api/logout',{method:'POST'}).finally(function(){window.location.href='/login';});}
 function escapeHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
+function escapeAttr(s){return escapeHtml(s).replace(/'/g,'&#39;');}
 function formatTime(ts){
   if(!ts)return'';
-  try{var d=new Date(ts);return d.toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'})+' '+d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});}
-  catch(e){return ts;}
+  try{var d=new Date(ts);return d.toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'})+' '+d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});}catch(e){return ts;}
 }
-
 function formatContent(text){
   if(!text)return'';
   return escapeHtml(text).replace(/^#\s+(.+)$/gm,'<strong style="font-size:18px">$1</strong>').replace(/^##\s+(.+)$/gm,'<strong style="font-size:16px">$1</strong>');
 }
-
 function toast(msg){
-  var t=document.createElement('div');t.className='toast';t.textContent=msg;
-  document.body.appendChild(t);setTimeout(function(){t.remove();},2500);
+  var t=document.createElement('div');
+  t.className='toast';
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(function(){t.remove();},2400);
 }
 
 init();
