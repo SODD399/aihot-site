@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 国内社媒 x AI Native — 后端服务
@@ -6,23 +6,45 @@
 接口：DeepSeek API (OpenAI 兼容) 或 easycode CLI
 """
 
-import json, os, re, time, uuid, subprocess
+import base64, hashlib, hmac, html, ipaddress, json, os, re, socket, time, uuid, subprocess
+from http.cookies import SimpleCookie
 from datetime import datetime, timedelta
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 SITE_DIR = Path(__file__).parent
 DATA_FILE = SITE_DIR / "data" / "db.json"
+EASYCLAW_FILE = SITE_DIR / "data" / "easyclaw.json"
 ARTICLE_DIR = SITE_DIR / "article"
 ARTICLE_DIR.mkdir(parents=True, exist_ok=True)
 
 # ═══════════════════════════════════════════
 # AI 配置
 # ═══════════════════════════════════════════
+# API Key: put your key in apikey.txt file, or set DEEPSEEK_API_KEY env var
+_key_file = SITE_DIR / "apikey.txt"
 DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
+if not DEEPSEEK_API_KEY and _key_file.exists():
+    DEEPSEEK_API_KEY = _key_file.read_text("utf-8").strip()
 DEEPSEEK_BASE_URL = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
 DEFAULT_MODEL = "deepseek-chat"
+
+# 团队登录配置：部署时设置 AIHOT_PASSWORD / AIHOT_AUTH_SECRET。
+# 本地未设置密码时默认开放；生产环境可用 AIHOT_AUTH_REQUIRED=true 强制登录。
+AUTH_USERNAME = os.environ.get("AIHOT_USERNAME", "admin")
+AUTH_PASSWORD = os.environ.get("AIHOT_PASSWORD") or os.environ.get("SITE_PASSWORD", "")
+AUTH_SECRET = os.environ.get("AIHOT_AUTH_SECRET") or DEEPSEEK_API_KEY or "aihot-dev-secret"
+AUTH_COOKIE = "aihot_session"
+SESSION_TTL_SECONDS = int(os.environ.get("AIHOT_SESSION_TTL_SECONDS", str(7 * 24 * 3600)))
+COOKIE_SECURE = os.environ.get("AIHOT_COOKIE_SECURE", "").lower() in {"1", "true", "yes"}
+ALLOWED_ORIGIN = os.environ.get("AIHOT_ALLOWED_ORIGIN", "")
+AUTH_REQUIRED = os.environ.get("AIHOT_AUTH_REQUIRED", "").lower() in {"1", "true", "yes"} or bool(AUTH_PASSWORD)
+
+# 可选：逗号分隔的 EasyClaw 产品页，用于生成时补充网页检索上下文。
+EASYCLAW_PRODUCT_URLS = [
+    u.strip() for u in os.environ.get("EASYCLAW_PRODUCT_URLS", "").split(",") if u.strip()
+]
 
 # easycode CLI 路径（macOS/Linux）
 EASYCODE_CLI = os.environ.get("EASYCODE_PATH", "/usr/local/bin/easycode")
@@ -37,15 +59,15 @@ def detect_ai_backend():
             result = subprocess.run([EASYCODE_CLI, "--help"], capture_output=True, timeout=5)
             if result.returncode == 0:
                 USE_EASYCODE = True
-                print(f"✅ 使用 easycode CLI: {EASYCODE_CLI}")
+                print(f"[OK] 使用 easycode CLI: {EASYCODE_CLI}")
                 return
         except Exception:
             pass
     if DEEPSEEK_API_KEY:
         USE_EASYCODE = False
-        print(f"✅ 使用 DeepSeek API: {DEFAULT_MODEL}")
+        print(f"[OK] 使用 DeepSeek API: {DEFAULT_MODEL}")
     else:
-        print("⚠️ 未配置 AI 后端！请设置 DEEPSEEK_API_KEY 或安装 easycode")
+        print("[WARN] 未配置 AI 后端！请设置 DEEPSEEK_API_KEY 或安装 easycode")
 
 
 def llm_call(prompt, timeout=300):
@@ -121,7 +143,7 @@ def _llm_fallback(prompt):
 
 来源：AI Native 平台 · {datetime.now().strftime('%Y-%m-%d')}
 
-⚠️ 当前为模板占位内容，实际使用时将被 AI 智能生成的内容替换。"""
+[WARN] 当前为模板占位内容，实际使用时将被 AI 智能生成的内容替换。"""
 
 
 # ═══════════════════════════════════════════
@@ -138,6 +160,63 @@ def save_db(db):
     db["last_updated"] = datetime.now().isoformat(timespec="seconds")
     DATA_FILE.write_text(json.dumps(db, ensure_ascii=False, indent=2), encoding="utf-8")
     return db
+
+
+def auth_enabled():
+    return AUTH_REQUIRED
+
+
+def _b64_encode(raw):
+    return base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
+
+
+def _b64_decode(text):
+    pad = "=" * (-len(text) % 4)
+    return base64.urlsafe_b64decode((text + pad).encode("ascii"))
+
+
+def make_session_token(username):
+    exp = int(time.time() + SESSION_TTL_SECONDS)
+    payload = f"{username}|{exp}".encode("utf-8")
+    sig = hmac.new(AUTH_SECRET.encode("utf-8"), payload, hashlib.sha256).hexdigest()
+    return f"{_b64_encode(payload)}.{sig}"
+
+
+def verify_session_token(token):
+    if not token or "." not in token:
+        return ""
+    payload_b64, sig = token.split(".", 1)
+    try:
+        payload = _b64_decode(payload_b64)
+    except Exception:
+        return ""
+    expected = hmac.new(AUTH_SECRET.encode("utf-8"), payload, hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(expected, sig):
+        return ""
+    try:
+        username, exp_text = payload.decode("utf-8").rsplit("|", 1)
+        if int(exp_text) < int(time.time()):
+            return ""
+        return username
+    except Exception:
+        return ""
+
+
+def make_cookie_header(token):
+    attrs = [
+        f"{AUTH_COOKIE}={token}",
+        "Path=/",
+        "HttpOnly",
+        "SameSite=Lax",
+        f"Max-Age={SESSION_TTL_SECONDS}",
+    ]
+    if COOKIE_SECURE:
+        attrs.append("Secure")
+    return "; ".join(attrs)
+
+
+def clear_cookie_header():
+    return f"{AUTH_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0"
 
 
 def init_demo_data():
@@ -194,13 +273,13 @@ def init_demo_data():
          "isWarning": False},
         {"id": "e6", "type": "industry", "date": "2026-08-01", "title": "Apple/Google 秋季发布会预热",
          "source": "行业提醒", "isWarning": True,
-         "summary": "⚠️ 预警：苹果和谷歌秋季发布会临近，AI 功能成焦点。建议提前储备相关解读素材。"},
+         "summary": "[WARN] 预警：苹果和谷歌秋季发布会临近，AI 功能成焦点。建议提前储备相关解读素材。"},
         {"id": "e7", "type": "seasonal", "date": "2026-08-05", "title": "七夕营销节点",
          "source": "营销日历", "summary": "七夕（8月7日）前需完成方案。方向：社交 App/电商/礼品行业的文案和活动策划。",
          "isWarning": False},
         {"id": "e8", "type": "industry", "date": "2026-08-15", "title": "开学季预热 · 学习工具推广",
          "source": "行业提醒", "isWarning": True,
-         "summary": "⚠️ 预警：距离开学还有2周，学习类App/教辅机构应开始布局开学季营销。"},
+         "summary": "[WARN] 预警：距离开学还有2周，学习类App/教辅机构应开始布局开学季营销。"},
     ]
 
     return {"hotspots": hotspots, "events": events, "generated": [], "last_updated": datetime.now().isoformat()}
@@ -347,14 +426,27 @@ def generate_xiaohongshu(item, style, db):
     }
 
 
-def generate_copywriting(text, style):
-    """洗稿：将原始文案改写为官号或矩阵号版本"""
+def generate_copywriting(text, style, include_easyclaw=True):
+    """洗稿：将原始文案结合 EasyClaw 产品语境改写为官号或矩阵号版本"""
     style_prompt = OFFICIAL_STYLE if style == "official" else MATRIX_STYLE
     style_label = "官方号" if style == "official" else "矩阵号"
+    product_context = format_easyclaw_context() if include_easyclaw else ""
+    product_block = f"""
+
+【EasyClaw 产品资料】
+{product_context}
+
+结合方式：
+1. 先保留原文的核心观点、场景和信息价值
+2. 再自然连接 EasyClaw 能解决的问题、适用场景或产品能力
+3. 不要硬广，不要编造未提供的功能，不要承诺效果
+4. 如果原文和 EasyClaw 关联较弱，只做轻量品牌露出和场景迁移
+""" if product_context else ""
 
     prompt = f"""{style_prompt}
 
 请将以下原始文案进行洗稿改写，保持核心信息和关键点不变，但重新组织语言、调整结构、优化表达。
+{product_block}
 
 原始文案：
 ---
@@ -369,6 +461,7 @@ def generate_copywriting(text, style):
 5. 可以适当增加背景信息或过渡内容让文章更流畅
 6. {'绝对不拉踩、不攻击、不贬低任何品牌或个人' if style == 'official' else '可以有个性化的观点和态度，但不要恶意攻击'}
 7. 字数保持与原文相当或略多 10-20%
+8. 输出要适合{style_label}直接发布，避免出现“我根据资料”“以下是改写”等说明
 
 直接输出改写后的文案，不要额外解释。"""
 
@@ -377,10 +470,92 @@ def generate_copywriting(text, style):
 
 
 # ═══════════════════════════════════════════
-# 抖音文案提取
+# 链接文案提取 + EasyClaw 产品上下文
 # ═══════════════════════════════════════════
-def extract_douyin(url):
-    """尝试从抖音链接提取文案"""
+def _host_is_private(hostname):
+    host = (hostname or "").strip().strip("[]").lower()
+    if not host or host in {"localhost", "127.0.0.1", "::1"} or host.endswith(".local"):
+        return True
+    try:
+        ip = ipaddress.ip_address(host)
+        return ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved
+    except ValueError:
+        pass
+    try:
+        for info in socket.getaddrinfo(host, None):
+            ip = ipaddress.ip_address(info[4][0])
+            if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+                return True
+    except Exception:
+        return False
+    return False
+
+
+def _validate_fetch_url(url):
+    parsed = urlparse(url or "")
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        return False, "只支持 http/https 链接"
+    if not os.environ.get("AIHOT_ALLOW_PRIVATE_FETCH") and _host_is_private(parsed.hostname):
+        return False, "不允许抓取本地或内网地址"
+    return True, ""
+
+
+def _clean_html_text(raw_html):
+    text = re.sub(r"<(script|style|noscript)[^>]*>.*?</\1>", " ", raw_html, flags=re.I | re.S)
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = html.unescape(text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def _extract_page_copy(raw_html):
+    candidates = []
+
+    title_match = re.search(r"<title[^>]*>(.*?)</title>", raw_html, re.I | re.S)
+    if title_match:
+        candidates.append(title_match.group(1).strip())
+
+    meta_patterns = [
+        r'<meta[^>]+name=["\']description["\'][^>]+content=["\']([^"\']+)["\']',
+        r'<meta[^>]+property=["\']og:description["\'][^>]+content=["\']([^"\']+)["\']',
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+name=["\']description["\']',
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:description["\']',
+    ]
+    for pattern in meta_patterns:
+        for match in re.findall(pattern, raw_html, re.I | re.S):
+            candidates.append(match.strip())
+
+    scripts = re.findall(r"<script[^>]*>(.*?)</script>", raw_html, re.I | re.S)
+    for script in scripts[:20]:
+        try:
+            data = json.loads(script)
+        except Exception:
+            continue
+        if isinstance(data, dict):
+            for key in ("description", "name", "headline", "caption"):
+                value = data.get(key)
+                if isinstance(value, str):
+                    candidates.append(value.strip())
+
+    visible_text = _clean_html_text(raw_html)
+    if visible_text:
+        candidates.append(visible_text[:2500])
+
+    cleaned = []
+    for item in candidates:
+        item = html.unescape(item)
+        item = re.sub(r"\s+", " ", item).strip()
+        item = re.sub(r"\s*[-–—|]\s*抖音\s*$", "", item)
+        if len(item) > 10 and item not in cleaned:
+            cleaned.append(item)
+    return "\n\n".join(cleaned[:4]).strip()
+
+
+def extract_link_text(url):
+    """从公开视频/文章/社媒页面中尽力提取可改写文案。"""
+    ok, error = _validate_fetch_url(url)
+    if not ok:
+        return {"success": False, "error": error, "hint": "请换成公开网页链接，或手动粘贴文案。", "url": url}
     try:
         import urllib.request
 
@@ -389,50 +564,65 @@ def extract_douyin(url):
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Language": "zh-CN,zh;q=0.9",
         }
-
-        # 尝试直接请求
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req, timeout=15) as resp:
-            html = resp.read().decode("utf-8", errors="ignore")
+            raw = resp.read(512 * 1024)
+            charset = resp.headers.get_content_charset() or "utf-8"
+            raw_html = raw.decode(charset, errors="ignore")
 
-        # 尝试多种方式提取
-        desc = ""
-
-        # 方式1：搜索 title 标签
-        title_match = re.search(r'<title[^>]*>(.*?)</title>', html, re.I | re.S)
-        if title_match:
-            desc = title_match.group(1).strip()
-            # 清理抖音标题中的通用后缀
-            desc = re.sub(r'\s*[-–—|]\s*抖音\s*$', '', desc)
-
-        # 方式2：搜索 meta description
-        if not desc or len(desc) < 20:
-            meta_match = re.search(r'<meta[^>]+name="description"[^>]+content="([^"]+)"', html, re.I)
-            if meta_match:
-                desc = meta_match.group(1)
-
-        # 方式3：从 JSON-LD 或 script 中提取
-        if not desc or len(desc) < 20:
-            scripts = re.findall(r'<script[^>]*>(.*?)</script>', html, re.I | re.S)
-            for s in scripts:
-                try:
-                    data = json.loads(s)
-                    if isinstance(data, dict):
-                        desc = data.get("description", data.get("name", ""))
-                        if desc and len(desc) > 20:
-                            break
-                except Exception:
-                    pass
-
-        if desc and len(desc) > 10:
-            # 清理 HTML entity
-            desc = desc.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", '"').replace("&#39;", "'")
-            return {"success": True, "text": desc, "source": url, "title": desc[:80]}
-
-        return {"success": False, "error": "无法从页面提取到有效文案", "hint": "建议手动复制抖音视频的文案内容粘贴到下方文本框", "url": url}
-
+        text = _extract_page_copy(raw_html)
+        if text:
+            return {"success": True, "text": text[:4000], "source": url, "title": text[:80]}
+        return {"success": False, "error": "无法从页面提取到有效文案", "hint": "该页面可能需要登录或使用反爬机制，请手动粘贴文案。", "url": url}
     except Exception as e:
-        return {"success": False, "error": f"提取失败：{str(e)}", "hint": "抖音页面可能需要登录或使用了反爬机制。请手动复制文案内容粘贴到下方。", "url": url}
+        return {"success": False, "error": f"提取失败：{str(e)}", "hint": "请手动复制原文文案粘贴到下方。", "url": url}
+
+
+def extract_douyin(url):
+    """兼容旧接口名。"""
+    return extract_link_text(url)
+
+
+def load_easyclaw_knowledge():
+    knowledge = {
+        "brand": "EasyClaw",
+        "positioning": "AI Native 内容生产与数字员工平台",
+        "features": [],
+        "scenarios": [],
+        "guardrails": [],
+    }
+    if EASYCLAW_FILE.exists():
+        try:
+            file_data = json.loads(EASYCLAW_FILE.read_text(encoding="utf-8"))
+            if isinstance(file_data, dict):
+                knowledge.update(file_data)
+        except Exception as e:
+            print(f"EasyClaw 产品资料读取失败: {e}")
+
+    fetched = []
+    for url in EASYCLAW_PRODUCT_URLS[:3]:
+        result = extract_link_text(url)
+        if result.get("success"):
+            fetched.append({"url": url, "text": result["text"][:1200]})
+    if fetched:
+        knowledge["web_context"] = fetched
+    return knowledge
+
+
+def format_easyclaw_context():
+    info = load_easyclaw_knowledge()
+    lines = [
+        f"品牌：{info.get('brand', 'EasyClaw')}",
+        f"定位：{info.get('positioning', '')}",
+    ]
+    for key, label in (("features", "核心功能"), ("scenarios", "适用场景"), ("guardrails", "表达边界")):
+        values = info.get(key) or []
+        if values:
+            lines.append(f"{label}：")
+            lines.extend([f"- {v}" for v in values[:12]])
+    for item in info.get("web_context", [])[:3]:
+        lines.append(f"网页资料（{item.get('url', '')}）：{item.get('text', '')}")
+    return "\n".join([line for line in lines if line.strip()])
 
 
 # ═══════════════════════════════════════════
@@ -443,41 +633,160 @@ class RequestHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         print(f"[{datetime.now().strftime('%H:%M:%S')}] {args[0]}")
 
-    def _send_json(self, data, status=200):
+    def _send_json(self, data, status=200, headers=None):
         body = json.dumps(data, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Access-Control-Allow-Origin", "*")
+        if ALLOWED_ORIGIN:
+            self.send_header("Access-Control-Allow-Origin", ALLOWED_ORIGIN)
+            self.send_header("Access-Control-Allow-Credentials", "true")
         self.send_header("Content-Length", len(body))
+        for key, value in (headers or {}).items():
+            self.send_header(key, value)
         self.end_headers()
         self.wfile.write(body)
 
     def _read_body(self):
         length = int(self.headers.get("Content-Length", 0))
         if length > 0:
-            return json.loads(self.rfile.read(length).decode("utf-8"))
+            try:
+                return json.loads(self.rfile.read(length).decode("utf-8"))
+            except Exception:
+                return {}
         return {}
+
+    def _path(self):
+        return unquote(urlparse(self.path).path)
+
+    def _current_user(self):
+        if not auth_enabled():
+            return AUTH_USERNAME
+        cookie_header = self.headers.get("Cookie", "")
+        if not cookie_header:
+            return ""
+        try:
+            cookie = SimpleCookie(cookie_header)
+            morsel = cookie.get(AUTH_COOKIE)
+            return verify_session_token(morsel.value) if morsel else ""
+        except Exception:
+            return ""
+
+    def _is_public_path(self, path):
+        return path in {"/login", "/api/login", "/api/session"} or path.startswith("/assets/")
+
+    def _require_auth(self, path):
+        if not auth_enabled() or self._is_public_path(path) or self._current_user():
+            return True
+        if path.startswith("/api/"):
+            self._send_json({"error": "unauthorized", "login": "/login"}, 401)
+        else:
+            self.send_response(302)
+            self.send_header("Location", "/login")
+            self.end_headers()
+        return False
+
+    def _serve_login(self):
+        if not auth_enabled():
+            self.send_response(302)
+            self.send_header("Location", "/")
+            self.end_headers()
+            return
+        body = f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>登录 · AI Hot Site</title>
+<style>
+body{{margin:0;min-height:100vh;display:grid;place-items:center;background:#f5f3f0;color:#1a1a1a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}}
+.login{{width:min(360px,calc(100vw - 32px));background:#fff;border:1px solid #e5e2de;border-radius:8px;padding:28px;box-shadow:0 8px 28px rgba(0,0,0,.08)}}
+h1{{font-size:20px;margin:0 0 18px}}
+label{{display:block;font-size:13px;font-weight:700;margin:14px 0 6px}}
+input{{width:100%;box-sizing:border-box;border:1px solid #d8d4cf;border-radius:6px;padding:10px 12px;font-size:15px}}
+button{{width:100%;margin-top:18px;border:0;border-radius:6px;background:#1a73e8;color:#fff;font-weight:700;padding:11px 12px;cursor:pointer}}
+.msg{{min-height:20px;margin-top:12px;color:#e74c3c;font-size:13px}}
+</style>
+</head>
+<body>
+<form class="login" id="loginForm">
+  <h1>AI Hot Site 登录</h1>
+  <label>账号</label>
+  <input id="username" autocomplete="username" value="{html.escape(AUTH_USERNAME)}">
+  <label>密码</label>
+  <input id="password" type="password" autocomplete="current-password" autofocus>
+  <button type="submit">登录</button>
+  <div class="msg" id="msg"></div>
+</form>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e){{
+  e.preventDefault();
+  fetch('/api/login', {{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{
+    username:document.getElementById('username').value,
+    password:document.getElementById('password').value
+  }})}}).then(function(r){{return r.json().then(function(data){{return {{ok:r.ok,data:data}};}});}})
+    .then(function(res){{ if(res.ok) location.href='/'; else document.getElementById('msg').textContent=res.data.error||'登录失败'; }})
+    .catch(function(){{ document.getElementById('msg').textContent='网络错误'; }});
+}});
+</script>
+</body>
+</html>""".encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", len(body))
+        self.end_headers()
+        self.wfile.write(body)
 
     def do_OPTIONS(self):
         self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
+        if ALLOWED_ORIGIN:
+            self.send_header("Access-Control-Allow-Origin", ALLOWED_ORIGIN)
+            self.send_header("Access-Control-Allow-Credentials", "true")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
     def do_GET(self):
-        path = self.path.split("?")[0]
+        path = self._path()
+
+        if path == "/login":
+            if auth_enabled() and self._current_user():
+                self.send_response(302)
+                self.send_header("Location", "/")
+                self.end_headers()
+            else:
+                self._serve_login()
+            return
+
+        if path == "/api/session":
+            user = self._current_user()
+            self._send_json({
+                "auth_enabled": auth_enabled(),
+                "authenticated": bool(user),
+                "user": user or "",
+            })
+            return
+
+        if not self._require_auth(path):
+            return
 
         # API 路由
         if path == "/api/status":
             db = load_db()
+            three_days = (datetime.now() - timedelta(days=3)).strftime("%Y-%m-%d")
+            visible_hotspots = [h for h in db.get("hotspots", []) if h.get("date", "") >= three_days]
+            today = datetime.now().strftime("%Y-%m-%d")
+            visible_events = [e for e in db.get("events", []) if e.get("date", "") >= today]
             self._send_json({
                 "ai_ready": bool(DEEPSEEK_API_KEY or USE_EASYCODE),
                 "backend": "easycode" if USE_EASYCODE else ("deepseek" if DEEPSEEK_API_KEY else "none"),
+                "auth_enabled": auth_enabled(),
+                "user": self._current_user(),
                 "counts": {
-                    "hotspots": len(db.get("hotspots", [])),
-                    "events": len(db.get("events", [])),
+                    "hotspots": len(visible_hotspots),
+                    "events": len(visible_events),
                     "generated": len(db.get("generated", [])),
+                    "all_hotspots": len(db.get("hotspots", [])),
+                    "all_events": len(db.get("events", [])),
                 },
                 "last_updated": db.get("last_updated", ""),
             })
@@ -509,41 +818,63 @@ class RequestHandler(BaseHTTPRequestHandler):
             generated.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
             self._send_json(generated)
 
+        elif path == "/api/product-knowledge":
+            self._send_json(load_easyclaw_knowledge())
+
         # 静态文件
         elif path == "/" or path == "":
             self._serve_file("index.html", "text/html")
-        elif path.endswith(".html"):
+        elif path.startswith("/article/") and path.endswith(".html"):
             self._serve_file(path.lstrip("/"), "text/html")
-        elif path.endswith(".js"):
+        elif path.startswith("/assets/") and path.endswith(".js"):
             self._serve_file(path.lstrip("/"), "application/javascript")
-        elif path.endswith(".css"):
+        elif path.startswith("/assets/") and path.endswith(".css"):
             self._serve_file(path.lstrip("/"), "text/css")
-        elif path.endswith(".json"):
-            self._serve_file(path.lstrip("/"), "application/json")
         else:
-            # 尝试作为静态文件
-            file_path = SITE_DIR / path.lstrip("/")
-            if file_path.exists() and file_path.is_file():
-                ext = path.rsplit(".", 1)[-1].lower()
-                content_types = {
-                    "png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",
-                    "gif": "image/gif", "svg": "image/svg+xml", "ico": "image/x-icon",
-                    "woff2": "font/woff2", "woff": "font/woff",
-                }
-                self._serve_file(path.lstrip("/"), content_types.get(ext, "application/octet-stream"))
+            ext = path.rsplit(".", 1)[-1].lower() if "." in path else ""
+            content_types = {
+                "png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",
+                "gif": "image/gif", "svg": "image/svg+xml", "ico": "image/x-icon",
+                "woff2": "font/woff2", "woff": "font/woff",
+            }
+            if path.startswith("/assets/") and ext in content_types:
+                self._serve_file(path.lstrip("/"), content_types[ext])
             else:
                 self.send_response(404)
                 self.end_headers()
 
     def do_POST(self):
-        path = self.path.split("?")[0]
+        path = self._path()
         body = self._read_body()
+
+        if path == "/api/login":
+            username = str(body.get("username", "")).strip() or AUTH_USERNAME
+            password = str(body.get("password", ""))
+            if auth_enabled() and not AUTH_PASSWORD:
+                self._send_json({"error": "管理员密码未配置，请先设置 AIHOT_PASSWORD"}, 503)
+                return
+            if auth_enabled() and username == AUTH_USERNAME and hmac.compare_digest(password, AUTH_PASSWORD):
+                token = make_session_token(username)
+                self._send_json({"success": True, "user": username}, headers={"Set-Cookie": make_cookie_header(token)})
+            elif not auth_enabled():
+                self._send_json({"success": True, "user": AUTH_USERNAME})
+            else:
+                self._send_json({"error": "账号或密码不正确"}, 401)
+            return
+
+        if path == "/api/logout":
+            self._send_json({"success": True}, headers={"Set-Cookie": clear_cookie_header()})
+            return
+
+        if not self._require_auth(path):
+            return
 
         if path == "/api/generate":
             item = body.get("item", {})
             gen_type = body.get("type", "wechat")  # wechat | xiaohongshu | copywriting
             style = body.get("style", "matrix")  # official | matrix
             douyin_text = body.get("text", "")  # 洗稿原始文案
+            include_easyclaw = body.get("includeEasyClaw", body.get("include_easyclaw", True))
 
             db = load_db()
 
@@ -555,7 +886,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 if not douyin_text:
                     self._send_json({"error": "请提供需要洗稿的文案内容"}, 400)
                     return
-                content = generate_copywriting(douyin_text, style)
+                content = generate_copywriting(douyin_text, style, include_easyclaw=bool(include_easyclaw))
                 result = {
                     "id": f"gen_{uuid.uuid4().hex[:8]}",
                     "type": "copywriting",
@@ -566,6 +897,9 @@ class RequestHandler(BaseHTTPRequestHandler):
                     "timestamp": datetime.now().isoformat(timespec="seconds"),
                     "sourceTitle": douyin_text[:80],
                 }
+            else:
+                self._send_json({"error": f"不支持的生成类型：{gen_type}"}, 400)
+                return
 
             # 保存到历史记录
             if "generated" not in db:
@@ -579,9 +913,17 @@ class RequestHandler(BaseHTTPRequestHandler):
         elif path == "/api/extract-douyin":
             url = body.get("url", "")
             if not url:
-                self._send_json({"success": False, "error": "请提供抖音链接"}, 400)
+                self._send_json({"success": False, "error": "请提供链接"}, 400)
                 return
             result = extract_douyin(url)
+            self._send_json(result)
+
+        elif path == "/api/extract-link":
+            url = body.get("url", "")
+            if not url:
+                self._send_json({"success": False, "error": "请提供链接"}, 400)
+                return
+            result = extract_link_text(url)
             self._send_json(result)
 
         elif path == "/api/init-demo":
@@ -594,32 +936,54 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
     def _serve_file(self, rel_path, content_type):
-        file_path = SITE_DIR / rel_path
-        if file_path.exists():
-            body = file_path.read_bytes()
-            self.send_response(200)
-            self.send_header("Content-Type", f"{content_type}; charset=utf-8")
-            self.send_header("Content-Length", len(body))
-            self.end_headers()
-            self.wfile.write(body)
-        else:
+        file_path = self._resolve_static_file(rel_path)
+        if not file_path:
             self.send_response(404)
             self.end_headers()
+            return
+
+        body = file_path.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", f"{content_type}; charset=utf-8")
+        self.send_header("Content-Length", len(body))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _resolve_static_file(self, rel_path):
+        clean = (rel_path or "").replace("\\", "/").lstrip("/")
+        if clean == "index.html":
+            candidate = (SITE_DIR / "index.html").resolve()
+            return candidate if candidate.is_file() else None
+
+        allowed_roots = {
+            "article": ARTICLE_DIR.resolve(),
+            "assets": (SITE_DIR / "assets").resolve(),
+        }
+        root_key = clean.split("/", 1)[0]
+        root = allowed_roots.get(root_key)
+        if not root:
+            return None
+        candidate = (SITE_DIR / clean).resolve()
+        try:
+            candidate.relative_to(root)
+        except ValueError:
+            return None
+        return candidate if candidate.is_file() else None
 
 
 def main():
     detect_ai_backend()
-    port = int(os.environ.get("PORT", 5199))
+    port = int(os.environ.get("PORT", 8080))
     server = HTTPServer(("0.0.0.0", port), RequestHandler)
     print(f"\n{'='*60}")
-    print(f"🦞 国内社媒 x AI Native 服务已启动")
-    print(f"📍 http://localhost:{port}")
-    print(f"📡 AI 后端: {'easycode' if USE_EASYCODE else ('DeepSeek API' if DEEPSEEK_API_KEY else '⚠️ 未配置')}")
+    print(f"[LOBSTER] 国内社媒 x AI Native 服务已启动")
+    print(f"[*] http://localhost:{port}")
+    print(f"[*] AI 后端: {'easycode' if USE_EASYCODE else ('DeepSeek API' if DEEPSEEK_API_KEY else '[WARN] 未配置')}")
     print(f"{'='*60}\n")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\n👋 服务已停止")
+        print("\n[*] 服务已停止")
         server.shutdown()
 
 

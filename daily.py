@@ -211,6 +211,46 @@ def _slug(title, max_len=40):
     return s[:max_len].strip('_') or "article"
 
 
+def _hotspot_from_item(item, section, date_str):
+    title = item.get("title", "")
+    published = item.get("publishedAt", "")
+    date_part = published[:10] if re.match(r"^\d{4}-\d{2}-\d{2}", published) else date_str
+    time_part = published[11:16] if len(published) >= 16 else ""
+    return {
+        "id": "daily_" + _slug(section.get("track", "hot"), 12) + "_" + _slug(title, 28),
+        "type": section.get("track", "industry") or "industry",
+        "date": date_part,
+        "time": time_part,
+        "title": title,
+        "source": item.get("sourceName", ""),
+        "sourceUrl": item.get("sourceUrl", ""),
+        "summary": item.get("summary", title),
+    }
+
+
+def _merge_by_id(existing, incoming, limit=200):
+    merged = {}
+    for item in existing or []:
+        item_id = item.get("id")
+        if item_id:
+            merged[item_id] = item
+    for item in incoming or []:
+        item_id = item.get("id")
+        if item_id:
+            merged[item_id] = item
+    items = list(merged.values())
+    items.sort(key=lambda x: (x.get("date", ""), x.get("time", "")), reverse=True)
+    return items[:limit]
+
+
+def _upsert_generated(db, entry):
+    if "generated" not in db:
+        db["generated"] = []
+    existing = [g for g in db["generated"] if g.get("id") != entry.get("id")]
+    db["generated"] = [entry] + existing
+    db["generated"] = db["generated"][:100]
+
+
 def git_push():
     """推送到 Git → 触发 Vercel 部署"""
     try:
@@ -253,6 +293,11 @@ def run():
     db = load_db()
     db["date"] = date_str
     db["sections"] = daily.get("sections", [])
+    fresh_hotspots = []
+    for sec in daily.get("sections", []):
+        for item in sec.get("items", []):
+            fresh_hotspots.append(_hotspot_from_item(item, sec, date_str))
+    db["hotspots"] = _merge_by_id(db.get("hotspots", []), fresh_hotspots)
 
     if "outputs" not in db:
         db["outputs"] = {}
@@ -281,6 +326,17 @@ def run():
             "html_file": result["file"],
             "html_url": result["url"],
             "generated_at": datetime.now().isoformat(timespec="seconds"),
+        })
+        _upsert_generated(db, {
+            "id": "daily_wechat_" + _slug(title, 36),
+            "type": "wechat",
+            "style": "matrix",
+            "styleLabel": "自动生产",
+            "title": title,
+            "content": result["content"],
+            "timestamp": datetime.now().isoformat(timespec="seconds"),
+            "sourceTitle": title,
+            "sourceType": item.get("track", ""),
         })
 
     # X 推文
@@ -318,6 +374,17 @@ def run():
             "source_label": item.get("section_label", ""),
             "track": item.get("track", ""),
             "generated_at": datetime.now().isoformat(timespec="seconds"),
+        })
+        _upsert_generated(db, {
+            "id": "daily_xhs_" + _slug(title, 36),
+            "type": "xiaohongshu",
+            "style": "matrix",
+            "styleLabel": "自动生产",
+            "title": result.get("display_title", title),
+            "content": result["content"],
+            "timestamp": datetime.now().isoformat(timespec="seconds"),
+            "sourceTitle": title,
+            "sourceType": item.get("track", ""),
         })
 
     # 4. 世界杯专题

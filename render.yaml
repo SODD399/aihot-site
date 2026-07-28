@@ -8,3 +8,13 @@ services:
     envVars:  
       - key: DEEPSEEK_API_KEY  
         sync: false 
+      - key: AIHOT_USERNAME
+        value: "admin"
+      - key: AIHOT_PASSWORD
+        sync: false
+      - key: AIHOT_AUTH_REQUIRED
+        value: "true"
+      - key: AIHOT_AUTH_SECRET
+        generateValue: true
+      - key: AIHOT_COOKIE_SECURE
+        value: "true"

@@ -109,6 +109,10 @@ a{color:var(--accent);text-decoration:none}
 .btn-primary:hover{background:var(--accent2)}
 .btn-secondary{padding:10px 20px;background:#fff;color:var(--accent);border:1px solid var(--accent);border-radius:8px;font-size:14px;cursor:pointer;transition:all .15s}
 .btn-secondary:hover{background:#f0f5ff}
+.btn-logout{padding:6px 12px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.22);border-radius:6px;font-size:12px;cursor:pointer}
+.btn-logout:hover{background:rgba(255,255,255,.16)}
+.check-row{display:flex;align-items:center;gap:8px;margin:-4px 0 16px;font-size:13px;color:var(--text2)}
+.check-row input{width:auto;flex:0 0 auto}
 .extract-status{padding:8px 0;font-size:12px;min-height:24px}
 .extract-status.success{color:#27ae60}.extract-status.error{color:#e74c3c}
 
@@ -141,6 +145,7 @@ a{color:var(--accent);text-decoration:none}
   <div class="status">
     <span id="aiStatus"><span class="dot dot-offline"></span>检测中...</span>
     <span id="countBadge" class="badge badge-offline"></span>
+    <button id="logoutBtn" class="btn-logout" onclick="logout()" style="display:none">退出</button>
   </div>
 </header>
 
@@ -211,6 +216,16 @@ var aiReady = false;
 var generating = false;
 var useServer = true;
 
+function apiFetch(url, opts) {
+  return fetch(url, opts).then(function(r){
+    if (r.status === 401) {
+      window.location.href = '/login';
+      throw new Error('unauthorized');
+    }
+    return r;
+  });
+}
+
 // ═══════════ INIT ═══════════
 function init() {
   checkStatus().then(function(){
@@ -221,13 +236,15 @@ function init() {
 }
 
 function checkStatus() {
-  return fetch('/api/status').then(function(r){return r.json();}).then(function(status){
+  return apiFetch('/api/status').then(function(r){return r.json();}).then(function(status){
     aiReady = status.ai_ready;
     document.getElementById('aiStatus').innerHTML =
       aiReady ? '<span class="dot dot-online"></span>AI 就绪' : '<span class="dot dot-offline"></span>API Key 未配置';
     document.getElementById('countBadge').textContent =
       '热点' + status.counts.hotspots + ' · 节点' + status.counts.events + ' · 已生成' + status.counts.generated;
     document.getElementById('countBadge').className = aiReady ? 'badge badge-online' : 'badge badge-offline';
+    var logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) logoutBtn.style.display = status.auth_enabled ? 'inline-block' : 'none';
   }).catch(function(){
     useServer = false;
     aiReady = false;
@@ -238,7 +255,7 @@ function checkStatus() {
 }
 
 function loadHotspots() {
-  return fetch('/api/hotspots').then(function(r){return r.json();}).then(function(data){
+  return apiFetch('/api/hotspots').then(function(r){return r.json();}).then(function(data){
     hotspots = data;
   }).catch(function(){
     hotspots = getDemoHotspots();
@@ -248,7 +265,7 @@ function loadHotspots() {
 }
 
 function loadEvents() {
-  return fetch('/api/events').then(function(r){return r.json();}).then(function(data){
+  return apiFetch('/api/events').then(function(r){return r.json();}).then(function(data){
     events = data;
   }).catch(function(){
     events = getDemoEvents();
@@ -258,7 +275,7 @@ function loadEvents() {
 }
 
 function loadGenerated() {
-  fetch('/api/generated').then(function(r){return r.json();}).then(function(data){
+  apiFetch('/api/generated').then(function(r){return r.json();}).then(function(data){
     generated = data;
   }).catch(function(){}).then(function(){
     renderRightPanel();
@@ -317,7 +334,7 @@ function doGenerate(itemId, genType, style) {
   if(generating)return;
   var item = hotspots.find(function(h){return h.id===itemId;}) || events.find(function(e){return e.id===itemId;});
   if(!item){toast('找不到该条目');return;}
-  if(!aiReady){toast('⚠️ AI 未配置。请在本地运行 server.py 后访问 localhost:5199');return;}
+  if(!aiReady){toast('⚠️ AI 未配置。请在本地运行 server.py 后访问 localhost:8080');return;}
 
   generating=true;
   var styleLabel = style==='official'?'官号':'矩阵号';
@@ -325,7 +342,7 @@ function doGenerate(itemId, genType, style) {
   toast('🔄 正在生成 '+styleLabel+typeLabel+'...');
   document.getElementById('rightContent').innerHTML='<div class="loading"><div class="spinner"></div><p>AI 正在生成 '+styleLabel+typeLabel+'...</p><p style="font-size:12px;color:var(--text3)">这可能需要 20-60 秒</p></div>';
 
-  fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:item,type:genType,style:style})})
+  apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:item,type:genType,style:style})})
     .then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error(e.error||'生成失败')});return r.json();})
     .then(function(result){generated.unshift(result);renderRightPanel();toast('✅ 生成完成！');})
     .catch(function(e){toast('❌ '+(e.message||'网络错误'));})
@@ -362,12 +379,13 @@ function renderRightPanel() {
 
 function renderCopywritingTab(el) {
   el.innerHTML='<div class="copywriting-input">'+
-    '<label>🔗 抖音/社媒链接（需要本地 server.py 支持自动提取）</label>'+
-    '<div class="url-row"><input type="url" id="douyinUrl" placeholder="粘贴抖音链接 https://v.douyin.com/..." />'+
+    '<label>🔗 链接文案提取</label>'+
+    '<div class="url-row"><input type="url" id="douyinUrl" placeholder="粘贴公开视频、文章或社媒链接" />'+
     '<button class="btn-secondary" onclick="extractDouyin()" '+(aiReady?'':'disabled')+'>提取文案</button></div>'+
     '<div class="extract-status" id="extractStatus"></div>'+
     '<label>📝 原始文案（提取后自动填入，也可手动粘贴）</label>'+
     '<textarea id="sourceText" placeholder="在这里粘贴需要洗稿的原始文案..."></textarea>'+
+    '<label class="check-row"><input type="checkbox" id="includeEasyClaw" checked>结合 EasyClaw 产品功能</label>'+
     '<div style="display:flex;gap:12px;align-items:center">'+
     '<button class="btn-primary" onclick="doCopywriting(\'official\')" '+(aiReady?'':'disabled')+'>🎯 洗成官号文案</button>'+
     '<button class="btn-primary" style="background:var(--matrix)" onclick="doCopywriting(\'matrix\')" '+(aiReady?'':'disabled')+'>🔥 洗成矩阵号文案</button></div></div>'+
@@ -394,11 +412,11 @@ function renderCopywritingResults() {
 // ═══════════ EXTRACT DOUYIN ═══════════
 function extractDouyin() {
   var url = document.getElementById('douyinUrl').value.trim();
-  if(!url){toast('请先粘贴抖音链接');return;}
+  if(!url){toast('请先粘贴链接');return;}
   var status = document.getElementById('extractStatus');
   status.textContent='⏳ 正在提取...';status.className='extract-status';
 
-  fetch('/api/extract-douyin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:url})})
+  apiFetch('/api/extract-link',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:url})})
     .then(function(r){return r.json();})
     .then(function(result){
       if(result.success){
@@ -414,10 +432,10 @@ function extractDouyin() {
 function doCopywriting(style) {
   var text = document.getElementById('sourceText').value.trim();
   if(!text){toast('请先输入或提取文案');return;}
-  if(!aiReady){toast('⚠️ AI 未配置。请在本地运行 server.py 后访问 localhost:5199');return;}
+  if(!aiReady){toast('⚠️ AI 未配置。请在本地运行 server.py 后访问 localhost:8080');return;}
 
   toast('🔄 正在洗稿改写...');
-  fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:{id:'copy_manual',title:text,type:'copywriting',source:'用户输入'},type:'copywriting',style:style,text:text})})
+  apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:{id:'copy_manual',title:text,type:'copywriting',source:'用户输入'},type:'copywriting',style:style,text:text,includeEasyClaw:(document.getElementById('includeEasyClaw') ? document.getElementById('includeEasyClaw').checked : true)})})
     .then(function(r){return r.json();})
     .then(function(result){generated.unshift(result);renderRightPanel();toast('✅ 洗稿完成！');})
     .catch(function(){toast('❌ 生成失败');});
@@ -442,6 +460,11 @@ function copyContent(genId) {
   if(!el)return;
   var text=el.textContent||el.innerText;
   navigator.clipboard.writeText(text).then(function(){toast('📋 已复制到剪贴板');});
+}
+
+function logout() {
+  apiFetch('/api/logout',{method:'POST'})
+    .finally(function(){window.location.href='/login';});
 }
 
 function escapeHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
