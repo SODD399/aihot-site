@@ -191,7 +191,7 @@ a{color:var(--blue);text-decoration:none}
 .automation-head .btn-primary:hover{background:#ffc83a}
 .automation-content{display:grid;gap:14px}
 .page-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px;align-items:start}
-.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}
+.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}.span-3{grid-column:span 3}
 .table-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
 .table-row{display:grid;grid-template-columns:1.3fr .8fr .9fr .9fr auto;gap:12px;align-items:center;padding:13px 14px;border-top:1px solid var(--line);font-size:13px}
 .table-row:first-child{border-top:0;background:var(--panel);font-size:12px;color:var(--muted);font-weight:850}
@@ -200,6 +200,22 @@ a{color:var(--blue);text-decoration:none}
 .comment-card:first-of-type{border-top:0;padding-top:0}
 .comment-text{font-size:13px;color:var(--ink);font-weight:800}
 .draft{margin-top:6px;font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px}
+.viz-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.account-viz{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:12px}
+.account-viz-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bar{height:8px;border-radius:999px;background:#efe4ce;overflow:hidden}
+.bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand),#ffd670)}
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mini-stat{border:1px solid var(--line);border-radius:8px;padding:8px;background:#fff}
+.mini-stat strong{display:block;font-size:18px;line-height:1}.mini-stat span{font-size:11px;color:var(--faint)}
+.timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.time-slot{border:1px solid var(--line);border-radius:8px;background:#fff;padding:10px}
+.time-slot strong{display:block;font-size:13px}.time-slot span{font-size:12px;color:var(--faint)}
+.account-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.account-tab{height:34px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);padding:0 12px;font-size:12px;font-weight:850}
+.account-tab.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.group-card{border-top:1px solid var(--line);padding:12px 0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}
+.group-card:first-of-type{border-top:0;padding-top:0}
 
 .loading,.empty-state{text-align:center;color:var(--faint);padding:46px 14px}
 .spinner{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
@@ -212,7 +228,7 @@ a{color:var(--blue);text-decoration:none}
   .brand{justify-content:center}.nav-item{justify-content:center}
   .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .workspace,.automation-grid,.page-grid{grid-template-columns:1fr}
-  .span-12,.span-8,.span-6,.span-4{grid-column:span 1}
+  .span-12,.span-8,.span-6,.span-4,.span-3{grid-column:span 1}
   .feed,.right-content{max-height:none}
 }
 @media(max-width:720px){
@@ -227,6 +243,7 @@ a{color:var(--blue);text-decoration:none}
   .auto-hero,.automation-head{align-items:flex-start;flex-direction:column}
   .auto-hero .btn-primary,.automation-head .btn-primary{width:100%;white-space:nowrap}
   .table-row{grid-template-columns:1fr;gap:5px}
+  .viz-grid,.timeline{grid-template-columns:1fr}
   .summary-grid,.workflow{grid-template-columns:1fr}
   .url-row{grid-template-columns:1fr}
 }
@@ -247,18 +264,12 @@ a{color:var(--blue);text-decoration:none}
       <button class="nav-item active" data-module="hotspot"><span class="nav-icon">H</span><span class="nav-text">热点内容</span></button>
       <button class="nav-item" data-module="automation"><span class="nav-icon">D</span><span class="nav-text">自动化运营</span></button>
       <div class="subnav" id="automationSubnav">
-        <button class="subnav-item active" data-auto-page="overview" data-account="全部账号">全景总览</button>
+        <button class="subnav-item active" data-auto-page="global" data-account="全部账号">全景总览</button>
         <div class="subnav-label">已连接账号</div>
-        <button class="subnav-item" data-auto-page="overview" data-account="品牌官方号">品牌官方号</button>
-        <button class="subnav-item" data-auto-page="overview" data-account="矩阵号 A">矩阵号 A</button>
-        <button class="subnav-item" data-auto-page="overview" data-account="矩阵号 B">矩阵号 B</button>
-        <button class="subnav-item" data-auto-page="overview" data-account="矩阵号 C">矩阵号 C</button>
-        <div class="subnav-label">运营页面</div>
-        <button class="subnav-item" data-auto-page="accounts">账号连接</button>
-        <button class="subnav-item" data-auto-page="publish">发布中心</button>
-        <button class="subnav-item" data-auto-page="comments">评论收件箱</button>
-        <button class="subnav-item" data-auto-page="opportunities">互动机会池</button>
-        <button class="subnav-item" data-auto-page="rules">规则与风控</button>
+        <button class="subnav-item" data-auto-page="account" data-account="品牌官方号">品牌官方号</button>
+        <button class="subnav-item" data-auto-page="account" data-account="矩阵号 A">矩阵号 A</button>
+        <button class="subnav-item" data-auto-page="account" data-account="矩阵号 B">矩阵号 B</button>
+        <button class="subnav-item" data-auto-page="account" data-account="矩阵号 C">矩阵号 C</button>
       </div>
     </div>
     <div class="sidebar-foot">生产环境 · 团队登录</div>
@@ -350,7 +361,8 @@ function getDemoEvents(){
 
 var currentTab='wechat';
 var currentModule='hotspot';
-var currentAutoPage='overview';
+var currentAutoPage='global';
+var currentAccountTab='overview';
 var selectedAutoAccount='全部账号';
 var hotspots=[];
 var events=[];
@@ -561,7 +573,7 @@ function setupNavigation(){
   document.querySelector('.sidebar').addEventListener('click',function(e){
     var sub=e.target.closest('.subnav-item');
     if(sub){
-      setAutomationView(sub.dataset.autoPage||'overview',sub.dataset.account||selectedAutoAccount,sub);
+      setAutomationView(sub.dataset.autoPage||'global',sub.dataset.account||selectedAutoAccount,sub);
       return;
     }
     var item=e.target.closest('.nav-item');
@@ -584,8 +596,11 @@ function setupAutomation(){
 }
 
 function setAutomationView(page,account,sourceEl){
-  currentAutoPage=page||'overview';
+  currentAutoPage=page||'global';
   selectedAutoAccount=account||selectedAutoAccount||'全部账号';
+  if(selectedAutoAccount!=='全部账号' && currentAutoPage==='global')currentAutoPage='account';
+  if(selectedAutoAccount==='全部账号')currentAutoPage='global';
+  if(currentAutoPage==='account')currentAccountTab='overview';
   currentModule='automation';
   document.querySelectorAll('.module').forEach(function(m){m.classList.remove('active');});
   document.getElementById('module-automation').classList.add('active');
@@ -601,45 +616,77 @@ function setAutomationView(page,account,sourceEl){
 function renderAutomationPage(){
   var el=document.getElementById('automationContent');
   if(!el)return;
-  var titles={overview:'全景总览',accounts:'账号连接',publish:'发布中心',comments:'评论收件箱',opportunities:'互动机会池',rules:'规则与风控'};
-  var title=(titles[currentAutoPage]||'全景总览')+' · '+selectedAutoAccount;
+  var title=currentAutoPage==='global'?'全景总览 · 多账号':selectedAutoAccount+' · 账号工作台';
   document.getElementById('automationPageTitle').textContent=title;
-  var sub='当前账号：'+selectedAutoAccount+'。左侧可以切换账号或进入具体运营页面。';
-  if(currentAutoPage==='opportunities')sub='互动机会池来自抖音作品、博主和评论区，不等同于热点内容池。';
-  if(currentAutoPage==='publish')sub='集中管理视频上传、文案、标签、封面、组件和发布时间。';
-  if(currentAutoPage==='comments')sub='集中处理作品评论、AI 候选回复和高意向咨询。';
+  var sub=currentAutoPage==='global'?'用可视化方式看 1 个官号和 3 个矩阵号的发布、评论、粉丝群与获客机会。':'在一个账号页面内完成批量发布、评论监测、评论回复、粉丝群维护、热门作品获客和风控。';
   document.getElementById('automationPageSubtitle').textContent=sub;
-  if(currentAutoPage==='accounts')el.innerHTML=renderAccountsPage();
-  else if(currentAutoPage==='publish')el.innerHTML=renderPublishPage();
-  else if(currentAutoPage==='comments')el.innerHTML=renderCommentsPage();
-  else if(currentAutoPage==='opportunities')el.innerHTML=renderOpportunitiesPage();
-  else if(currentAutoPage==='rules')el.innerHTML=renderRulesPage();
+  if(currentAutoPage==='account')el.innerHTML=renderAccountWorkspace();
   else el.innerHTML=renderAutomationOverview();
 }
 
 function renderAutomationOverview(){
   return '<div class="page-grid">'+
-    '<div class="auto-card span-12"><div class="auto-card-head"><h3>账号全景</h3><span class="auto-note">左侧账号切换会改变本页视角</span></div><div class="account-list">'+accountRows()+'</div></div>'+
-    '<div class="auto-card span-4"><h3>待发布</h3><div class="metric"><div class="metric-value">2</div><div class="metric-note">含 1 条待封面、1 条待定时</div></div></div>'+
-    '<div class="auto-card span-4"><h3>待回复评论</h3><div class="metric"><div class="metric-value">4</div><div class="metric-note">含 1 条高意向咨询</div></div></div>'+
-    '<div class="auto-card span-4"><h3>待确认互动机会</h3><div class="metric"><div class="metric-value">8</div><div class="metric-note">热门作品、新作品、评论区机会</div></div></div>'+
-    '<div class="auto-card span-6"><div class="auto-card-head"><h3>发布中心摘要</h3><button class="btn-secondary" onclick="setAutomationView(&quot;publish&quot;,selectedAutoAccount)">进入发布中心</button></div>'+publishRows(true)+'</div>'+
-    '<div class="auto-card span-6"><div class="auto-card-head"><h3>互动机会池摘要</h3><button class="btn-secondary" onclick="setAutomationView(&quot;opportunities&quot;,selectedAutoAccount)">进入机会池</button></div>'+opportunityRows(true)+'</div>'+
+    '<div class="auto-card span-12"><div class="auto-card-head"><h3>多账号运营态势</h3><span class="auto-note">点击左侧账号进入单账号工作台</span></div><div class="viz-grid">'+accountVizCards()+'</div></div>'+
+    '<div class="auto-card span-4"><h3>今日发布漏斗</h3><div class="mini-stats"><div class="mini-stat"><strong>7</strong><span>脚本</span></div><div class="mini-stat"><strong>4</strong><span>待审</span></div><div class="mini-stat"><strong>2</strong><span>待发</span></div></div></div>'+
+    '<div class="auto-card span-4"><h3>评论处理进度</h3><div class="mini-stats"><div class="mini-stat"><strong>38</strong><span>新增</span></div><div class="mini-stat"><strong>4</strong><span>待回</span></div><div class="mini-stat"><strong>1</strong><span>高意向</span></div></div></div>'+
+    '<div class="auto-card span-4"><h3>获客机会</h3><div class="mini-stats"><div class="mini-stat"><strong>18</strong><span>作品</span></div><div class="mini-stat"><strong>8</strong><span>可评</span></div><div class="mini-stat"><strong>2</strong><span>谨慎</span></div></div></div>'+
+    '<div class="auto-card span-12"><div class="auto-card-head"><h3>今日运营节奏</h3><span class="auto-note">跨账号时间线</span></div><div class="timeline"><div class="time-slot"><strong>09:30</strong><span>矩阵号 A 评论区互动</span></div><div class="time-slot"><strong>11:40</strong><span>矩阵号 A 发布种草视频</span></div><div class="time-slot"><strong>16:20</strong><span>官号回复高意向咨询</span></div><div class="time-slot"><strong>20:30</strong><span>官号发布热点跟进视频</span></div></div></div>'+
   '</div>';
 }
 
-function renderAccountsPage(){
-  return '<div class="auto-card"><div class="auto-card-head"><h3>账号连接</h3><span class="auto-note">授权成功后账号会出现在左侧 D 自动化运营下方</span></div><div class="account-list">'+accountRows()+'</div></div>';
+function renderAccountWorkspace(){
+  return '<div class="account-tabs">'+
+    accountTab('overview','概览')+accountTab('publish','批量发布')+accountTab('monitor','评论监测')+accountTab('reply','评论回复')+accountTab('groups','粉丝群')+accountTab('leads','热门作品获客')+accountTab('rules','风控')+
+    '</div>'+renderAccountTabContent();
+}
+
+function accountTab(key,label){
+  return '<button class="account-tab '+(currentAccountTab===key?'active':'')+'" onclick="setAccountTab(&quot;'+key+'&quot;)">'+label+'</button>';
+}
+
+function setAccountTab(tab){
+  currentAccountTab=tab;
+  renderAutomationPage();
+}
+
+function renderAccountTabContent(){
+  if(currentAccountTab==='publish')return renderPublishPage();
+  if(currentAccountTab==='monitor')return renderMonitorPage();
+  if(currentAccountTab==='reply')return renderCommentsPage();
+  if(currentAccountTab==='groups')return renderGroupsPage();
+  if(currentAccountTab==='leads')return renderOpportunitiesPage();
+  if(currentAccountTab==='rules')return renderRulesPage();
+  return renderAccountOverviewPage();
+}
+
+function renderAccountOverviewPage(){
+  return '<div class="page-grid"><div class="auto-card span-12"><div class="auto-card-head"><h3>'+escapeHtml(selectedAutoAccount)+' 全景</h3><span class="auto-note">这个账号的发布、评论、粉丝群和获客状态</span></div></div>'+
+    '<div class="auto-card span-3"><h3>待发布</h3><div class="metric"><div class="metric-value">2</div><div class="metric-note">含 1 条待封面</div></div></div>'+
+    '<div class="auto-card span-3"><h3>待监测评论</h3><div class="metric"><div class="metric-value">12</div><div class="metric-note">最近 24 小时</div></div></div>'+
+    '<div class="auto-card span-3"><h3>待回复</h3><div class="metric"><div class="metric-value">4</div><div class="metric-note">含高意向 1 条</div></div></div>'+
+    '<div class="auto-card span-3"><h3>粉丝群提醒</h3><div class="metric"><div class="metric-value">3</div><div class="metric-note">群消息待维护</div></div></div>'+
+    '<div class="auto-card span-6"><div class="auto-card-head"><h3>下一步发布</h3><button class="btn-secondary" onclick="setAccountTab(&quot;publish&quot;)">批量发布</button></div>'+publishRows(true)+'</div>'+
+    '<div class="auto-card span-6"><div class="auto-card-head"><h3>'+(selectedAutoAccount==='品牌官方号'?'热门作品获客':'互动机会')+'</h3><button class="btn-secondary" onclick="setAccountTab(&quot;leads&quot;)">进入</button></div>'+opportunityRows(true)+'</div></div>';
 }
 
 function renderPublishPage(){
   return '<div class="auto-card"><div class="auto-card-head"><h3>发布中心 · '+escapeHtml(selectedAutoAccount)+'</h3><button class="btn-primary" onclick="toast(&quot;创建发布任务将在下一阶段接入&quot;)">新建发布任务</button></div><div class="table-card"><div class="table-row"><span>视频任务</span><span>发布账号</span><span>发布时间</span><span>素材状态</span><span>状态</span></div>'+publishRows(false)+'</div></div>';
 }
 
+function renderMonitorPage(){
+  return '<div class="auto-card"><div class="auto-card-head"><h3>评论监测 · '+escapeHtml(selectedAutoAccount)+'</h3><span class="auto-note">批量监测作品评论区，发现高意向和负面风险</span></div><div class="table-card"><div class="table-row"><span>作品</span><span>新增评论</span><span>高意向</span><span>风险</span><span>状态</span></div><div class="table-row"><strong>EasyClaw 热点跟进短视频</strong><span>18</span><span>1</span><span>0</span><span class="chip orange">待处理</span></div><div class="table-row"><strong>AI 内容生产工具种草</strong><span>20</span><span>0</span><span>1</span><span class="chip">监测中</span></div></div></div>';
+}
+
 function renderCommentsPage(){
   return '<div class="auto-card"><div class="auto-card-head"><h3>评论收件箱 · '+escapeHtml(selectedAutoAccount)+'</h3><span class="auto-note">AI 生成候选回复，人工确认后发布</span></div>'+
     '<div class="comment-card"><div><div class="comment-text">3 条评论等待回复</div><div class="task-meta">来源：最近 24 小时作品 · 发布账号：品牌官方号</div><div class="draft">候选回复：我们可以从选题、文案、发布节奏三块一起优化，先看你的账号定位。</div></div><span class="chip red">待处理</span></div>'+
     '<div class="comment-card"><div><div class="comment-text">高意向咨询：工具怎么用，是否支持团队协作？</div><div class="task-meta">建议由官方号回复，避免矩阵号过度营销</div><div class="draft">候选回复：支持团队内容沉淀和多账号复用，适合运营团队做热点内容和评论维护。</div></div><span class="chip orange">优先</span></div></div>';
+}
+
+function renderGroupsPage(){
+  return '<div class="auto-card"><div class="auto-card-head"><h3>粉丝群维护 · '+escapeHtml(selectedAutoAccount)+'</h3><span class="auto-note">群消息提醒、常见问题回复和高价值用户沉淀</span></div>'+
+    '<div class="group-card"><div><div class="task-title">运营交流群 A</div><div class="task-meta">3 条问题待回复 · 关键词：工具试用、价格、团队协作</div></div><span class="chip orange">待维护</span></div>'+
+    '<div class="group-card"><div><div class="task-title">种草用户群 B</div><div class="task-meta">今日活跃 26 人 · 建议发布 1 条案例内容</div></div><span class="chip green">正常</span></div></div>';
 }
 
 function renderOpportunitiesPage(){
@@ -655,6 +702,21 @@ function accountRows(){
     '<div class="account"><div class="avatar">A</div><div><strong>矩阵号 A</strong><span>已连接 · 种草内容与评论区互动</span></div><span class="chip green">已授权</span></div>'+
     '<div class="account"><div class="avatar">B</div><div><strong>矩阵号 B</strong><span>已连接 · 口语化内容和路人评论维护</span></div><span class="chip green">已授权</span></div>'+
     '<div class="account"><div class="avatar">C</div><div><strong>矩阵号 C</strong><span>已连接 · 新作品冷启动互动</span></div><span class="chip green">已授权</span></div>';
+}
+
+function accountVizCards(){
+  var data=[
+    ['官','品牌官方号','86','2','1','4','正式承接和高意向回复'],
+    ['A','矩阵号 A','72','1','0','2','种草内容与评论区互动'],
+    ['B','矩阵号 B','64','1','2','6','口语化互动和路人维护'],
+    ['C','矩阵号 C','48','0','1','6','新作品冷启动互动']
+  ];
+  var html='';
+  for(var i=0;i<data.length;i++){
+    var d=data[i];
+    html+='<div class="account-viz"><div class="account-viz-head"><div style="display:flex;align-items:center;gap:10px"><div class="avatar">'+d[0]+'</div><div><strong>'+d[1]+'</strong><div class="task-meta">'+d[6]+'</div></div></div><span class="chip green">已授权</span></div><div class="bar"><span style="width:'+d[2]+'%"></span></div><div class="mini-stats"><div class="mini-stat"><strong>'+d[3]+'</strong><span>待发</span></div><div class="mini-stat"><strong>'+d[4]+'</strong><span>待回</span></div><div class="mini-stat"><strong>'+d[5]+'</strong><span>机会</span></div></div></div>';
+  }
+  return html;
 }
 
 function publishRows(compact){
