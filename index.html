@@ -140,29 +140,43 @@ a{color:var(--blue);text-decoration:none}
 .extract-status{font-size:12px;min-height:18px;color:var(--faint)}
 .extract-status.success{color:var(--green)}.extract-status.error{color:var(--red)}
 
-.automation-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;align-items:start}
-.auto-hero{background:linear-gradient(135deg,#201a12 0%,#5a4217 60%,#b77d00 100%);color:#fff;border-radius:var(--radius);padding:20px;display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:16px;min-height:138px}
-.auto-hero h2{margin:0 0 6px;font-size:22px}
-.auto-hero p{margin:0;color:rgba(255,255,255,.72);font-size:13px;max-width:620px}
+.automation-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:start}
+.auto-hero{background:linear-gradient(135deg,#201a12 0%,#4a3512 62%,#aa7600 100%);color:#fff;border-radius:var(--radius);padding:18px 20px;display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:14px;min-height:116px}
+.auto-hero h2{margin:0 0 6px;font-size:21px}
+.auto-hero p{margin:0;color:rgba(255,255,255,.72);font-size:13px;max-width:680px}
 .auto-hero .btn-primary{background:var(--brand);color:#211604}
 .auto-hero .btn-primary:hover{background:#ffc83a}
-.workflow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
-.step-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px}
-.step-num{width:28px;height:28px;border-radius:8px;background:var(--brand-soft);display:grid;place-items:center;font-size:12px;font-weight:900;color:#7a5700;margin-bottom:10px}
-.step-card h3{font-size:13px;margin:0 0 5px;color:var(--ink)}
-.step-card p{font-size:12px;margin:0;color:var(--muted);line-height:1.55}
+.account-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;margin-bottom:14px}
+.account-switcher{display:flex;gap:8px;flex-wrap:wrap}
+.account-filter{height:34px;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;padding:0 12px;font-size:12px;font-weight:850}
+.account-filter:hover{border-color:var(--line-strong);color:var(--ink)}
+.account-filter.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.workflow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.step-card{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 10px}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--brand-soft);display:grid;place-items:center;font-size:10px;font-weight:900;color:#7a5700;flex:0 0 auto}
+.step-card h3{font-size:12px;margin:0;color:var(--ink)}
+.step-card p{display:none}
 .auto-card h3{margin:0 0 10px;font-size:14px;color:var(--ink)}
-.task-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.auto-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.auto-card-head h3{margin:0}
+.auto-note{font-size:12px;color:var(--faint)}
+.task-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
 .task-row:first-of-type{border-top:0;padding-top:0}
-.task-icon{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:var(--brand-soft);font-weight:900}
-.task-title{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task-title{font-size:13px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
 .task-meta{font-size:12px;color:var(--faint);margin-top:2px}
+.task-fields{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px}
+.field-pill{font-size:11px;color:var(--muted);border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 8px}
+.field-pill.done{background:#e9f7ef;border-color:#b9e3cb;color:var(--green)}
+.field-pill.warn{background:#fff0df;border-color:#f2cfac;color:var(--orange)}
 .chip{background:#f2eadb;color:var(--muted)}
 .chip.green{background:#e9f7ef;color:var(--green)}.chip.orange{background:#fff0df;color:var(--orange)}.chip.red{background:#ffebe8;color:var(--red)}
 .account-list{display:grid;gap:10px}
-.account{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff}
+.account{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff}
 .avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#111;color:#fff;font-size:12px;font-weight:900}
 .account strong{display:block;font-size:13px}.account span{display:block;font-size:12px;color:var(--faint)}
+.rule-list{display:grid;gap:8px}
+.rule-item{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:9px;font-size:12px;color:var(--muted)}
+.rule-item:first-child{border-top:0;padding-top:0}
 
 .loading,.empty-state{text-align:center;color:var(--faint);padding:46px 14px}
 .spinner{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
@@ -184,6 +198,8 @@ a{color:var(--blue);text-decoration:none}
   .nav-text{display:inline}.nav-item{white-space:nowrap}
   .topbar{height:auto;align-items:flex-start;gap:12px;flex-direction:column;padding:14px}
   .top-actions{flex-wrap:wrap}.content{padding:14px}
+  .auto-hero{align-items:flex-start;flex-direction:column}
+  .auto-hero .btn-primary{width:100%;white-space:nowrap}
   .summary-grid,.workflow{grid-template-columns:1fr}
   .url-row{grid-template-columns:1fr}
 }
@@ -259,43 +275,109 @@ a{color:var(--blue);text-decoration:none}
         <div class="auto-hero">
           <div>
             <h2>抖音自动化运营</h2>
-            <p>发布、评论、粉丝维护和机会池会在这里统一管理。当前先搭建工作台结构，后续接入抖音开放平台授权与审核流。</p>
+            <p>围绕已授权账号处理发布、评论、粉丝维护和互动机会。顶部账号选择会影响本页所有任务视图。</p>
           </div>
           <button class="btn-primary" onclick="toast('抖音授权接入将在下一阶段配置')">连接抖音账号</button>
+        </div>
+
+        <div class="account-toolbar">
+          <div class="account-switcher" id="accountSwitcher">
+            <button class="account-filter active" data-account="全部账号">全部账号</button>
+            <button class="account-filter" data-account="品牌官方号">品牌官方号</button>
+            <button class="account-filter" data-account="矩阵号 A">矩阵号 A</button>
+            <button class="account-filter" data-account="矩阵号 B">矩阵号 B</button>
+            <button class="account-filter" data-account="矩阵号 C">矩阵号 C</button>
+          </div>
+          <span class="count-badge">当前：<span class="selected-account-name">全部账号</span></span>
         </div>
 
         <div class="workflow">
           <div class="step-card"><div class="step-num">01</div><h3>视频发布</h3><p>上传视频，设置文案、标签、封面和发布时间。</p></div>
           <div class="step-card"><div class="step-num">02</div><h3>评论收件箱</h3><p>聚合作品评论，生成建议回复，人工确认。</p></div>
           <div class="step-card"><div class="step-num">03</div><h3>粉丝维护</h3><p>沉淀高价值互动对象和常用回复策略。</p></div>
-          <div class="step-card"><div class="step-num">04</div><h3>机会池</h3><p>跟踪热门作品和新作品，产出评论草稿。</p></div>
+          <div class="step-card"><div class="step-num">04</div><h3>互动机会池</h3><p>跟踪热门作品和新作品，产出评论草稿。</p></div>
         </div>
 
         <div class="automation-grid">
           <div class="stack">
             <div class="auto-card">
-              <h3>发布队列</h3>
-              <div class="task-row"><div class="task-icon">V</div><div><div class="task-title">EasyClaw 热点跟进短视频</div><div class="task-meta">待补充封面 · 建议 20:30 发布</div></div><span class="chip orange">待配置</span></div>
-              <div class="task-row"><div class="task-icon">T</div><div><div class="task-title">AI 内容生产工具种草</div><div class="task-meta">文案已生成 · 需要人工审核</div></div><span class="chip green">草稿</span></div>
-            </div>
-            <div class="auto-card">
-              <h3>评论收件箱</h3>
-              <div class="task-row"><div class="task-icon">C</div><div><div class="task-title">3 条评论等待回复</div><div class="task-meta">来自最近 24 小时发布作品</div></div><span class="chip red">待处理</span></div>
-              <div class="task-row"><div class="task-icon">A</div><div><div class="task-title">AI 已生成 5 条候选回复</div><div class="task-meta">需要账号负责人确认后发布</div></div><span class="chip">审核中</span></div>
-            </div>
-          </div>
-          <div class="stack">
-            <div class="auto-card">
-              <h3>运营账号</h3>
+              <div class="auto-card-head"><h3>账号中心</h3><span class="auto-note">先授权账号，再执行发布和互动</span></div>
               <div class="account-list">
-                <div class="account"><div class="avatar">主</div><div><strong>品牌官方号</strong><span>未授权 · 等待接入</span></div></div>
-                <div class="account"><div class="avatar">矩</div><div><strong>矩阵号 A</strong><span>未授权 · 评论策略待定</span></div></div>
+                <div class="account"><div class="avatar">官</div><div><strong>品牌官方号</strong><span>未授权 · 用于正式发布和核心评论回复</span></div><span class="chip orange">待授权</span></div>
+                <div class="account"><div class="avatar">A</div><div><strong>矩阵号 A</strong><span>未授权 · 种草内容与评论区互动</span></div><span class="chip orange">待授权</span></div>
+                <div class="account"><div class="avatar">B</div><div><strong>矩阵号 B</strong><span>未授权 · 口语化内容和路人评论维护</span></div><span class="chip orange">待授权</span></div>
+                <div class="account"><div class="avatar">C</div><div><strong>矩阵号 C</strong><span>未授权 · 新作品冷启动互动</span></div><span class="chip orange">待授权</span></div>
               </div>
             </div>
+
             <div class="auto-card">
-              <h3>机会池</h3>
-              <div class="task-row"><div class="task-icon">K</div><div><div class="task-title">AI 工具 / 内容运营关键词</div><div class="task-meta">建议每日抓取热门与新发作品</div></div><span class="chip">待接入</span></div>
-              <div class="task-row"><div class="task-icon">R</div><div><div class="task-title">评论频控与风险提示</div><div class="task-meta">先走人工确认，避免营销骚扰风险</div></div><span class="chip green">建议</span></div>
+              <div class="auto-card-head"><h3>发布中心</h3><span class="auto-note selected-account-name">全部账号</span></div>
+              <div class="task-row">
+                <div>
+                  <div class="task-title">EasyClaw 热点跟进短视频</div>
+                  <div class="task-meta">发布账号：品牌官方号 · 建议发布时间：20:30</div>
+                  <div class="task-fields"><span class="field-pill done">视频已上传</span><span class="field-pill done">文案已生成</span><span class="field-pill warn">封面待选</span><span class="field-pill">组件待设置</span></div>
+                </div>
+                <span class="chip orange">待配置</span>
+              </div>
+              <div class="task-row">
+                <div>
+                  <div class="task-title">AI 内容生产工具种草</div>
+                  <div class="task-meta">发布账号：矩阵号 A · 计划发布时间：明天 11:40</div>
+                  <div class="task-fields"><span class="field-pill done">视频已上传</span><span class="field-pill warn">文案待审核</span><span class="field-pill done">标签已填</span><span class="field-pill">待定时</span></div>
+                </div>
+                <span class="chip green">草稿</span>
+              </div>
+            </div>
+
+            <div class="auto-card">
+              <div class="auto-card-head"><h3>评论收件箱</h3><span class="auto-note selected-account-name">全部账号</span></div>
+              <div class="task-row">
+                <div><div class="task-title">3 条评论等待回复</div><div class="task-meta">来源：最近 24 小时作品 · AI 已生成候选回复，待人工确认</div></div>
+                <span class="chip red">待处理</span>
+              </div>
+              <div class="task-row">
+                <div><div class="task-title">1 条高意向咨询</div><div class="task-meta">问题：工具怎么用、是否支持团队协作 · 建议由官方号回复</div></div>
+                <span class="chip orange">优先</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="auto-card">
+              <div class="auto-card-head"><h3>今日概览</h3><span class="auto-note selected-account-name">全部账号</span></div>
+              <div class="summary-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin:0">
+                <div class="metric"><div class="metric-label">待发布</div><div class="metric-value">2</div><div class="metric-note">含 1 条待封面</div></div>
+                <div class="metric"><div class="metric-label">待回复</div><div class="metric-value">4</div><div class="metric-note">含 1 条高意向</div></div>
+                <div class="metric"><div class="metric-label">待确认机会</div><div class="metric-value">8</div><div class="metric-note">热门作品 / 新作品</div></div>
+                <div class="metric"><div class="metric-label">风控提醒</div><div class="metric-value">1</div><div class="metric-note">评论频率需限制</div></div>
+              </div>
+            </div>
+
+            <div class="auto-card">
+              <div class="auto-card-head"><h3>互动机会池</h3><span class="auto-note">不等同于热点内容</span></div>
+              <div class="task-row">
+                <div><div class="task-title">目标作品：AI 工具测评热评区</div><div class="task-meta">来源：抖音关键词搜索 · 推荐账号：矩阵号 B · 评论草稿待确认</div></div>
+                <span class="chip green">可互动</span>
+              </div>
+              <div class="task-row">
+                <div><div class="task-title">目标博主：内容运营案例号</div><div class="task-meta">来源：目标博主新作品 · 建议轻量互动，不直接硬广</div></div>
+                <span class="chip orange">谨慎</span>
+              </div>
+              <div class="task-row">
+                <div><div class="task-title">高赞路人评论：求工具推荐</div><div class="task-meta">来源：评论区高赞楼层 · 可由官方号补充解决方案</div></div>
+                <span class="chip">待确认</span>
+              </div>
+            </div>
+
+            <div class="auto-card">
+              <div class="auto-card-head"><h3>规则与风控</h3><span class="auto-note">先人工确认，再逐步半自动</span></div>
+              <div class="rule-list">
+                <div class="rule-item"><span>单账号每日主动评论上限</span><strong>20 条</strong></div>
+                <div class="rule-item"><span>同一作品评论间隔</span><strong>30 分钟+</strong></div>
+                <div class="rule-item"><span>高风险词和硬广话术</span><strong>拦截</strong></div>
+                <div class="rule-item"><span>机会池评论发布方式</span><strong>人工确认</strong></div>
+              </div>
             </div>
           </div>
         </div>
@@ -345,6 +427,7 @@ function apiFetch(url,opts){
 
 function init(){
   setupNavigation();
+  setupAutomation();
   setupTabs();
   checkStatus().then(function(){
     return Promise.all([loadHotspots(),loadEvents(),loadGenerated()]);
@@ -542,6 +625,18 @@ function setupNavigation(){
     document.getElementById('module-'+target).classList.add('active');
     document.getElementById('moduleTitle').textContent=target==='hotspot'?'热点内容':'自动化运营';
     document.getElementById('moduleSubtitle').textContent=target==='hotspot'?'热点追踪、节点预警、多平台内容生成':'抖音发布、评论维护、机会池管理';
+  });
+}
+
+function setupAutomation(){
+  var switcher=document.getElementById('accountSwitcher');
+  if(!switcher)return;
+  switcher.addEventListener('click',function(e){
+    var btn=e.target.closest('.account-filter');
+    if(!btn)return;
+    document.querySelectorAll('.account-filter').forEach(function(item){item.classList.toggle('active',item===btn);});
+    document.querySelectorAll('.selected-account-name').forEach(function(label){label.textContent=btn.dataset.account;});
+    toast('已切换到：'+btn.dataset.account);
   });
 }
 
