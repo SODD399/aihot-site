@@ -426,6 +426,54 @@ def generate_xiaohongshu(item, style, db):
     }
 
 
+def generate_script_copy(item, style, db):
+    """基于热点/节点生成短视频脚本文案。"""
+    title = item.get("title", "")
+    src = item.get("source", "")
+    summary = item.get("summary", "")
+    item_type = item.get("type", "")
+
+    style_prompt = OFFICIAL_STYLE if style == "official" else MATRIX_STYLE
+    style_label = "官方号" if style == "official" else "矩阵号"
+    type_cn = {"ai": "AI", "finance": "金融理财", "ecommerce": "电商运营", "worldcup": "体育热点",
+               "seasonal": "营销节点", "industry": "行业趋势"}.get(item_type, "综合")
+
+    prompt = f"""{style_prompt}
+
+你是短视频内容策划，请基于以下热点/节点，生成一套可直接用于抖音的短视频脚本文案（{style_label}，{type_cn}方向）。
+
+选题：{title}
+来源：{src}
+背景：{summary}
+
+【输出要求】
+1. 给出 3 个短视频标题备选，每个 20 字以内
+2. 给出 30-60 秒口播脚本，按 0-3 秒、3-15 秒、15-40 秒、40-60 秒拆段
+3. 给出画面建议：开头画面、过程画面、结尾画面
+4. 给出字幕钩子 5 条，适合放在视频前 3 秒
+5. 给出话题标签 5-8 个
+6. 给出评论区置顶引导 2 条
+7. {'官号版要稳健、清晰、有专业可信度' if style == 'official' else '矩阵号版要口语化、有观点、有真实分享感'}
+8. 不要编造未提供的数据，不要拉踩竞品，不要承诺夸张效果
+
+直接输出脚本文案，不要解释生成过程。"""
+
+    content = llm_call(prompt, timeout=200)
+    display_title = title[:24] + ("..." if len(title) > 24 else "")
+
+    return {
+        "id": f"gen_{uuid.uuid4().hex[:8]}",
+        "type": "script",
+        "style": style,
+        "styleLabel": style_label,
+        "title": display_title,
+        "content": content,
+        "timestamp": datetime.now().isoformat(timespec="seconds"),
+        "sourceTitle": item.get("title", ""),
+        "sourceType": item_type,
+    }
+
+
 def generate_copywriting(text, style, include_easyclaw=True):
     """洗稿：将原始文案结合 EasyClaw 产品语境改写为官号或矩阵号版本"""
     style_prompt = OFFICIAL_STYLE if style == "official" else MATRIX_STYLE
@@ -871,7 +919,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
 
         if path == "/api/generate":
             item = body.get("item", {})
-            gen_type = body.get("type", "wechat")  # wechat | xiaohongshu | copywriting
+            gen_type = body.get("type", "wechat")  # wechat | xiaohongshu | script | copywriting
             style = body.get("style", "matrix")  # official | matrix
             douyin_text = body.get("text", "")  # 洗稿原始文案
             include_easyclaw = body.get("includeEasyClaw", body.get("include_easyclaw", True))
@@ -882,6 +930,8 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
                 result = generate_wechat_article(item, style, db)
             elif gen_type == "xiaohongshu":
                 result = generate_xiaohongshu(item, style, db)
+            elif gen_type == "script":
+                result = generate_script_copy(item, style, db)
             elif gen_type == "copywriting":
                 if not douyin_text:
                     self._send_json({"error": "请提供需要洗稿的文案内容"}, 400)

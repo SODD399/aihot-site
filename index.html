@@ -48,6 +48,12 @@ a{color:var(--blue);text-decoration:none}
 .nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
 .nav-item.active{background:var(--brand);color:#211604;font-weight:800}
 .nav-icon{width:22px;text-align:center}
+.subnav{display:none;margin:2px 0 8px 32px;padding-left:10px;border-left:1px solid rgba(255,255,255,.16)}
+.subnav.open{display:grid;gap:4px}
+.subnav-label{font-size:10px;color:rgba(255,255,255,.38);font-weight:800;margin:8px 0 2px}
+.subnav-item{border:0;background:transparent;color:rgba(255,255,255,.62);border-radius:7px;padding:8px 9px;text-align:left;font-size:12px}
+.subnav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.subnav-item.active{background:rgba(244,176,0,.18);color:#ffd36a;font-weight:850}
 .sidebar-foot{margin-top:auto;padding:12px 8px;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:rgba(255,255,255,.58)}
 
 .shell{min-width:0;display:flex;flex-direction:column}
@@ -125,6 +131,7 @@ a{color:var(--blue);text-decoration:none}
 .gen-type-wechat{background:#e9efff;color:var(--blue)}
 .gen-type-xiaohongshu{background:#ffebe8;color:var(--red)}
 .gen-type-copywriting{background:#e9f7ef;color:var(--green)}
+.gen-type-script{background:#fff2bd;color:#745300}
 .gen-style-official{background:#fff2bd;color:#745300}
 .gen-style-matrix{background:#fff0df;color:#9a4a13}
 .gen-content{font-size:14px;line-height:1.85;color:#3f3629;white-space:pre-wrap;word-break:break-word;max-height:430px;overflow:auto;padding-right:6px}
@@ -177,6 +184,22 @@ a{color:var(--blue);text-decoration:none}
 .rule-list{display:grid;gap:8px}
 .rule-item{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:9px;font-size:12px;color:var(--muted)}
 .rule-item:first-child{border-top:0;padding-top:0}
+.automation-head{background:linear-gradient(135deg,#201a12 0%,#4a3512 66%,#aa7600 100%);color:#fff;border-radius:var(--radius);padding:18px 20px;display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:14px}
+.automation-head h2{margin:0 0 6px;font-size:20px}
+.automation-head p{margin:0;color:rgba(255,255,255,.72);font-size:13px;max-width:760px}
+.automation-head .btn-primary{background:var(--brand);color:#211604}
+.automation-head .btn-primary:hover{background:#ffc83a}
+.automation-content{display:grid;gap:14px}
+.page-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px;align-items:start}
+.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}
+.table-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.table-row{display:grid;grid-template-columns:1.3fr .8fr .9fr .9fr auto;gap:12px;align-items:center;padding:13px 14px;border-top:1px solid var(--line);font-size:13px}
+.table-row:first-child{border-top:0;background:var(--panel);font-size:12px;color:var(--muted);font-weight:850}
+.table-row strong{color:var(--ink)}
+.comment-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;border-top:1px solid var(--line);padding:12px 0}
+.comment-card:first-of-type{border-top:0;padding-top:0}
+.comment-text{font-size:13px;color:var(--ink);font-weight:800}
+.draft{margin-top:6px;font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px}
 
 .loading,.empty-state{text-align:center;color:var(--faint);padding:46px 14px}
 .spinner{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
@@ -185,10 +208,11 @@ a{color:var(--blue);text-decoration:none}
 
 @media(max-width:1080px){
   .app{grid-template-columns:86px minmax(0,1fr)}
-  .brand-text,.nav-label,.nav-text,.sidebar-foot{display:none}
+  .brand-text,.nav-label,.nav-text,.sidebar-foot,.subnav{display:none}
   .brand{justify-content:center}.nav-item{justify-content:center}
   .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .workspace,.automation-grid{grid-template-columns:1fr}
+  .workspace,.automation-grid,.page-grid{grid-template-columns:1fr}
+  .span-12,.span-8,.span-6,.span-4{grid-column:span 1}
   .feed,.right-content{max-height:none}
 }
 @media(max-width:720px){
@@ -196,10 +220,13 @@ a{color:var(--blue);text-decoration:none}
   .sidebar{position:sticky;top:0;z-index:30;flex-direction:row;align-items:center;overflow:auto;padding:10px}
   .brand{border-bottom:0;padding:0}.nav-group{flex-direction:row}.nav-label,.sidebar-foot{display:none}
   .nav-text{display:inline}.nav-item{white-space:nowrap}
+  .subnav.open{display:flex;margin:0;border-left:0;padding-left:0;gap:6px}
+  .subnav-label{display:none}.subnav-item{white-space:nowrap}
   .topbar{height:auto;align-items:flex-start;gap:12px;flex-direction:column;padding:14px}
   .top-actions{flex-wrap:wrap}.content{padding:14px}
-  .auto-hero{align-items:flex-start;flex-direction:column}
-  .auto-hero .btn-primary{width:100%;white-space:nowrap}
+  .auto-hero,.automation-head{align-items:flex-start;flex-direction:column}
+  .auto-hero .btn-primary,.automation-head .btn-primary{width:100%;white-space:nowrap}
+  .table-row{grid-template-columns:1fr;gap:5px}
   .summary-grid,.workflow{grid-template-columns:1fr}
   .url-row{grid-template-columns:1fr}
 }
@@ -219,6 +246,20 @@ a{color:var(--blue);text-decoration:none}
       <div class="nav-label">工作区</div>
       <button class="nav-item active" data-module="hotspot"><span class="nav-icon">H</span><span class="nav-text">热点内容</span></button>
       <button class="nav-item" data-module="automation"><span class="nav-icon">D</span><span class="nav-text">自动化运营</span></button>
+      <div class="subnav" id="automationSubnav">
+        <button class="subnav-item active" data-auto-page="overview" data-account="全部账号">全景总览</button>
+        <div class="subnav-label">已连接账号</div>
+        <button class="subnav-item" data-auto-page="overview" data-account="品牌官方号">品牌官方号</button>
+        <button class="subnav-item" data-auto-page="overview" data-account="矩阵号 A">矩阵号 A</button>
+        <button class="subnav-item" data-auto-page="overview" data-account="矩阵号 B">矩阵号 B</button>
+        <button class="subnav-item" data-auto-page="overview" data-account="矩阵号 C">矩阵号 C</button>
+        <div class="subnav-label">运营页面</div>
+        <button class="subnav-item" data-auto-page="accounts">账号连接</button>
+        <button class="subnav-item" data-auto-page="publish">发布中心</button>
+        <button class="subnav-item" data-auto-page="comments">评论收件箱</button>
+        <button class="subnav-item" data-auto-page="opportunities">互动机会池</button>
+        <button class="subnav-item" data-auto-page="rules">规则与风控</button>
+      </div>
     </div>
     <div class="sidebar-foot">生产环境 · 团队登录</div>
   </aside>
@@ -261,8 +302,9 @@ a{color:var(--blue);text-decoration:none}
           <div class="column panel">
             <div class="tabs" id="rightTabs">
               <button class="tab active" data-tab="wechat">公众号推文</button>
-              <button class="tab" data-tab="xiaohongshu">小红书图文</button>
-              <button class="tab" data-tab="copywriting">文案洗稿</button>
+              <button class="tab" data-tab="xiaohongshu">矩阵图文</button>
+              <button class="tab" data-tab="script">脚本文案</button>
+              <button class="tab" data-tab="copywriting">链接洗稿</button>
             </div>
             <div class="right-content" id="rightContent">
               <div class="empty-state"><p>点击左侧热点或节点的生成按钮开始。</p></div>
@@ -272,115 +314,14 @@ a{color:var(--blue);text-decoration:none}
       </section>
 
       <section class="module" id="module-automation">
-        <div class="auto-hero">
+        <div class="automation-head">
           <div>
-            <h2>抖音自动化运营</h2>
-            <p>围绕已授权账号处理发布、评论、粉丝维护和互动机会。顶部账号选择会影响本页所有任务视图。</p>
+            <h2 id="automationPageTitle">全景总览 · 全部账号</h2>
+            <p id="automationPageSubtitle">按左侧账号或页面进入对应工作区；每个页面都围绕当前账号呈现任务。</p>
           </div>
           <button class="btn-primary" onclick="toast('抖音授权接入将在下一阶段配置')">连接抖音账号</button>
         </div>
-
-        <div class="account-toolbar">
-          <div class="account-switcher" id="accountSwitcher">
-            <button class="account-filter active" data-account="全部账号">全部账号</button>
-            <button class="account-filter" data-account="品牌官方号">品牌官方号</button>
-            <button class="account-filter" data-account="矩阵号 A">矩阵号 A</button>
-            <button class="account-filter" data-account="矩阵号 B">矩阵号 B</button>
-            <button class="account-filter" data-account="矩阵号 C">矩阵号 C</button>
-          </div>
-          <span class="count-badge">当前：<span class="selected-account-name">全部账号</span></span>
-        </div>
-
-        <div class="workflow">
-          <div class="step-card"><div class="step-num">01</div><h3>视频发布</h3><p>上传视频，设置文案、标签、封面和发布时间。</p></div>
-          <div class="step-card"><div class="step-num">02</div><h3>评论收件箱</h3><p>聚合作品评论，生成建议回复，人工确认。</p></div>
-          <div class="step-card"><div class="step-num">03</div><h3>粉丝维护</h3><p>沉淀高价值互动对象和常用回复策略。</p></div>
-          <div class="step-card"><div class="step-num">04</div><h3>互动机会池</h3><p>跟踪热门作品和新作品，产出评论草稿。</p></div>
-        </div>
-
-        <div class="automation-grid">
-          <div class="stack">
-            <div class="auto-card">
-              <div class="auto-card-head"><h3>账号中心</h3><span class="auto-note">先授权账号，再执行发布和互动</span></div>
-              <div class="account-list">
-                <div class="account"><div class="avatar">官</div><div><strong>品牌官方号</strong><span>未授权 · 用于正式发布和核心评论回复</span></div><span class="chip orange">待授权</span></div>
-                <div class="account"><div class="avatar">A</div><div><strong>矩阵号 A</strong><span>未授权 · 种草内容与评论区互动</span></div><span class="chip orange">待授权</span></div>
-                <div class="account"><div class="avatar">B</div><div><strong>矩阵号 B</strong><span>未授权 · 口语化内容和路人评论维护</span></div><span class="chip orange">待授权</span></div>
-                <div class="account"><div class="avatar">C</div><div><strong>矩阵号 C</strong><span>未授权 · 新作品冷启动互动</span></div><span class="chip orange">待授权</span></div>
-              </div>
-            </div>
-
-            <div class="auto-card">
-              <div class="auto-card-head"><h3>发布中心</h3><span class="auto-note selected-account-name">全部账号</span></div>
-              <div class="task-row">
-                <div>
-                  <div class="task-title">EasyClaw 热点跟进短视频</div>
-                  <div class="task-meta">发布账号：品牌官方号 · 建议发布时间：20:30</div>
-                  <div class="task-fields"><span class="field-pill done">视频已上传</span><span class="field-pill done">文案已生成</span><span class="field-pill warn">封面待选</span><span class="field-pill">组件待设置</span></div>
-                </div>
-                <span class="chip orange">待配置</span>
-              </div>
-              <div class="task-row">
-                <div>
-                  <div class="task-title">AI 内容生产工具种草</div>
-                  <div class="task-meta">发布账号：矩阵号 A · 计划发布时间：明天 11:40</div>
-                  <div class="task-fields"><span class="field-pill done">视频已上传</span><span class="field-pill warn">文案待审核</span><span class="field-pill done">标签已填</span><span class="field-pill">待定时</span></div>
-                </div>
-                <span class="chip green">草稿</span>
-              </div>
-            </div>
-
-            <div class="auto-card">
-              <div class="auto-card-head"><h3>评论收件箱</h3><span class="auto-note selected-account-name">全部账号</span></div>
-              <div class="task-row">
-                <div><div class="task-title">3 条评论等待回复</div><div class="task-meta">来源：最近 24 小时作品 · AI 已生成候选回复，待人工确认</div></div>
-                <span class="chip red">待处理</span>
-              </div>
-              <div class="task-row">
-                <div><div class="task-title">1 条高意向咨询</div><div class="task-meta">问题：工具怎么用、是否支持团队协作 · 建议由官方号回复</div></div>
-                <span class="chip orange">优先</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="stack">
-            <div class="auto-card">
-              <div class="auto-card-head"><h3>今日概览</h3><span class="auto-note selected-account-name">全部账号</span></div>
-              <div class="summary-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin:0">
-                <div class="metric"><div class="metric-label">待发布</div><div class="metric-value">2</div><div class="metric-note">含 1 条待封面</div></div>
-                <div class="metric"><div class="metric-label">待回复</div><div class="metric-value">4</div><div class="metric-note">含 1 条高意向</div></div>
-                <div class="metric"><div class="metric-label">待确认机会</div><div class="metric-value">8</div><div class="metric-note">热门作品 / 新作品</div></div>
-                <div class="metric"><div class="metric-label">风控提醒</div><div class="metric-value">1</div><div class="metric-note">评论频率需限制</div></div>
-              </div>
-            </div>
-
-            <div class="auto-card">
-              <div class="auto-card-head"><h3>互动机会池</h3><span class="auto-note">不等同于热点内容</span></div>
-              <div class="task-row">
-                <div><div class="task-title">目标作品：AI 工具测评热评区</div><div class="task-meta">来源：抖音关键词搜索 · 推荐账号：矩阵号 B · 评论草稿待确认</div></div>
-                <span class="chip green">可互动</span>
-              </div>
-              <div class="task-row">
-                <div><div class="task-title">目标博主：内容运营案例号</div><div class="task-meta">来源：目标博主新作品 · 建议轻量互动，不直接硬广</div></div>
-                <span class="chip orange">谨慎</span>
-              </div>
-              <div class="task-row">
-                <div><div class="task-title">高赞路人评论：求工具推荐</div><div class="task-meta">来源：评论区高赞楼层 · 可由官方号补充解决方案</div></div>
-                <span class="chip">待确认</span>
-              </div>
-            </div>
-
-            <div class="auto-card">
-              <div class="auto-card-head"><h3>规则与风控</h3><span class="auto-note">先人工确认，再逐步半自动</span></div>
-              <div class="rule-list">
-                <div class="rule-item"><span>单账号每日主动评论上限</span><strong>20 条</strong></div>
-                <div class="rule-item"><span>同一作品评论间隔</span><strong>30 分钟+</strong></div>
-                <div class="rule-item"><span>高风险词和硬广话术</span><strong>拦截</strong></div>
-                <div class="rule-item"><span>机会池评论发布方式</span><strong>人工确认</strong></div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="automation-content" id="automationContent"></div>
       </section>
     </div>
   </main>
@@ -409,6 +350,8 @@ function getDemoEvents(){
 
 var currentTab='wechat';
 var currentModule='hotspot';
+var currentAutoPage='overview';
+var selectedAutoAccount='全部账号';
 var hotspots=[];
 var events=[];
 var generated=[];
@@ -429,6 +372,7 @@ function init(){
   setupNavigation();
   setupAutomation();
   setupTabs();
+  renderAutomationPage();
   checkStatus().then(function(){
     return Promise.all([loadHotspots(),loadEvents(),loadGenerated()]);
   });
@@ -481,9 +425,8 @@ function renderHotspots(){
     html+='<div class="item-source">'+escapeHtml(h.source||'未知来源')+'</div>';
     html+='<div class="item-actions">';
     html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+escapeAttr(h.id)+'\',\'wechat\',\'official\')" '+(aiReady?'':'disabled')+'>官号推文</button>';
-    html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+escapeAttr(h.id)+'\',\'wechat\',\'matrix\')" '+(aiReady?'':'disabled')+'>矩阵推文</button>';
-    html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+escapeAttr(h.id)+'\',\'xiaohongshu\',\'official\')" '+(aiReady?'':'disabled')+'>官号图文</button>';
     html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+escapeAttr(h.id)+'\',\'xiaohongshu\',\'matrix\')" '+(aiReady?'':'disabled')+'>矩阵图文</button>';
+    html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+escapeAttr(h.id)+'\',\'script\',\'matrix\')" '+(aiReady?'':'disabled')+'>脚本文案</button>';
     html+='</div></div>';
   }
   el.innerHTML=html;
@@ -503,9 +446,8 @@ function renderEvents(){
     if(!e.isWarning){
       html+='<div class="item-actions">';
       html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+escapeAttr(e.id)+'\',\'wechat\',\'official\')" '+(aiReady?'':'disabled')+'>官号推文</button>';
-      html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+escapeAttr(e.id)+'\',\'wechat\',\'matrix\')" '+(aiReady?'':'disabled')+'>矩阵推文</button>';
-      html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+escapeAttr(e.id)+'\',\'xiaohongshu\',\'official\')" '+(aiReady?'':'disabled')+'>官号图文</button>';
       html+='<button class="btn-sm btn-gen matrix" onclick="doGenerate(\''+escapeAttr(e.id)+'\',\'xiaohongshu\',\'matrix\')" '+(aiReady?'':'disabled')+'>矩阵图文</button>';
+      html+='<button class="btn-sm btn-gen" onclick="doGenerate(\''+escapeAttr(e.id)+'\',\'script\',\'matrix\')" '+(aiReady?'':'disabled')+'>脚本文案</button>';
       html+='</div>';
     }
     html+='</div>';
@@ -520,7 +462,7 @@ function doGenerate(itemId,genType,style){
   if(!aiReady){toast('AI 未配置，请检查环境变量');return;}
   generating=true;
   var styleLabel=style==='official'?'官号':'矩阵号';
-  var typeLabel=genType==='wechat'?'公众号推文':'小红书图文';
+  var typeLabel=genType==='wechat'?'公众号推文':genType==='script'?'脚本文案':'矩阵图文';
   toast('正在生成 '+styleLabel+typeLabel+'...');
   document.getElementById('rightContent').innerHTML='<div class="loading"><div class="spinner"></div><p>AI 正在生成 '+styleLabel+typeLabel+'...</p><p style="font-size:12px;color:var(--faint)">这可能需要 20-60 秒</p></div>';
   apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:item,type:genType,style:style})})
@@ -534,8 +476,8 @@ function renderRightPanel(){
   var el=document.getElementById('rightContent');
   if(currentTab==='copywriting'){renderCopywritingTab(el);return;}
   var filtered=generated.filter(function(g){return g.type===currentTab;});
-  if(!filtered.length){el.innerHTML='<div class="empty-state"><p>暂无'+(currentTab==='wechat'?'公众号推文':'小红书图文')+'，从左侧选题生成。</p></div>';return;}
-  var typeLabels={wechat:'公众号推文',xiaohongshu:'小红书图文',copywriting:'文案改写'};
+  if(!filtered.length){el.innerHTML='<div class="empty-state"><p>暂无'+(currentTab==='wechat'?'公众号推文':currentTab==='script'?'脚本文案':'矩阵图文')+'，从左侧选题生成。</p></div>';return;}
+  var typeLabels={wechat:'公众号推文',xiaohongshu:'矩阵图文',script:'脚本文案',copywriting:'文案改写'};
   var html='';
   for(var i=0;i<filtered.length;i++){
     var g=filtered[i];
@@ -550,6 +492,7 @@ function renderRightPanel(){
 
 function renderCopywritingTab(el){
   el.innerHTML='<div class="copywriting-input">'+
+    '<div class="auto-note">这里处理外部链接或手动粘贴的洗稿；如果要基于左侧热点/节点生成脚本文案，直接点左侧「脚本文案」。</div>'+
     '<label>链接文案提取</label>'+
     '<div class="url-row"><input type="url" id="douyinUrl" placeholder="粘贴公开视频、文章或社媒链接">'+
     '<button class="btn-secondary" onclick="extractDouyin()" '+(aiReady?'':'disabled')+'>提取</button></div>'+
@@ -616,6 +559,11 @@ function setupTabs(){
 
 function setupNavigation(){
   document.querySelector('.sidebar').addEventListener('click',function(e){
+    var sub=e.target.closest('.subnav-item');
+    if(sub){
+      setAutomationView(sub.dataset.autoPage||'overview',sub.dataset.account||selectedAutoAccount,sub);
+      return;
+    }
     var item=e.target.closest('.nav-item');
     if(!item)return;
     var target=item.dataset.module;
@@ -623,21 +571,103 @@ function setupNavigation(){
     document.querySelectorAll('.nav-item').forEach(function(n){n.classList.toggle('active',n===item);});
     document.querySelectorAll('.module').forEach(function(m){m.classList.remove('active');});
     document.getElementById('module-'+target).classList.add('active');
+    var subnav=document.getElementById('automationSubnav');
+    if(subnav)subnav.classList.toggle('open',target==='automation');
     document.getElementById('moduleTitle').textContent=target==='hotspot'?'热点内容':'自动化运营';
     document.getElementById('moduleSubtitle').textContent=target==='hotspot'?'热点追踪、节点预警、多平台内容生成':'抖音发布、评论维护、机会池管理';
+    if(target==='automation')renderAutomationPage();
   });
 }
 
 function setupAutomation(){
-  var switcher=document.getElementById('accountSwitcher');
-  if(!switcher)return;
-  switcher.addEventListener('click',function(e){
-    var btn=e.target.closest('.account-filter');
-    if(!btn)return;
-    document.querySelectorAll('.account-filter').forEach(function(item){item.classList.toggle('active',item===btn);});
-    document.querySelectorAll('.selected-account-name').forEach(function(label){label.textContent=btn.dataset.account;});
-    toast('已切换到：'+btn.dataset.account);
-  });
+  renderAutomationPage();
+}
+
+function setAutomationView(page,account,sourceEl){
+  currentAutoPage=page||'overview';
+  selectedAutoAccount=account||selectedAutoAccount||'全部账号';
+  currentModule='automation';
+  document.querySelectorAll('.module').forEach(function(m){m.classList.remove('active');});
+  document.getElementById('module-automation').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.toggle('active',n.dataset.module==='automation');});
+  var subnav=document.getElementById('automationSubnav');
+  if(subnav)subnav.classList.add('open');
+  document.querySelectorAll('.subnav-item').forEach(function(n){n.classList.toggle('active',n===sourceEl);});
+  document.getElementById('moduleTitle').textContent='自动化运营';
+  document.getElementById('moduleSubtitle').textContent='抖音发布、评论维护、互动机会池';
+  renderAutomationPage();
+}
+
+function renderAutomationPage(){
+  var el=document.getElementById('automationContent');
+  if(!el)return;
+  var titles={overview:'全景总览',accounts:'账号连接',publish:'发布中心',comments:'评论收件箱',opportunities:'互动机会池',rules:'规则与风控'};
+  var title=(titles[currentAutoPage]||'全景总览')+' · '+selectedAutoAccount;
+  document.getElementById('automationPageTitle').textContent=title;
+  var sub='当前账号：'+selectedAutoAccount+'。左侧可以切换账号或进入具体运营页面。';
+  if(currentAutoPage==='opportunities')sub='互动机会池来自抖音作品、博主和评论区，不等同于热点内容池。';
+  if(currentAutoPage==='publish')sub='集中管理视频上传、文案、标签、封面、组件和发布时间。';
+  if(currentAutoPage==='comments')sub='集中处理作品评论、AI 候选回复和高意向咨询。';
+  document.getElementById('automationPageSubtitle').textContent=sub;
+  if(currentAutoPage==='accounts')el.innerHTML=renderAccountsPage();
+  else if(currentAutoPage==='publish')el.innerHTML=renderPublishPage();
+  else if(currentAutoPage==='comments')el.innerHTML=renderCommentsPage();
+  else if(currentAutoPage==='opportunities')el.innerHTML=renderOpportunitiesPage();
+  else if(currentAutoPage==='rules')el.innerHTML=renderRulesPage();
+  else el.innerHTML=renderAutomationOverview();
+}
+
+function renderAutomationOverview(){
+  return '<div class="page-grid">'+
+    '<div class="auto-card span-12"><div class="auto-card-head"><h3>账号全景</h3><span class="auto-note">左侧账号切换会改变本页视角</span></div><div class="account-list">'+accountRows()+'</div></div>'+
+    '<div class="auto-card span-4"><h3>待发布</h3><div class="metric"><div class="metric-value">2</div><div class="metric-note">含 1 条待封面、1 条待定时</div></div></div>'+
+    '<div class="auto-card span-4"><h3>待回复评论</h3><div class="metric"><div class="metric-value">4</div><div class="metric-note">含 1 条高意向咨询</div></div></div>'+
+    '<div class="auto-card span-4"><h3>待确认互动机会</h3><div class="metric"><div class="metric-value">8</div><div class="metric-note">热门作品、新作品、评论区机会</div></div></div>'+
+    '<div class="auto-card span-6"><div class="auto-card-head"><h3>发布中心摘要</h3><button class="btn-secondary" onclick="setAutomationView(&quot;publish&quot;,selectedAutoAccount)">进入发布中心</button></div>'+publishRows(true)+'</div>'+
+    '<div class="auto-card span-6"><div class="auto-card-head"><h3>互动机会池摘要</h3><button class="btn-secondary" onclick="setAutomationView(&quot;opportunities&quot;,selectedAutoAccount)">进入机会池</button></div>'+opportunityRows(true)+'</div>'+
+  '</div>';
+}
+
+function renderAccountsPage(){
+  return '<div class="auto-card"><div class="auto-card-head"><h3>账号连接</h3><span class="auto-note">授权成功后账号会出现在左侧 D 自动化运营下方</span></div><div class="account-list">'+accountRows()+'</div></div>';
+}
+
+function renderPublishPage(){
+  return '<div class="auto-card"><div class="auto-card-head"><h3>发布中心 · '+escapeHtml(selectedAutoAccount)+'</h3><button class="btn-primary" onclick="toast(&quot;创建发布任务将在下一阶段接入&quot;)">新建发布任务</button></div><div class="table-card"><div class="table-row"><span>视频任务</span><span>发布账号</span><span>发布时间</span><span>素材状态</span><span>状态</span></div>'+publishRows(false)+'</div></div>';
+}
+
+function renderCommentsPage(){
+  return '<div class="auto-card"><div class="auto-card-head"><h3>评论收件箱 · '+escapeHtml(selectedAutoAccount)+'</h3><span class="auto-note">AI 生成候选回复，人工确认后发布</span></div>'+
+    '<div class="comment-card"><div><div class="comment-text">3 条评论等待回复</div><div class="task-meta">来源：最近 24 小时作品 · 发布账号：品牌官方号</div><div class="draft">候选回复：我们可以从选题、文案、发布节奏三块一起优化，先看你的账号定位。</div></div><span class="chip red">待处理</span></div>'+
+    '<div class="comment-card"><div><div class="comment-text">高意向咨询：工具怎么用，是否支持团队协作？</div><div class="task-meta">建议由官方号回复，避免矩阵号过度营销</div><div class="draft">候选回复：支持团队内容沉淀和多账号复用，适合运营团队做热点内容和评论维护。</div></div><span class="chip orange">优先</span></div></div>';
+}
+
+function renderOpportunitiesPage(){
+  return '<div class="auto-card"><div class="auto-card-head"><h3>互动机会池 · '+escapeHtml(selectedAutoAccount)+'</h3><span class="auto-note">对象是抖音作品与评论区，不是新闻热点</span></div>'+opportunityRows(false)+'</div>';
+}
+
+function renderRulesPage(){
+  return '<div class="page-grid"><div class="auto-card span-6"><div class="auto-card-head"><h3>评论频控</h3><span class="auto-note">先人工确认，再半自动</span></div><div class="rule-list"><div class="rule-item"><span>单账号每日主动评论上限</span><strong>20 条</strong></div><div class="rule-item"><span>同一作品评论间隔</span><strong>30 分钟+</strong></div><div class="rule-item"><span>连续相似话术</span><strong>拦截</strong></div></div></div><div class="auto-card span-6"><div class="auto-card-head"><h3>风险词与边界</h3><span class="auto-note">避免硬广和骚扰</span></div><div class="rule-list"><div class="rule-item"><span>高风险营销词</span><strong>拦截</strong></div><div class="rule-item"><span>竞品拉踩</span><strong>禁止</strong></div><div class="rule-item"><span>机会池评论发布方式</span><strong>人工确认</strong></div></div></div></div>';
+}
+
+function accountRows(){
+  return '<div class="account"><div class="avatar">官</div><div><strong>品牌官方号</strong><span>已连接 · 正式发布和核心评论回复</span></div><span class="chip green">已授权</span></div>'+
+    '<div class="account"><div class="avatar">A</div><div><strong>矩阵号 A</strong><span>已连接 · 种草内容与评论区互动</span></div><span class="chip green">已授权</span></div>'+
+    '<div class="account"><div class="avatar">B</div><div><strong>矩阵号 B</strong><span>已连接 · 口语化内容和路人评论维护</span></div><span class="chip green">已授权</span></div>'+
+    '<div class="account"><div class="avatar">C</div><div><strong>矩阵号 C</strong><span>已连接 · 新作品冷启动互动</span></div><span class="chip green">已授权</span></div>';
+}
+
+function publishRows(compact){
+  var row1='<div class="table-row"><strong>EasyClaw 热点跟进短视频</strong><span>品牌官方号</span><span>今天 20:30</span><span><span class="field-pill done">视频</span> <span class="field-pill done">文案</span> <span class="field-pill warn">封面</span></span><span class="chip orange">待配置</span></div>';
+  var row2='<div class="table-row"><strong>AI 内容生产工具种草</strong><span>矩阵号 A</span><span>明天 11:40</span><span><span class="field-pill done">视频</span> <span class="field-pill warn">文案审核</span> <span class="field-pill done">标签</span></span><span class="chip green">草稿</span></div>';
+  return compact?row1+row2:row1+row2+'<div class="table-row"><strong>热点复盘口播脚本</strong><span>矩阵号 B</span><span>待定</span><span><span class="field-pill warn">脚本</span> <span class="field-pill">视频</span> <span class="field-pill">组件</span></span><span class="chip">待制作</span></div>';
+}
+
+function opportunityRows(compact){
+  var rows='<div class="task-row"><div><div class="task-title">目标作品：AI 工具测评热评区</div><div class="task-meta">来源：抖音关键词搜索 · 推荐账号：矩阵号 B · 评论草稿待确认</div></div><span class="chip green">可互动</span></div>'+
+    '<div class="task-row"><div><div class="task-title">目标博主：内容运营案例号</div><div class="task-meta">来源：目标博主新作品 · 建议轻量互动，不直接硬广</div></div><span class="chip orange">谨慎</span></div>';
+  if(!compact)rows+='<div class="task-row"><div><div class="task-title">高赞路人评论：求工具推荐</div><div class="task-meta">来源：评论区高赞楼层 · 可由官方号补充解决方案</div></div><span class="chip">待确认</span></div>';
+  return rows;
 }
 
 function copyContent(genId){
