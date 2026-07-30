@@ -2,3 +2,5 @@ apikey.txt
 .env
 __pycache__/
 *.pyc
+.local-douyin-profile/
+data/executor/

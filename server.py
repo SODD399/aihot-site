@@ -151,15 +151,156 @@ def _llm_fallback(prompt):
 # ═══════════════════════════════════════════
 def load_db():
     if DATA_FILE.exists():
-        return json.loads(DATA_FILE.read_text(encoding="utf-8"))
-    return {"hotspots": [], "events": [], "generated": [], "last_updated": ""}
+        db = json.loads(DATA_FILE.read_text(encoding="utf-8-sig"))
+    else:
+        db = {"hotspots": [], "events": [], "generated": [], "last_updated": ""}
+    return ensure_db_shape(db)
+
+
+def ensure_db_shape(db):
+    db.setdefault("hotspots", [])
+    db.setdefault("events", [])
+    db.setdefault("generated", [])
+    db.setdefault("automation", {
+        "mode": "local_assist",
+        "accounts": default_automation_accounts(),
+        "publish_tasks": [],
+        "comments": [],
+        "groups": [],
+    })
+    automation = db["automation"]
+    automation.setdefault("mode", "local_assist")
+    automation.setdefault("accounts", default_automation_accounts())
+    automation.setdefault("publish_tasks", [])
+    automation.setdefault("comments", [])
+    automation.setdefault("groups", [])
+    return db
+
+
+def default_automation_accounts():
+    return [
+        {
+            "name": "品牌官方号",
+            "role": "官号",
+            "mode": "本地模式",
+            "positioning": "正式承接、高意向咨询回复、重点内容发布",
+            "tone": "专业、可信、克制",
+            "daily_comment_limit": 20,
+            "forbidden_words": ["稳赚", "保证效果", "私信领资料"],
+        },
+        {
+            "name": "矩阵号 A",
+            "role": "矩阵号",
+            "mode": "本地模式",
+            "positioning": "种草内容、轻量评论互动",
+            "tone": "口语、自然、像真实运营同事",
+            "daily_comment_limit": 20,
+            "forbidden_words": ["加我", "包教会", "立刻变现"],
+        },
+        {
+            "name": "矩阵号 B",
+            "role": "矩阵号",
+            "mode": "本地模式",
+            "positioning": "评论区机会筛选、路人问题补充",
+            "tone": "简短、经验分享、不硬广",
+            "daily_comment_limit": 20,
+            "forbidden_words": ["割韭菜", "吊打", "秒杀同行"],
+        },
+        {
+            "name": "矩阵号 C",
+            "role": "矩阵号",
+            "mode": "本地模式",
+            "positioning": "新作品冷启动、低频触达",
+            "tone": "轻松、低压、少营销感",
+            "daily_comment_limit": 15,
+            "forbidden_words": ["免费送", "点击主页", "速来"],
+        },
+    ]
 
 
 def save_db(db):
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+    db = ensure_db_shape(db)
     db["last_updated"] = datetime.now().isoformat(timespec="seconds")
     DATA_FILE.write_text(json.dumps(db, ensure_ascii=False, indent=2), encoding="utf-8")
     return db
+
+
+def find_account(automation, name):
+    for account in automation.get("accounts", []):
+        if account.get("name") == name:
+            return account
+    return automation.get("accounts", [{}])[0] if automation.get("accounts") else {}
+
+
+def classify_comment(text):
+    text = (text or "").strip()
+    high_intent_words = ["怎么用", "多少钱", "价格", "试用", "链接", "合作", "咨询", "哪里买", "能不能"]
+    risk_words = ["骗子", "垃圾", "举报", "假的", "割韭菜", "难用", "投诉"]
+    if any(w in text for w in risk_words):
+        return "风险"
+    if any(w in text for w in high_intent_words):
+        return "高意向"
+    if len(text) <= 6:
+        return "轻互动"
+    return "普通互动"
+
+
+def build_reply_draft(account, text, category):
+    name = account.get("name", "当前账号")
+    tone = account.get("tone", "自然、克制")
+    positioning = account.get("positioning", "内容运营")
+    if not (DEEPSEEK_API_KEY or USE_EASYCODE):
+        return fallback_reply_draft(category)
+    prompt = f"""你是抖音账号运营助手。请给一条评论生成 1 条可复制回复。
+
+账号：{name}
+账号定位：{positioning}
+语气：{tone}
+评论分类：{category}
+用户评论：{text}
+
+要求：
+1. 口语自然，不硬广，不引导私信，不夸大效果。
+2. 字数 20-45 字。
+3. 如果是风险评论，先安抚并邀请对方说明具体问题。
+4. 只输出回复文本。"""
+    try:
+        draft = llm_call(prompt, timeout=60).strip()
+        if not draft or "API 错误" in draft or "AI 生成模板" in draft:
+            return fallback_reply_draft(category)
+        return draft.splitlines()[0][:120]
+    except Exception:
+        return fallback_reply_draft(category)
+
+
+def fallback_reply_draft(category):
+    if category == "风险":
+        return "收到，我们会认真看具体问题，也欢迎你补充一下是哪一步体验不好。"
+    if category == "高意向":
+        return "可以的，一般先从账号定位、选题和发布节奏三块开始梳理。"
+    if category == "轻互动":
+        return "哈哈懂你，这类内容确实很适合拿来做选题。"
+    return "这个角度挺适合继续展开，我们后面也会多做一些实操案例。"
+
+
+def parse_comment_lines(raw):
+    comments = []
+    for line in (raw or "").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        author = "抖音用户"
+        text = line
+        for sep in ["：", ":", "\t"]:
+            if sep in line:
+                left, right = line.split(sep, 1)
+                if left.strip() and right.strip():
+                    author = left.strip()[:40]
+                    text = right.strip()
+                    break
+        comments.append({"author": author, "text": text})
+    return comments
 
 
 def auth_enabled():
@@ -869,6 +1010,10 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
         elif path == "/api/product-knowledge":
             self._send_json(load_easyclaw_knowledge())
 
+        elif path == "/api/automation":
+            db = load_db()
+            self._send_json(db.get("automation", {}))
+
         # 静态文件
         elif path == "/" or path == "":
             self._serve_file("index.html", "text/html")
@@ -980,6 +1125,85 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
             db = init_demo_data()
             save_db(db)
             self._send_json({"success": True, "message": "演示数据已初始化"})
+
+        elif path == "/api/automation/account":
+            name = str(body.get("name", "")).strip()
+            if not name:
+                self._send_json({"error": "缺少账号名称"}, 400)
+                return
+            db = load_db()
+            automation = db["automation"]
+            account = find_account(automation, name)
+            if not account:
+                account = {"name": name}
+                automation["accounts"].append(account)
+            account.update({
+                "name": name,
+                "role": str(body.get("role", account.get("role", "矩阵号"))).strip() or "矩阵号",
+                "mode": "本地模式",
+                "positioning": str(body.get("positioning", account.get("positioning", ""))).strip(),
+                "tone": str(body.get("tone", account.get("tone", ""))).strip(),
+                "daily_comment_limit": int(body.get("daily_comment_limit", account.get("daily_comment_limit", 20)) or 20),
+                "forbidden_words": [
+                    w.strip() for w in str(body.get("forbidden_words", ",".join(account.get("forbidden_words", [])))).replace("，", ",").split(",") if w.strip()
+                ],
+            })
+            save_db(db)
+            self._send_json({"success": True, "account": account})
+
+        elif path == "/api/automation/publish-task":
+            account_name = str(body.get("account", "")).strip() or "矩阵号 A"
+            title = str(body.get("title", "")).strip()
+            if not title:
+                self._send_json({"error": "请填写发布标题"}, 400)
+                return
+            db = load_db()
+            task = {
+                "id": f"pub_{uuid.uuid4().hex[:8]}",
+                "account": account_name,
+                "title": title,
+                "video_path": str(body.get("video_path", "")).strip(),
+                "caption": str(body.get("caption", "")).strip(),
+                "tags": str(body.get("tags", "")).strip(),
+                "cover_note": str(body.get("cover_note", "")).strip(),
+                "scheduled_at": str(body.get("scheduled_at", "")).strip(),
+                "status": "待本地执行",
+                "created_at": datetime.now().isoformat(timespec="seconds"),
+            }
+            db["automation"]["publish_tasks"].insert(0, task)
+            db["automation"]["publish_tasks"] = db["automation"]["publish_tasks"][:80]
+            save_db(db)
+            self._send_json({"success": True, "task": task})
+
+        elif path == "/api/automation/import-comments":
+            account_name = str(body.get("account", "")).strip() or "矩阵号 A"
+            source = str(body.get("source", "")).strip() or "手动导入"
+            raw = str(body.get("text", "")).strip()
+            parsed = parse_comment_lines(raw)
+            if not parsed:
+                self._send_json({"error": "请粘贴至少一条评论"}, 400)
+                return
+            db = load_db()
+            account = find_account(db["automation"], account_name)
+            imported = []
+            for item in parsed[:50]:
+                category = classify_comment(item["text"])
+                comment = {
+                    "id": f"cmt_{uuid.uuid4().hex[:8]}",
+                    "account": account_name,
+                    "source": source,
+                    "author": item["author"],
+                    "text": item["text"],
+                    "category": category,
+                    "reply_draft": build_reply_draft(account, item["text"], category),
+                    "status": "待确认",
+                    "created_at": datetime.now().isoformat(timespec="seconds"),
+                }
+                imported.append(comment)
+            db["automation"]["comments"] = imported + db["automation"]["comments"]
+            db["automation"]["comments"] = db["automation"]["comments"][:200]
+            save_db(db)
+            self._send_json({"success": True, "count": len(imported), "comments": imported})
 
         else:
             self.send_response(404)
