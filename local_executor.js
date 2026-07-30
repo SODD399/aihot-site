@@ -75,6 +75,21 @@ function writePublishPackage(task) {
   return file;
 }
 
+async function postComments(site, account, source, text) {
+  if (!site) return null;
+  const base = site.replace(/\/+$/, "");
+  const res = await fetch(`${base}/api/automation/import-comments`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ account, source, text }),
+  });
+  const body = await res.text();
+  if (!res.ok) {
+    throw new Error(`Import failed: ${res.status} ${body}`);
+  }
+  return body;
+}
+
 async function openContext() {
   const launchOptions = {
     headless: false,
@@ -90,6 +105,8 @@ async function run() {
   const mode = modeArg();
   const account = argValue("account", "");
   const url = argValue("url", "");
+  const site = argValue("site", process.env.AIHOT_SITE_URL || "");
+  const source = argValue("source", "本地执行器采集");
   const context = await openContext();
   const page = context.pages()[0] || await context.newPage();
 
@@ -110,12 +127,25 @@ async function run() {
     await page.goto(url || "https://creator.douyin.com/", { waitUntil: "domcontentloaded" });
     console.log("Creator center opened. Navigate to the target work/comment page and scroll comments into view.");
     await waitForEnter("Press Enter here after comments are visible in the browser...");
-    const visibleText = await page.evaluate(() => document.body ? document.body.innerText : "");
+    const visibleText = await page.evaluate(() => {
+      const selected = window.getSelection ? String(window.getSelection()) : "";
+      return selected.trim() || (document.body ? document.body.innerText : "");
+    });
     ensureOutDir();
     const file = path.join(OUT_DIR, `douyin-visible-text-${timestamp()}.txt`);
     fs.writeFileSync(file, visibleText, "utf8");
     console.log(`Visible page text saved: ${file}`);
-    console.log("Open the txt, copy the comment lines into the website's 评论监测 import box.");
+    if (site) {
+      try {
+        const imported = await postComments(site, account, source, visibleText);
+        console.log(`Imported visible text to site: ${imported}`);
+      } catch (err) {
+        console.log(`Could not import to site automatically: ${err.message}`);
+        console.log("Open the txt, copy the comment lines into the website's 评论监测 import box.");
+      }
+    } else {
+      console.log("Open the txt, copy the comment lines into the website's 评论监测 import box.");
+    }
   } else {
     await page.goto(url || "https://creator.douyin.com/", { waitUntil: "domcontentloaded" });
     console.log(`Douyin creator center opened for local mode. Account label: ${account || "not specified"}`);

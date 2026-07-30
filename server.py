@@ -49,6 +49,8 @@ EASYCLAW_PRODUCT_URLS = [
 # easycode CLI 路径（macOS/Linux）
 EASYCODE_CLI = os.environ.get("EASYCODE_PATH", "/usr/local/bin/easycode")
 USE_EASYCODE = False  # 自动检测
+EXTERNAL_EXECUTOR_WEBHOOK = os.environ.get("AIHOT_DOUYIN_EXECUTOR_WEBHOOK", "").strip()
+EXTERNAL_EXECUTOR_TOKEN = os.environ.get("AIHOT_DOUYIN_EXECUTOR_TOKEN", "").strip()
 
 
 def detect_ai_backend():
@@ -301,6 +303,112 @@ def parse_comment_lines(raw):
                     break
         comments.append({"author": author, "text": text})
     return comments
+
+
+def build_publish_package(account, title, brief=""):
+    account_name = account.get("name", "当前账号")
+    tone = account.get("tone", "自然、克制")
+    positioning = account.get("positioning", "内容运营")
+    prompt = f"""你是抖音短视频运营助手。请为一个个人号半自动发布任务生成发布包。
+
+账号：{account_name}
+账号定位：{positioning}
+账号语气：{tone}
+视频标题/主题：{title}
+补充说明：{brief}
+
+输出格式固定为：
+标题：
+文案：
+Tag：
+封面建议：
+发布提醒：
+
+要求：
+1. 不夸大效果，不诱导私信，不承诺收益。
+2. 文案适合抖音，80-160 字。
+3. Tag 4-6 个。"""
+    fallback = {
+        "caption": f"这个选题可以从真实场景切入，先讲问题，再讲解决思路，最后给一个可执行的小建议。适合{account_name}用来做自然种草，不要上来硬推。",
+        "tags": "#内容运营 #短视频运营 #AI工具 #账号运营",
+        "cover_note": "封面突出痛点词，标题不超过 12 个字，人物或产品画面保持清晰。",
+        "publish_note": "发布前检查视频、文案、tag、封面和组件；发布按钮保留人工确认。",
+    }
+    if not (DEEPSEEK_API_KEY or USE_EASYCODE):
+        return fallback
+    try:
+        text = llm_call(prompt, timeout=90).strip()
+        if not text or "API 错误" in text or "AI 生成模板" in text:
+            return fallback
+        result = dict(fallback)
+        sections = {
+            "标题": "title",
+            "文案": "caption",
+            "Tag": "tags",
+            "封面建议": "cover_note",
+            "发布提醒": "publish_note",
+        }
+        current = ""
+        for line in text.splitlines():
+            clean = line.strip()
+            if not clean:
+                continue
+            label = clean.rstrip("：:")
+            if label in sections:
+                current = sections[label]
+                if current != "title":
+                    result[current] = ""
+                continue
+            for label, key in sections.items():
+                prefix = label + "："
+                if clean.startswith(prefix):
+                    current = key
+                    value = clean[len(prefix):].strip()
+                    if key != "title":
+                        result[key] = value
+                    break
+            else:
+                if current and current != "title":
+                    result[current] = (result.get(current, "") + "\n" + clean).strip()
+        return result
+    except Exception:
+        return fallback
+
+
+def update_automation_item(automation, kind, item_id, updates):
+    collection = "publish_tasks" if kind == "publish" else "comments"
+    for item in automation.get(collection, []):
+        if item.get("id") == item_id:
+            item.update(updates)
+            item["updated_at"] = datetime.now().isoformat(timespec="seconds")
+            return item
+    return None
+
+
+def delete_automation_item(automation, kind, item_id):
+    collection = "publish_tasks" if kind == "publish" else "comments"
+    before = len(automation.get(collection, []))
+    automation[collection] = [item for item in automation.get(collection, []) if item.get("id") != item_id]
+    return len(automation[collection]) != before
+
+
+def dispatch_to_external_executor(kind, item):
+    if not EXTERNAL_EXECUTOR_WEBHOOK:
+        return {"success": False, "configured": False, "message": "外部执行器 Webhook 未配置"}
+    import urllib.request
+    payload = json.dumps({
+        "kind": kind,
+        "item": item,
+        "sent_at": datetime.now().isoformat(timespec="seconds"),
+        "source": "aihot-site",
+    }, ensure_ascii=False).encode("utf-8")
+    headers = {"Content-Type": "application/json"}
+    if EXTERNAL_EXECUTOR_TOKEN:
+        headers["Authorization"] = f"Bearer {EXTERNAL_EXECUTOR_TOKEN}"
+    req = urllib.request.Request(EXTERNAL_EXECUTOR_WEBHOOK, data=payload, headers=headers, method="POST")
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        text = resp.read().decode("utf-8", errors="replace")
+    return {"success": True, "configured": True, "response": text[:1000]}
 
 
 def auth_enabled():
@@ -1012,7 +1120,9 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
 
         elif path == "/api/automation":
             db = load_db()
-            self._send_json(db.get("automation", {}))
+            automation = db.get("automation", {})
+            automation["external_executor_configured"] = bool(EXTERNAL_EXECUTOR_WEBHOOK)
+            self._send_json(automation)
 
         # 静态文件
         elif path == "/" or path == "":
@@ -1158,14 +1268,19 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
                 self._send_json({"error": "请填写发布标题"}, 400)
                 return
             db = load_db()
+            account = find_account(db["automation"], account_name)
+            auto_package = body.get("auto_package") or {}
+            if body.get("auto_generate") and not body.get("caption"):
+                auto_package = build_publish_package(account, title, str(body.get("brief", "")).strip())
             task = {
                 "id": f"pub_{uuid.uuid4().hex[:8]}",
                 "account": account_name,
                 "title": title,
                 "video_path": str(body.get("video_path", "")).strip(),
-                "caption": str(body.get("caption", "")).strip(),
-                "tags": str(body.get("tags", "")).strip(),
-                "cover_note": str(body.get("cover_note", "")).strip(),
+                "caption": str(body.get("caption", "") or auto_package.get("caption", "")).strip(),
+                "tags": str(body.get("tags", "") or auto_package.get("tags", "")).strip(),
+                "cover_note": str(body.get("cover_note", "") or auto_package.get("cover_note", "")).strip(),
+                "publish_note": str(body.get("publish_note", "") or auto_package.get("publish_note", "")).strip(),
                 "scheduled_at": str(body.get("scheduled_at", "")).strip(),
                 "status": "待本地执行",
                 "created_at": datetime.now().isoformat(timespec="seconds"),
@@ -1174,6 +1289,17 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
             db["automation"]["publish_tasks"] = db["automation"]["publish_tasks"][:80]
             save_db(db)
             self._send_json({"success": True, "task": task})
+
+        elif path == "/api/automation/generate-publish":
+            account_name = str(body.get("account", "")).strip() or "矩阵号 A"
+            title = str(body.get("title", "")).strip()
+            if not title:
+                self._send_json({"error": "请填写视频标题或主题"}, 400)
+                return
+            db = load_db()
+            account = find_account(db["automation"], account_name)
+            package = build_publish_package(account, title, str(body.get("brief", "")).strip())
+            self._send_json({"success": True, "package": package})
 
         elif path == "/api/automation/import-comments":
             account_name = str(body.get("account", "")).strip() or "矩阵号 A"
@@ -1204,6 +1330,59 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
             db["automation"]["comments"] = db["automation"]["comments"][:200]
             save_db(db)
             self._send_json({"success": True, "count": len(imported), "comments": imported})
+
+        elif path == "/api/automation/update-item":
+            kind = str(body.get("kind", "")).strip()
+            item_id = str(body.get("id", "")).strip()
+            status = str(body.get("status", "")).strip()
+            if kind not in {"publish", "comment"} or not item_id or not status:
+                self._send_json({"error": "缺少更新参数"}, 400)
+                return
+            db = load_db()
+            item = update_automation_item(db["automation"], kind, item_id, {"status": status})
+            if not item:
+                self._send_json({"error": "未找到对应项目"}, 404)
+                return
+            save_db(db)
+            self._send_json({"success": True, "item": item})
+
+        elif path == "/api/automation/delete-item":
+            kind = str(body.get("kind", "")).strip()
+            item_id = str(body.get("id", "")).strip()
+            if kind not in {"publish", "comment"} or not item_id:
+                self._send_json({"error": "缺少删除参数"}, 400)
+                return
+            db = load_db()
+            deleted = delete_automation_item(db["automation"], kind, item_id)
+            if not deleted:
+                self._send_json({"error": "未找到对应项目"}, 404)
+                return
+            save_db(db)
+            self._send_json({"success": True})
+
+        elif path == "/api/automation/dispatch-external":
+            kind = str(body.get("kind", "")).strip()
+            item_id = str(body.get("id", "")).strip()
+            if kind not in {"publish", "comment"} or not item_id:
+                self._send_json({"error": "缺少推送参数"}, 400)
+                return
+            db = load_db()
+            collection = "publish_tasks" if kind == "publish" else "comments"
+            item = next((x for x in db["automation"].get(collection, []) if x.get("id") == item_id), None)
+            if not item:
+                self._send_json({"error": "未找到对应项目"}, 404)
+                return
+            try:
+                result = dispatch_to_external_executor(kind, item)
+            except Exception as exc:
+                self._send_json({"success": False, "error": f"外部执行器推送失败：{exc}"}, 502)
+                return
+            if not result.get("configured"):
+                self._send_json(result, 409)
+                return
+            update_automation_item(db["automation"], kind, item_id, {"status": "已推送外部执行器"})
+            save_db(db)
+            self._send_json(result)
 
         else:
             self.send_response(404)

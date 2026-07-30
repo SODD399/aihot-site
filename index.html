@@ -245,7 +245,7 @@ a{color:var(--blue);text-decoration:none}
 .account-tab.active{background:var(--ink);border-color:var(--ink);color:#fff}
 .group-card{border-top:1px solid var(--line);padding:12px 0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}
 .group-card:first-of-type{border-top:0;padding-top:0}
-.local-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.local-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .local-panel{border:1px solid var(--line);border-radius:8px;background:#fff;padding:12px}
 .local-panel h4{margin:0 0 7px;font-size:13px;color:var(--ink)}
 .local-panel p{margin:0;font-size:12px;color:var(--muted)}
@@ -260,6 +260,11 @@ a{color:var(--blue);text-decoration:none}
 .comment-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.6fr);gap:14px;align-items:start}
 .comment-list{display:grid;gap:10px}
 .comment-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.task-actions{display:flex;gap:6px;flex-wrap:wrap}
+.btn-tiny{height:28px;padding:0 8px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--muted);font-size:11px;font-weight:850}
+.btn-tiny:hover{border-color:var(--brand);color:var(--ink);background:var(--brand-soft)}
+.btn-tiny.danger:hover{border-color:#efb0aa;background:#fff1ef;color:var(--red)}
+.helper-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
 
 .loading,.empty-state{text-align:center;color:var(--faint);padding:46px 14px}
 .spinner{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
@@ -687,8 +692,9 @@ function renderAutomationPage(){
 }
 
 function renderAutomationOverview(){
+  var externalText=automationState.external_executor_configured?'已配置，可从任务行推送':'未配置，当前使用本地执行器';
   return '<div class="page-grid">'+
-    '<div class="auto-card span-12"><div class="auto-card-head"><h3>本地执行器模式</h3><span class="auto-note">不需要抖音开放平台资质，不保存账号密码</span></div><div class="local-grid"><div class="local-panel"><h4>网站中台</h4><p>生成发布任务、文案、tag、评论分拣和回复草稿，并记录四个账号的运营状态。</p></div><div class="local-panel"><h4>本机浏览器</h4><p>你在本机 Chrome 登录抖音，执行器辅助打开页面、采集已加载评论、填入发布内容，关键动作停住确认。</p></div></div></div>'+
+    '<div class="auto-card span-12"><div class="auto-card-head"><h3>本地执行器模式</h3><span class="auto-note">不需要抖音开放平台资质，不保存账号密码</span></div><div class="local-grid"><div class="local-panel"><h4>网站中台</h4><p>生成发布任务、文案、tag、评论分拣和回复草稿，并记录四个账号的运营状态。</p></div><div class="local-panel"><h4>本机浏览器</h4><p>你在本机 Chrome 登录抖音，执行器辅助打开页面、采集已加载评论、填入发布内容，关键动作停住确认。</p></div><div class="local-panel"><h4>外部执行器适配口</h4><p>'+externalText+'。有服务商 webhook 后只需配环境变量。</p></div></div></div>'+
     '<div class="auto-card span-12"><div class="auto-card-head"><h3>多账号运营态势</h3><span class="auto-note">点击账号卡进入单账号工作台</span></div><div class="viz-grid">'+accountVizCards()+'</div></div>'+
     '<div class="auto-card span-8"><div class="auto-card-head"><h3>账号关系图</h3><span class="auto-note">官号承接转化，矩阵号负责内容触达和评论互动</span></div>'+accountOpsMap()+'</div>'+
     '<div class="auto-card span-4"><div class="auto-card-head"><h3>今日任务分布</h3><span class="auto-note">按账号压力排序</span></div>'+accountHeatRows()+'</div>'+
@@ -738,8 +744,8 @@ function renderAccountOverviewPage(){
 
 function renderPublishPage(){
   return '<div class="page-grid"><div class="auto-card span-12"><div class="auto-card-head"><h3>发布任务包 · '+escapeHtml(selectedAutoAccount)+'</h3><button class="btn-secondary" onclick="showExecutorHelp()">本地执行器命令</button></div>'+
-    '<div class="form-grid"><div class="form-field"><label>视频标题</label><input id="pubTitle" placeholder="例如：热点复盘口播短视频"></div><div class="form-field"><label>本地视频路径</label><input id="pubVideoPath" placeholder="C:\\Users\\Cf1\\Desktop\\test.mp4"></div><div class="form-field full"><label>发布文案</label><textarea id="pubCaption" placeholder="粘贴或填写抖音发布文案"></textarea></div><div class="form-field"><label>tag</label><input id="pubTags" placeholder="#AI工具 #运营"></div><div class="form-field"><label>封面说明</label><input id="pubCover" placeholder="例如：用第 3 秒画面，标题放左上"></div><div class="form-field"><label>计划发布时间</label><input id="pubSchedule" placeholder="今天 20:30"></div><div class="form-field"><label>账号</label><select id="pubAccount">'+accountOptions(selectedAutoAccount)+'</select></div></div>'+
-    '<div class="item-actions"><button class="btn-primary" onclick="createPublishTask()">保存发布任务</button><button class="btn-secondary" onclick="copyPublishCommand()">复制执行器命令</button></div></div>'+
+    '<div class="form-grid"><div class="form-field"><label>视频标题</label><input id="pubTitle" placeholder="例如：热点复盘口播短视频"></div><div class="form-field"><label>本地视频路径</label><input id="pubVideoPath" placeholder="C:\\Users\\Cf1\\Desktop\\test.mp4"></div><div class="form-field full"><label>发布文案</label><textarea id="pubCaption" placeholder="可手填，也可以点下方自动生成"></textarea></div><div class="form-field"><label>tag</label><input id="pubTags" placeholder="#AI工具 #运营"></div><div class="form-field"><label>封面说明</label><input id="pubCover" placeholder="例如：用第 3 秒画面，标题放左上"></div><div class="form-field"><label>计划发布时间</label><input id="pubSchedule" placeholder="今天 20:30"></div><div class="form-field"><label>账号</label><select id="pubAccount">'+accountOptions(selectedAutoAccount)+'</select></div><div class="form-field"><label>补充说明</label><input id="pubBrief" placeholder="卖点、目标人群、要避开的表达"></div></div>'+
+    '<div class="item-actions"><button class="btn-primary" onclick="createPublishTask()">保存发布任务</button><button class="btn-secondary" onclick="generatePublishPackage()">自动生成发布包</button><button class="btn-secondary" onclick="copyPublishCommand()">复制执行器命令</button><button class="btn-secondary" onclick="openDouyinUpload()">打开抖音发布页</button></div></div>'+
     '<div class="auto-card span-12"><div class="auto-card-head"><h3>待执行任务</h3><span class="auto-note">执行器会辅助打开页面和填内容，发布前停住确认</span></div><div class="table-card"><div class="table-row"><span>视频任务</span><span>发布账号</span><span>发布时间</span><span>素材状态</span><span>状态</span></div>'+publishRows(false)+'</div></div></div>';
 }
 
@@ -814,6 +820,12 @@ function getComments(account){
   return (automationState.comments||[]).filter(function(c){return !account||account==='全部账号'||c.account===account;});
 }
 
+function getPublishTask(id){
+  var tasks=automationState.publish_tasks||[];
+  for(var i=0;i<tasks.length;i++)if(tasks[i].id===id)return tasks[i];
+  return null;
+}
+
 function publishRows(compact){
   var tasks=getPublishTasks(selectedAutoAccount);
   if(!tasks.length){
@@ -822,7 +834,8 @@ function publishRows(compact){
   if(compact)tasks=tasks.slice(0,2);
   return tasks.map(function(t){
     var fields='<span class="field-pill '+(t.video_path?'done':'warn')+'">视频</span> <span class="field-pill '+(t.caption?'done':'warn')+'">文案</span> <span class="field-pill '+(t.tags?'done':'warn')+'">tag</span>';
-    return '<div class="table-row"><strong>'+escapeHtml(t.title)+'</strong><span>'+escapeHtml(t.account)+'</span><span>'+escapeHtml(t.scheduled_at||'待定')+'</span><span>'+fields+'</span><span class="chip orange">'+escapeHtml(t.status||'待本地执行')+'</span></div>';
+    var actions=compact?'<span class="chip orange">'+escapeHtml(t.status||'待本地执行')+'</span>':'<div><span class="chip orange">'+escapeHtml(t.status||'待本地执行')+'</span><div class="task-actions"><button class="btn-tiny" onclick="copyPublishPackage(&quot;'+escapeAttr(t.id)+'&quot;)">复制包</button><button class="btn-tiny" onclick="openDouyinUploadAndCopy(&quot;'+escapeAttr(t.id)+'&quot;)">打开发布</button><button class="btn-tiny" onclick="dispatchExternal(&quot;publish&quot;,&quot;'+escapeAttr(t.id)+'&quot;)">推外部</button><button class="btn-tiny" onclick="updateAutomationItem(&quot;publish&quot;,&quot;'+escapeAttr(t.id)+'&quot;,&quot;已发布&quot;)">已发布</button><button class="btn-tiny danger" onclick="deleteAutomationItem(&quot;publish&quot;,&quot;'+escapeAttr(t.id)+'&quot;)">删除</button></div></div>';
+    return '<div class="table-row"><strong>'+escapeHtml(t.title)+'</strong><span>'+escapeHtml(t.account)+'</span><span>'+escapeHtml(t.scheduled_at||'待定')+'</span><span>'+fields+'</span>'+actions+'</div>';
   }).join('');
 }
 
@@ -831,7 +844,7 @@ function commentRows(account){
   if(!comments.length)return '<div class="empty-state"><p>还没有导入评论。先到「评论监测」粘贴或采集评论。</p></div>';
   return '<div class="comment-list">'+comments.map(function(c){
     var chip=c.category==='风险'?'red':(c.category==='高意向'?'orange':'green');
-    return '<div class="comment-card"><div><div class="comment-text">'+escapeHtml(c.author)+'：'+escapeHtml(c.text)+'</div><div class="task-meta">'+escapeHtml(c.source||'手动导入')+' · '+escapeHtml(c.account)+' · '+formatTime(c.created_at)+'</div><div class="draft" id="reply-'+escapeAttr(c.id)+'">候选回复：'+escapeHtml(c.reply_draft||'')+'</div><div class="comment-actions"><button class="btn-copy" onclick="copyReply(&quot;'+escapeAttr(c.id)+'&quot;)">复制回复</button></div></div><span class="chip '+chip+'">'+escapeHtml(c.category||'待分拣')+'</span></div>';
+    return '<div class="comment-card"><div><div class="comment-text">'+escapeHtml(c.author)+'：'+escapeHtml(c.text)+'</div><div class="task-meta">'+escapeHtml(c.source||'手动导入')+' · '+escapeHtml(c.account)+' · '+formatTime(c.created_at)+' · '+escapeHtml(c.status||'待确认')+'</div><div class="draft" id="reply-'+escapeAttr(c.id)+'">候选回复：'+escapeHtml(c.reply_draft||'')+'</div><div class="comment-actions"><button class="btn-copy" onclick="copyReply(&quot;'+escapeAttr(c.id)+'&quot;)">复制回复</button><button class="btn-tiny" onclick="dispatchExternal(&quot;comment&quot;,&quot;'+escapeAttr(c.id)+'&quot;)">推外部</button><button class="btn-tiny" onclick="updateAutomationItem(&quot;comment&quot;,&quot;'+escapeAttr(c.id)+'&quot;,&quot;已回复&quot;)">已回复</button><button class="btn-tiny" onclick="updateAutomationItem(&quot;comment&quot;,&quot;'+escapeAttr(c.id)+'&quot;,&quot;暂不回复&quot;)">暂不回</button><button class="btn-tiny danger" onclick="deleteAutomationItem(&quot;comment&quot;,&quot;'+escapeAttr(c.id)+'&quot;)">删除</button></div></div><span class="chip '+chip+'">'+escapeHtml(c.category||'待分拣')+'</span></div>';
   }).join('')+'</div>';
 }
 
@@ -843,13 +856,36 @@ function createPublishTask(){
     caption:(document.getElementById('pubCaption')||{}).value||'',
     tags:(document.getElementById('pubTags')||{}).value||'',
     cover_note:(document.getElementById('pubCover')||{}).value||'',
-    scheduled_at:(document.getElementById('pubSchedule')||{}).value||''
+    scheduled_at:(document.getElementById('pubSchedule')||{}).value||'',
+    brief:(document.getElementById('pubBrief')||{}).value||''
   };
   if(!body.title.trim()){toast('先填视频标题');return;}
+  body.auto_generate=!(body.caption||body.tags||body.cover_note);
   apiFetch('/api/automation/publish-task',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
     .then(function(r){return r.json().then(function(data){return {ok:r.ok,data:data};});})
     .then(function(res){if(!res.ok){toast(res.data.error||'保存失败');return;}toast('发布任务已保存');loadAutomationData();})
     .catch(function(){toast('保存失败');});
+}
+
+function generatePublishPackage(){
+  var title=(document.getElementById('pubTitle')||{}).value||'';
+  if(!title.trim()){toast('先填视频标题');return;}
+  var body={
+    account:(document.getElementById('pubAccount')||{}).value||selectedAutoAccount,
+    title:title,
+    brief:(document.getElementById('pubBrief')||{}).value||''
+  };
+  toast('正在生成发布包...');
+  apiFetch('/api/automation/generate-publish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+    .then(function(r){return r.json().then(function(data){return {ok:r.ok,data:data};});})
+    .then(function(res){
+      if(!res.ok){toast(res.data.error||'生成失败');return;}
+      var pkg=res.data.package||{};
+      if(document.getElementById('pubCaption'))document.getElementById('pubCaption').value=pkg.caption||'';
+      if(document.getElementById('pubTags'))document.getElementById('pubTags').value=pkg.tags||'';
+      if(document.getElementById('pubCover'))document.getElementById('pubCover').value=pkg.cover_note||'';
+      toast('发布包已生成');
+    }).catch(function(){toast('生成失败');});
 }
 
 function importComments(){
@@ -866,10 +902,76 @@ function importComments(){
     .catch(function(){toast('导入失败');});
 }
 
+function publishPackageText(task){
+  if(!task)return'';
+  return [
+    '账号：'+(task.account||''),
+    '标题：'+(task.title||''),
+    '视频路径：'+(task.video_path||''),
+    '计划时间：'+(task.scheduled_at||'待定'),
+    '',
+    '发布文案：',
+    task.caption||'',
+    '',
+    'Tag：',
+    task.tags||'',
+    '',
+    '封面说明：',
+    task.cover_note||'',
+    '',
+    '发布提醒：',
+    task.publish_note||'发布前检查视频、文案、tag、封面和组件；最终发布保留人工确认。'
+  ].join('\n');
+}
+
+function copyPublishPackage(id){
+  var task=getPublishTask(id);
+  if(!task){toast('未找到任务');return;}
+  copyText(publishPackageText(task));
+  toast('发布包已复制');
+}
+
+function openDouyinUpload(){
+  window.open('https://creator.douyin.com/creator-micro/content/upload','_blank','noopener');
+}
+
+function openDouyinUploadAndCopy(id){
+  copyPublishPackage(id);
+  openDouyinUpload();
+}
+
+function updateAutomationItem(kind,id,status){
+  apiFetch('/api/automation/update-item',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:kind,id:id,status:status})})
+    .then(function(r){return r.json().then(function(data){return {ok:r.ok,data:data};});})
+    .then(function(res){if(!res.ok){toast(res.data.error||'更新失败');return;}toast('状态已更新');loadAutomationData();})
+    .catch(function(){toast('更新失败');});
+}
+
+function deleteAutomationItem(kind,id){
+  apiFetch('/api/automation/delete-item',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:kind,id:id})})
+    .then(function(r){return r.json().then(function(data){return {ok:r.ok,data:data};});})
+    .then(function(res){if(!res.ok){toast(res.data.error||'删除失败');return;}toast('已删除');loadAutomationData();})
+    .catch(function(){toast('删除失败');});
+}
+
+function dispatchExternal(kind,id){
+  apiFetch('/api/automation/dispatch-external',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:kind,id:id})})
+    .then(function(r){return r.json().then(function(data){return {ok:r.ok,status:r.status,data:data};});})
+    .then(function(res){
+      if(!res.ok){
+        toast(res.data.message||res.data.error||'外部执行器未配置');
+        return;
+      }
+      toast('已推送外部执行器');
+      loadAutomationData();
+    })
+    .catch(function(){toast('推送失败');});
+}
+
 function executorCommand(mode){
   var cmd='.\\local_executor.bat';
   if(mode==='publish')return cmd+' publish --account "'+selectedAutoAccount+'"';
-  if(mode==='comments')return cmd+' comments --account "'+selectedAutoAccount+'"';
+  if(mode==='comments')return cmd+' comments --account "'+selectedAutoAccount+'" --site "http://127.0.0.1:8080"';
   return cmd+' login --account "'+selectedAutoAccount+'"';
 }
 
