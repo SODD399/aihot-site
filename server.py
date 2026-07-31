@@ -6,7 +6,7 @@
 接口：DeepSeek API (OpenAI 兼容) 或 easycode CLI
 """
 
-import base64, hashlib, hmac, html, ipaddress, json, os, re, socket, time, uuid, subprocess
+import base64, hashlib, hmac, html, ipaddress, json, mimetypes, os, re, socket, time, uuid, subprocess
 from http.cookies import SimpleCookie
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -390,6 +390,13 @@ def delete_automation_item(automation, kind, item_id):
     before = len(automation.get(collection, []))
     automation[collection] = [item for item in automation.get(collection, []) if item.get("id") != item_id]
     return len(automation[collection]) != before
+
+
+def find_publish_task(automation, task_id):
+    for task in automation.get("publish_tasks", []):
+        if task.get("id") == task_id:
+            return task
+    return None
 
 
 def dispatch_to_external_executor(kind, item):
@@ -1123,6 +1130,38 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
             automation = db.get("automation", {})
             automation["external_executor_configured"] = bool(EXTERNAL_EXECUTOR_WEBHOOK)
             self._send_json(automation)
+
+        elif path.startswith("/api/automation/local-file/") and path.endswith("/video"):
+            parts = path.strip("/").split("/")
+            task_id = parts[-2] if len(parts) >= 4 else ""
+            db = load_db()
+            task = find_publish_task(db.get("automation", {}), task_id)
+            if not task:
+                self._send_json({"error": "未找到发布任务"}, 404)
+                return
+            raw_path = str(task.get("video_path", "")).strip()
+            if not raw_path or raw_path.lower().startswith(("http://", "https://")):
+                self._send_json({"error": "该任务没有可读取的本地视频路径"}, 400)
+                return
+            video_path = Path(raw_path).expanduser().resolve()
+            if not video_path.is_file():
+                self._send_json({"error": "本地视频文件不存在"}, 404)
+                return
+            if video_path.suffix.lower() not in {".mp4", ".mov", ".m4v", ".webm"}:
+                self._send_json({"error": "仅允许读取常见视频文件"}, 400)
+                return
+            content_type = mimetypes.guess_type(str(video_path))[0] or "video/mp4"
+            self.send_response(200)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", video_path.stat().st_size)
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            with video_path.open("rb") as fh:
+                while True:
+                    chunk = fh.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    self.wfile.write(chunk)
 
         # 静态文件
         elif path == "/" or path == "":

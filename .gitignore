@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 .local-douyin-profile/
 data/executor/
+third_party/
