@@ -56,3 +56,26 @@ AIHOT_DOUYIN_EXECUTOR_TOKEN=可选的服务商鉴权 token
 ```
 
 配置后，发布任务和评论草稿上的 `推外部` 按钮会把任务 JSON 推送过去。
+
+## GitHub 评论工具
+
+我已研究并接入 `wenyg/douyin-creator-tools` 作为本地外部工具，用于抖音创作者中心评论检索和回复。由于该仓库没有 LICENSE 文件，当前不把源码并入本站仓库，只在本机 `third_party/douyin-creator-tools` 里作为外部工具调用。
+
+初始化：
+
+```bat
+.\douyin_creator_setup.bat
+.\douyin_creator_auth.bat
+```
+
+`setup` 安装依赖；`auth` 会打开浏览器，你本人扫码登录抖音创作者中心。
+
+网站用法：
+
+1. 进入 `自动化运营 -> 矩阵号 A -> 评论监测`
+2. 填抖音作品标题
+3. 点 `抖音工具导出未回复评论`
+4. 到 `评论回复` 查看草稿
+5. 先点 `工具试填`，确认流程稳定后再使用 `工具发送`
+
+这个工具依然使用本机浏览器登录态，不需要抖音开放平台资质。

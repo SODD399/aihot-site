@@ -751,13 +751,13 @@ function renderPublishPage(){
 
 function renderMonitorPage(){
   return '<div class="comment-tools"><div class="auto-card"><div class="auto-card-head"><h3>评论采集导入 · '+escapeHtml(selectedAutoAccount)+'</h3><span class="auto-note">支持本地执行器采集后粘贴，也支持手动复制评论</span></div>'+
-    '<div class="form-grid"><div class="form-field"><label>来源作品/页面</label><input id="commentSource" placeholder="例如：热点跟进短视频"></div><div class="form-field"><label>账号</label><select id="commentAccount">'+accountOptions(selectedAutoAccount)+'</select></div><div class="form-field full"><label>评论文本</label><textarea id="commentText" placeholder="一行一条，例如：\n小王：这个工具怎么用？\n用户A：价格多少？\n路人：看起来有点复杂"></textarea></div></div>'+
-    '<div class="item-actions"><button class="btn-primary" onclick="importComments()">导入并生成回复草稿</button><button class="btn-secondary" onclick="copyCommentCommand()">复制采集命令</button></div></div>'+
-    '<div class="auto-card"><div class="auto-card-head"><h3>本地采集步骤</h3><span class="auto-note">先跑得通，再逐步自动化</span></div><div class="rule-list"><div class="rule-item"><span>1. 本机 Chrome 登录测试矩阵号</span><strong>一次即可</strong></div><div class="rule-item"><span>2. 打开作品评论页并滚动加载</span><strong>人工</strong></div><div class="rule-item"><span>3. 执行器采集可见评论</span><strong>本地</strong></div><div class="rule-item"><span>4. 导入本站生成回复草稿</span><strong>自动</strong></div></div></div></div>';
+    '<div class="form-grid"><div class="form-field"><label>来源作品/页面</label><input id="commentSource" placeholder="例如：热点跟进短视频"></div><div class="form-field"><label>账号</label><select id="commentAccount">'+accountOptions(selectedAutoAccount)+'</select></div><div class="form-field"><label>抖音作品标题</label><input id="douyinWorkTitle" placeholder="填作品完整或可匹配标题"></div><div class="form-field"><label>导出上限</label><input id="douyinExportLimit" value="50"></div><div class="form-field full"><label>评论文本</label><textarea id="commentText" placeholder="一行一条，例如：\n小王：这个工具怎么用？\n用户A：价格多少？\n路人：看起来有点复杂"></textarea></div></div>'+
+    '<div class="item-actions"><button class="btn-primary" onclick="importComments()">导入并生成回复草稿</button><button class="btn-secondary" onclick="exportDouyinToolComments()">抖音工具导出未回复评论</button><button class="btn-secondary" onclick="copyCommentCommand()">复制采集命令</button></div></div>'+
+    '<div class="auto-card"><div class="auto-card-head"><h3>评论自动化方式</h3><span class="auto-note">优先用 GitHub 工具，失败再用手动采集兜底</span></div><div class="rule-list"><div class="rule-item"><span>GitHub 工具状态</span><strong>'+douyinToolStatusText()+'</strong></div><div class="rule-item"><span>1. npm run auth 扫码一次</span><strong>本人登录</strong></div><div class="rule-item"><span>2. 填作品标题导出未回复评论</span><strong>自动</strong></div><div class="rule-item"><span>3. 本站生成回复草稿</span><strong>自动</strong></div><div class="rule-item"><span>4. 回复页试填或发送</span><strong>工具执行</strong></div></div></div></div>';
 }
 
 function renderCommentsPage(){
-  return '<div class="auto-card"><div class="auto-card-head"><h3>评论收件箱 · '+escapeHtml(selectedAutoAccount)+'</h3><span class="auto-note">AI 生成候选回复，复制后在抖音页面人工确认发送</span></div>'+commentRows(selectedAutoAccount)+'</div>';
+  return '<div class="auto-card"><div class="auto-card-head"><h3>评论收件箱 · '+escapeHtml(selectedAutoAccount)+'</h3><div class="item-actions"><button class="btn-secondary" onclick="replyDouyinToolComments(true)">工具试填</button><button class="btn-secondary" onclick="replyDouyinToolComments(false)">工具发送</button></div></div><div class="auto-note">AI 生成候选回复；GitHub 工具导出的评论可批量试填或发送，手动导入的评论仍用复制回复。</div>'+commentRows(selectedAutoAccount)+'</div>';
 }
 
 function renderGroupsPage(){
@@ -818,6 +818,14 @@ function getPublishTasks(account){
 
 function getComments(account){
   return (automationState.comments||[]).filter(function(c){return !account||account==='全部账号'||c.account===account;});
+}
+
+function douyinToolStatusText(){
+  var s=automationState.douyin_creator_tool||{};
+  if(!s.configured)return'未找到工具';
+  if(!s.dependencies_ready)return'待 npm install';
+  if(!s.profile_ready)return'待 npm run auth';
+  return'可用';
 }
 
 function getPublishTask(id){
@@ -900,6 +908,37 @@ function importComments(){
     .then(function(r){return r.json().then(function(data){return {ok:r.ok,data:data};});})
     .then(function(res){if(!res.ok){toast(res.data.error||'导入失败');return;}toast('已导入 '+res.data.count+' 条评论');currentAccountTab='reply';loadAutomationData();})
     .catch(function(){toast('导入失败');});
+}
+
+function exportDouyinToolComments(){
+  var workTitle=(document.getElementById('douyinWorkTitle')||{}).value||'';
+  if(!workTitle.trim()){toast('先填抖音作品标题');return;}
+  var limit=Number((document.getElementById('douyinExportLimit')||{}).value||50)||50;
+  var account=(document.getElementById('commentAccount')||{}).value||selectedAutoAccount;
+  toast('正在调用抖音工具导出评论...');
+  apiFetch('/api/automation/douyin-tool/export-comments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({account:account,work_title:workTitle,limit:limit})})
+    .then(function(r){return r.json().then(function(data){return {ok:r.ok,data:data};});})
+    .then(function(res){
+      if(!res.ok){toast(res.data.error||'导出失败，检查工具依赖/登录');return;}
+      toast('已导入 '+res.data.count+' 条未回复评论');
+      currentAccountTab='reply';
+      loadAutomationData();
+    })
+    .catch(function(){toast('导出失败');});
+}
+
+function replyDouyinToolComments(dryRun){
+  var comments=getComments(selectedAutoAccount).filter(function(c){return c.tool_payload&&c.reply_draft&&(c.status==='待确认'||c.status==='已复制'||c.status==='待回复');});
+  if(!comments.length){toast('没有可由抖音工具回复的评论');return;}
+  toast(dryRun?'正在工具试填回复...':'正在调用工具发送回复...');
+  apiFetch('/api/automation/douyin-tool/reply-comments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({account:selectedAutoAccount,dry_run:dryRun,comment_ids:comments.map(function(c){return c.id;})})})
+    .then(function(r){return r.json().then(function(data){return {ok:r.ok,data:data};});})
+    .then(function(res){
+      if(!res.ok){toast(res.data.error||'工具回复失败');return;}
+      toast((dryRun?'试填完成 ':'发送完成 ')+res.data.count+' 条');
+      loadAutomationData();
+    })
+    .catch(function(){toast('工具回复失败');});
 }
 
 function publishPackageText(task){

@@ -6,7 +6,7 @@
 接口：DeepSeek API (OpenAI 兼容) 或 easycode CLI
 """
 
-import base64, hashlib, hmac, html, ipaddress, json, mimetypes, os, re, socket, time, uuid, subprocess
+import base64, hashlib, hmac, html, ipaddress, json, mimetypes, os, re, shutil, socket, time, uuid, subprocess
 from http.cookies import SimpleCookie
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -51,6 +51,7 @@ EASYCODE_CLI = os.environ.get("EASYCODE_PATH", "/usr/local/bin/easycode")
 USE_EASYCODE = False  # 自动检测
 EXTERNAL_EXECUTOR_WEBHOOK = os.environ.get("AIHOT_DOUYIN_EXECUTOR_WEBHOOK", "").strip()
 EXTERNAL_EXECUTOR_TOKEN = os.environ.get("AIHOT_DOUYIN_EXECUTOR_TOKEN", "").strip()
+DOUYIN_CREATOR_TOOL_DIR = Path(os.environ.get("AIHOT_DOUYIN_CREATOR_TOOL_DIR", SITE_DIR / "third_party" / "douyin-creator-tools"))
 
 
 def detect_ai_backend():
@@ -416,6 +417,71 @@ def dispatch_to_external_executor(kind, item):
     with urllib.request.urlopen(req, timeout=20) as resp:
         text = resp.read().decode("utf-8", errors="replace")
     return {"success": True, "configured": True, "response": text[:1000]}
+
+
+def douyin_creator_tool_status():
+    bundled_pnpm = Path.home() / ".cache" / "codex-runtimes" / "codex-primary-runtime" / "dependencies" / "bin" / "fallback" / "pnpm.cmd"
+    runner = (
+        shutil.which("npm.cmd")
+        or shutil.which("npm")
+        or shutil.which("pnpm.cmd")
+        or shutil.which("pnpm")
+        or (str(bundled_pnpm) if bundled_pnpm.exists() else "")
+    )
+    package_file = DOUYIN_CREATOR_TOOL_DIR / "package.json"
+    node_modules = DOUYIN_CREATOR_TOOL_DIR / "node_modules"
+    profile = DOUYIN_CREATOR_TOOL_DIR / ".playwright" / "douyin-profile"
+    return {
+        "configured": package_file.exists(),
+        "path": str(DOUYIN_CREATOR_TOOL_DIR),
+        "runner": runner or "",
+        "npm": runner or "",
+        "dependencies_ready": node_modules.exists(),
+        "profile_ready": profile.exists(),
+    }
+
+
+def run_douyin_creator_tool(args, timeout=240):
+    status = douyin_creator_tool_status()
+    if not status["configured"]:
+        raise RuntimeError("douyin-creator-tools 未找到，请先 clone 到 third_party/douyin-creator-tools")
+    if not status["runner"]:
+        raise RuntimeError("未找到 npm/pnpm，无法运行 douyin-creator-tools")
+    completed = subprocess.run(
+        [status["runner"], *args],
+        cwd=str(DOUYIN_CREATOR_TOOL_DIR),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        timeout=timeout,
+    )
+    if completed.returncode != 0:
+        detail = (completed.stderr or completed.stdout or "").strip()
+        raise RuntimeError(detail[:1200] or f"douyin-creator-tools exited with {completed.returncode}")
+    return completed
+
+
+def tool_comment_to_automation_comment(account_name, account, selected_work, item):
+    text = str(item.get("commentText", "")).strip()
+    category = classify_comment(text)
+    return {
+        "id": f"cmt_{uuid.uuid4().hex[:8]}",
+        "account": account_name,
+        "source": f"抖音工具导出 · {selected_work.get('title', '作品')}",
+        "author": str(item.get("username", "抖音用户")).strip() or "抖音用户",
+        "text": text,
+        "category": category,
+        "reply_draft": build_reply_draft(account, text, category),
+        "status": "待确认",
+        "created_at": datetime.now().isoformat(timespec="seconds"),
+        "tool_payload": {
+            "selectedWork": selected_work,
+            "username": item.get("username", ""),
+            "commentText": item.get("commentText", ""),
+            "imagePaths": item.get("imagePaths", []),
+        },
+    }
 
 
 def auth_enabled():
@@ -1129,6 +1195,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
             db = load_db()
             automation = db.get("automation", {})
             automation["external_executor_configured"] = bool(EXTERNAL_EXECUTOR_WEBHOOK)
+            automation["douyin_creator_tool"] = douyin_creator_tool_status()
             self._send_json(automation)
 
         elif path.startswith("/api/automation/local-file/") and path.endswith("/video"):
@@ -1422,6 +1489,88 @@ document.getElementById('loginForm').addEventListener('submit', function(e){{
             update_automation_item(db["automation"], kind, item_id, {"status": "已推送外部执行器"})
             save_db(db)
             self._send_json(result)
+
+        elif path == "/api/automation/douyin-tool/export-comments":
+            account_name = str(body.get("account", "")).strip() or "矩阵号 A"
+            work_title = str(body.get("work_title", "")).strip()
+            if not work_title:
+                self._send_json({"error": "请填写抖音作品标题"}, 400)
+                return
+            limit = max(1, min(int(body.get("limit", 50) or 50), 200))
+            out_dir = SITE_DIR / "data" / "executor"
+            out_dir.mkdir(parents=True, exist_ok=True)
+            out_path = out_dir / f"douyin-unreplied-{uuid.uuid4().hex[:8]}.json"
+            cmd = ["run", "comments:export", "--", "--limit", str(limit), "--out", str(out_path)]
+            if body.get("headless"):
+                cmd.append("--headless")
+            cmd.append(work_title)
+            try:
+                run_douyin_creator_tool(cmd, timeout=360)
+                exported = json.loads(out_path.read_text(encoding="utf-8-sig"))
+            except Exception as exc:
+                self._send_json({"success": False, "error": str(exc)}, 502)
+                return
+            db = load_db()
+            account = find_account(db["automation"], account_name)
+            selected_work = exported.get("selectedWork", {"title": work_title}) or {"title": work_title}
+            imported = []
+            for item in exported.get("comments", [])[:limit]:
+                if str(item.get("commentText", "")).strip():
+                    imported.append(tool_comment_to_automation_comment(account_name, account, selected_work, item))
+            db["automation"]["comments"] = imported + db["automation"]["comments"]
+            db["automation"]["comments"] = db["automation"]["comments"][:200]
+            save_db(db)
+            self._send_json({"success": True, "count": len(imported), "comments": imported, "output": str(out_path)})
+
+        elif path == "/api/automation/douyin-tool/reply-comments":
+            account_name = str(body.get("account", "")).strip() or "矩阵号 A"
+            dry_run = body.get("dry_run", True) is not False
+            comment_ids = body.get("comment_ids") or []
+            db = load_db()
+            comments = [
+                c for c in db["automation"].get("comments", [])
+                if c.get("account") == account_name
+                and c.get("reply_draft")
+                and c.get("status") in {"待确认", "已复制", "待回复"}
+                and (not comment_ids or c.get("id") in comment_ids)
+                and c.get("tool_payload")
+            ]
+            if not comments:
+                self._send_json({"error": "没有可由抖音工具回复的评论，请先用工具导出评论"}, 400)
+                return
+            selected_work = comments[0].get("tool_payload", {}).get("selectedWork", {})
+            plan = {
+                "selectedWork": selected_work,
+                "comments": [
+                    {
+                        "username": c.get("tool_payload", {}).get("username", c.get("author", "")),
+                        "commentText": c.get("tool_payload", {}).get("commentText", c.get("text", "")),
+                        "imagePaths": c.get("tool_payload", {}).get("imagePaths", []),
+                        "replyMessage": c.get("reply_draft", "")[:400],
+                    }
+                    for c in comments
+                ],
+            }
+            out_dir = SITE_DIR / "data" / "executor"
+            out_dir.mkdir(parents=True, exist_ok=True)
+            plan_path = out_dir / f"douyin-reply-plan-{uuid.uuid4().hex[:8]}.json"
+            result_path = out_dir / f"douyin-reply-result-{uuid.uuid4().hex[:8]}.json"
+            plan_path.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
+            cmd = ["run", "comments:reply", "--", "--limit", str(len(plan["comments"])), "--out", str(result_path)]
+            if dry_run:
+                cmd.append("--dry-run")
+            cmd.append(str(plan_path))
+            try:
+                run_douyin_creator_tool(cmd, timeout=420)
+                result = json.loads(result_path.read_text(encoding="utf-8-sig")) if result_path.exists() else {}
+            except Exception as exc:
+                self._send_json({"success": False, "error": str(exc), "plan": str(plan_path)}, 502)
+                return
+            for c in comments:
+                c["status"] = "工具试填完成" if dry_run else "工具已回复"
+                c["updated_at"] = datetime.now().isoformat(timespec="seconds")
+            save_db(db)
+            self._send_json({"success": True, "dry_run": dry_run, "count": len(comments), "plan": str(plan_path), "result": result})
 
         else:
             self.send_response(404)

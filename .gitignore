@@ -5,3 +5,4 @@ __pycache__/
 .local-douyin-profile/
 data/executor/
 third_party/
+.pnpm-store/
